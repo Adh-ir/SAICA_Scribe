@@ -19,10 +19,32 @@ def load_training_plan(file_path):
         # Note: We need to verify if the sheet name is exactly "ELP" or has spaces.
         df = pd.read_excel(file_path, sheet_name="ELP")
         
-        # Convert to records to essentially get a list of rows
-        records = df.to_dict(orient='records')
-        logger.info(f"Successfully loaded {len(records)} records from ELP tab.")
-        return records
+        # Clean and Map
+        clean_records = []
+        for _, row in df.iterrows():
+            # Skip if critical fields are empty
+            if pd.isna(row.get('Competency')) and pd.isna(row.get('Learning outcome')):
+                continue
+                
+            # Construct standard keys
+            # Code: Combine ID/Competency with Outcome (e.g. "1.1 (a)")
+            comp_id = str(row.get('Id') or row.get('Competency') or '').replace('.0', '').strip()
+            outcome = str(row.get('Learning outcome') or '').strip()
+            
+            code = f"{comp_id}{outcome}"
+            
+            name = str(row.get('Unnamed: 4') or row.get('Unnamed: 2') or 'Unknown').strip()
+            desc = str(row.get('Unnamed: 6') or '').strip()
+            
+            clean_records.append({
+                "competency_code": code,
+                "competency_name": name,
+                "behavioral_indicators": desc,
+                "original_row": row.to_dict() # debug/fallback
+            })
+            
+        logger.info(f"Successfully loaded {len(clean_records)} clean records from ELP tab.")
+        return clean_records
 
     except Exception as e:
         logger.error(f"Failed to load training plan: {e}")
