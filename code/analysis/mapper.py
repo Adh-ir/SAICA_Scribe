@@ -100,18 +100,20 @@ def _map_with_groq(clean_input, target_competency, framework_data):
         
     client = Groq(api_key=key)
     
-    # Truncate Context for Groq (Daily Limit is ~100k tokens, we must be conservative)
-    # 1 token ~= 4 chars. Safe target is ~25k tokens per request max to allow multiple runs.
-    # Total chars target: ~100k chars.
+    # Truncate Context for Groq Aggressively (TPM Limit is ~12k tokens)
+    # Target: ~8k tokens max to be super safe. 
+    # 8k tokens ~= 32k chars TOTAL.
+    # Training Plan (~10k chars) + System Prompt (~2k) leaving ~20k chars for Context.
     
     training_plan = framework_data.get('training_plan', [])
     tp_str = json.dumps(training_plan, indent=0) 
     
     web_content = ""
     for k, v in framework_data.get('web_content', {}).items():
-        web_content += f"{v[:1000]}\n" # Cap web content
+        web_content += f"{v[:500]}\n" # Cap web content to 500 chars
 
-    MAX_CONTEXT_CHARS = 50000 
+    # Drastically reduced from 50k to 15k to fit TPM limits
+    MAX_CONTEXT_CHARS = 15000 
     context_text = ""
     current_chars = 0
     for cat_name, cat_files in framework_data.get('additional_context', {}).items():
@@ -119,12 +121,10 @@ def _map_with_groq(clean_input, target_competency, framework_data):
         context_text += f"=== Category: {cat_name} ===\n"
         for fname, ftext in cat_files.items():
             if current_chars >= MAX_CONTEXT_CHARS: break
-            # Take up to 10k chars per file to be fair
-            snippet = ftext[:10000]
+            # Take smaller snippets (3k chars) to get variety
+            snippet = ftext[:3000]
             context_text += f"--- Document: {fname} ---\n{snippet}\n\n"
             current_chars += len(snippet)
-    
-    # Add a warning if data was truncated? The standard prompting will just use what it has.
     
     prompt = _build_prompt(clean_input, target_competency, tp_str, context_text, web_content)
     
