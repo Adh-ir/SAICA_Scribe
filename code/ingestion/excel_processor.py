@@ -21,8 +21,20 @@ def load_training_plan(file_path):
         
         # Clean and Map
         clean_records = []
+        last_valid_name_4 = None
+        last_valid_name_2 = None
+        
         for _, row in df.iterrows():
-            # Skip if critical fields are empty
+            # Update running valid names (Forward Fill)
+            curr_name_4 = row.get('Unnamed: 4')
+            if not pd.isna(curr_name_4) and str(curr_name_4).strip().lower() != 'nan':
+                 last_valid_name_4 = str(curr_name_4).strip()
+                 
+            curr_name_2 = row.get('Unnamed: 2')
+            if not pd.isna(curr_name_2) and str(curr_name_2).strip().lower() != 'nan':
+                 last_valid_name_2 = str(curr_name_2).strip()
+
+            # Skip if critical fields are empty (but after updating state!)
             if pd.isna(row.get('Competency')) and pd.isna(row.get('Learning outcome')):
                 continue
                 
@@ -33,30 +45,19 @@ def load_training_plan(file_path):
             
             code = f"{comp_id}{outcome}"
             
-            # Clean Name
-            # Try Unnamed: 4 (Specific) -> Unnamed: 2 (Group) -> Code itself
-            raw_name_4 = row.get('Unnamed: 4')
-            raw_name_2 = row.get('Unnamed: 2')
-            
-            def clean_str(val):
-                if pd.isna(val): return ""
-                s = str(val).strip()
-                if s.lower() == 'nan': return ""
-                return s
+            # Name Logic: Use current specific name, else fallback to last specific, else group
+            name = last_valid_name_4
+            if not name: name = last_valid_name_2
+            if not name: name = f"Competency {code}" 
 
-            name = clean_str(raw_name_4)
-            if not name:
-                name = clean_str(raw_name_2)
-            if not name:
-                name = f"Competency {code}" # Last resort fallback vs "Unknown"
-
-            desc = clean_str(row.get('Unnamed: 6'))
+            desc = str(row.get('Unnamed: 6') or '').strip()
+            if desc.lower() == 'nan': desc = ""
             
             clean_records.append({
                 "competency_code": code,
                 "competency_name": name,
                 "behavioral_indicators": desc,
-                "original_row": row.to_dict() # debug/fallback
+                "original_row": row.to_dict() 
             })
             
         logger.info(f"Successfully loaded {len(clean_records)} clean records from ELP tab.")

@@ -247,20 +247,31 @@ def _post_process_mappings(mappings, training_plan, target_competency, original_
             m['confidence'] = conf
             filtered.append(m)
             
-    # Sorting
-    plan_lookup = {}
+    # Create authoritative lookup for names AND descriptions: Code -> {Name, Desc}
+    code_lookup = {}
     for item in training_plan:
-        idx = item.get('_original_index', 9999)
-        for k,v in item.items():
-            if isinstance(v, str) and len(v)>2: plan_lookup[v.strip().lower()] = idx
-            
+        c = item.get('competency_code', '').strip().lower()
+        n = item.get('competency_name', '').strip()
+        d = item.get('behavioral_indicators', '').strip()
+        if c: code_lookup[c] = {"name": n, "desc": d}
+        
     for m in filtered:
+        # Force Correct Name & Description using Code
+        code_key = m.get('competency_code', '').strip().lower()
+        if code_key in code_lookup:
+             lookup_data = code_lookup[code_key]
+             m['name'] = lookup_data['name'] # Override LLM hallucination
+             m['desc'] = lookup_data['desc'] # Inject authoritative description
+             
         name = m.get('name', '').strip().lower()
         code = m.get('competency_code', '').strip().lower()
-        idx = plan_lookup.get(name, plan_lookup.get(code, float('inf')))
-        if idx == float('inf'): # fuzzy fallback
-             for k,v in plan_lookup.items():
-                 if k in name or name in k: idx = v; break
+        # Fallback sorting
+        idx = float('inf')
+        for item in training_plan:
+            if item.get('competency_code','').lower() == code:
+                idx = item.get('_original_index', 9999)
+                break
+        
         m['_sort_index'] = idx
         
     filtered.sort(key=lambda x: x['_sort_index'])

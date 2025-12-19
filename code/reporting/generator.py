@@ -22,7 +22,15 @@ def generate_markdown_content(mappings):
     for item in mappings:
         lines.append("<br>\n") # Extra visual space
         lines.append(f"### 🎯 {item.get('name', 'Unknown Competency')}\n")
-        lines.append(f"**Code**: `{item.get('competency_code', 'N/A')}`\n")
+        
+        # Format Code + Description (Learning Outcome)
+        code = item.get('competency_code', 'N/A')
+        desc = item.get('desc', '')
+        
+        if desc:
+            lines.append(f"**Code**: `{code}` — *{desc}*\n")
+        else:
+            lines.append(f"**Code**: `{code}`\n")
         
         confidence = item.get('confidence', 0)
         # Ensure confidence is 0-100 scale for display if not already
