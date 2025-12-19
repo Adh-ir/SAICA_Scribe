@@ -242,8 +242,20 @@ def _post_process_mappings(mappings, training_plan, target_competency, original_
                 if t in name_code:
                     is_targeted = True; break
         
-        if conf >= 75 or is_targeted:
-            if is_targeted and conf < 75: m['is_weak_target'] = True
+        # Strict Filtering Logic
+        keep_item = False
+        
+        if target_competency:
+            # Exclusive Mode: Only keep if it matches the target
+            if is_targeted:
+                keep_item = True
+                if conf < 75: m['is_weak_target'] = True
+        else:
+            # Default Mode: Keep all high confidence matches
+            if conf >= 75:
+                keep_item = True
+                
+        if keep_item:
             m['confidence'] = conf
             filtered.append(m)
             
