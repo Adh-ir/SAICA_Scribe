@@ -24,28 +24,35 @@ if %errorlevel% neq 0 (
     echo Attempting auto-install via Winget...
     winget install -e --id Python.Python.3.11 --source winget
     
-    :: Refresh env vars
-    call RefreshEnv.cmd >nul 2>&1
-    
-    :: Check again
-    python --version >nul 2>&1
-    if !errorlevel! neq 0 (
+    if !errorlevel! equ 0 (
         echo.
-        echo [Failed] Automatic install failed.
-        echo Opening Python download page...
-        start https://www.python.org/downloads/
+        echo [Success] Python has been installed successfully!
         echo.
         echo ========================================================
-        echo  MANUAL INSTALL REQUIRED
+        echo  PLEASE RESTART THIS SCRIPT
         echo ========================================================
-        echo  1. The Python website has opened.
-        echo  2. Download and run the installer.
-        echo  3. IMPORTANT: Check "Add Python to PATH" during install.
-        echo  4. Run this script again after installing.
+        echo  Windows needs to reload the environment variables.
+        echo  Please close this window and double-click the script again.
         echo ========================================================
         pause
         exit /b
     )
+
+    echo.
+    echo [Failed] Automatic install failed.
+    echo Opening Python download page...
+    start https://www.python.org/downloads/
+    echo.
+    echo ========================================================
+    echo  MANUAL INSTALL REQUIRED
+    echo ========================================================
+    echo  1. The Python website has opened.
+    echo  2. Download and run the installer.
+    echo  3. IMPORTANT: Check "Add Python to PATH" during install.
+    echo  4. Run this script again after installing.
+    echo ========================================================
+    pause
+    exit /b
 )
 
 :: 3. Setup Virtual Env
