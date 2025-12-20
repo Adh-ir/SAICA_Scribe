@@ -22,7 +22,7 @@ if %errorlevel% neq 0 (
     echo [ERROR] Python 3 is not installed.
     echo.
     echo Attempting auto-install via Winget...
-    winget install -e --id Python.Python.3.11
+    winget install -e --id Python.Python.3.11 --source winget
     
     :: Refresh env vars
     call RefreshEnv.cmd >nul 2>&1
