@@ -19,10 +19,23 @@ for /f "tokens=5" %%a in ('netstat -aon ^| find ":8000" ^| find "LISTENING"') do
 :: 2. Check Python
 python --version >nul 2>&1
 if %errorlevel% neq 0 (
-    echo [ERROR] Python 3 is not installed or not in PATH.
-    echo Please install it from python.org and check "Add Python to PATH" during installation.
-    pause
-    exit /b
+    echo [ERROR] Python 3 is not installed.
+    echo.
+    echo Attempting auto-install via Winget...
+    winget install -e --id Python.Python.3.11
+    
+    :: Refresh env vars
+    call RefreshEnv.cmd >nul 2>&1
+    
+    :: Check again
+    python --version >nul 2>&1
+    if !errorlevel! neq 0 (
+        echo.
+        echo [Failed] Automatic install failed. 
+        echo Please install Python manually from python.org containing "Add to PATH".
+        pause
+        exit /b
+    )
 )
 
 :: 3. Setup Virtual Env

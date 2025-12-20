@@ -23,7 +23,7 @@ echo -e "🧹 Checking for zombie processes on port 8000..."
 PID=$(lsof -ti:8000)
 if [ -n "$PID" ]; then
     echo -e "${RED}   Killing old process (PID $PID)...${NC}"
-    kill -9 "$PID"
+    echo "$PID" | xargs kill -9
     sleep 1
 else
     echo -e "${GREEN}   Port 8000 is clear.${NC}"
@@ -45,7 +45,15 @@ elif command -v python &>/dev/null; then
     fi
 else
     echo -e "${RED}Error: Python 3 not found.${NC}"
-    echo "Please install Python 3.10+ from python.org"
+    echo "Attempting to download Python installer..."
+    
+    # Download official installer
+    curl -o python_installer.pkg https://www.python.org/ftp/python/3.11.5/python-3.11.5-macos11.pkg
+    
+    echo "Opening installer..."
+    open python_installer.pkg
+    
+    echo "⚠️  Please follow the installer steps, then run this file again."
     read -n 1 -s -r -p "Press any key to exit..."
     exit 1
 fi

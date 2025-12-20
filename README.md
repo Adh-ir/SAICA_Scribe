@@ -9,19 +9,23 @@ SAICA Scribe helps you map your daily audit activities to the SAICA Competency F
 ## 🚀 Features
 
 *   **Smart Mapping**: Analyzes your input and matches it against the *entire* SAICA 2025 Training Plan.
-*   **Dual Engine**: Choose between **Google Gemini** (High Accuracy, Recommended) or **Groq** (High Speed).
+*   **Multi-Model Support**:
+    *   **Google Gemini 2.0 Flash Exp** (Default, High Intelligence).
+    *   **GitHub Models (GPT-4o / Mini)** (Strict, Precise).
+    *   **Groq (Llama 3)** (Lightning Fast).
+*   **Auto-Setup**: Python and dependencies are installed automatically. Just click and run.
 *   **Privacy First (BYOK)**: Bring Your Own Key. Your API keys are stored locally on your machine (`.env`) and never shared.
-*   **Premium Web UI**: sleek, modern interface for easy reporting.
+*   **Strict Filtering**: Target a specific competency code (e.g. `COMPETENCY: 1a`) and the system guarantees a single, focused result.
 
 ## 🛠️ Quick Start
 
 ### Prerequisites
-*   Python 3.10 or higher.
+*   None! (The launcher handles everything).
 
 ### Installation & Run
 
 1.  **Download** this repository (Code -> Download ZIP) and extract it.
-2.  **No installation required!** Just double-click the launcher script for your OS:
+2.  **Double-click the Launcher**:
 
     *   🍎 **Mac User?**
         Double-click `Run_SAICA_Scribe.command`.
@@ -30,17 +34,22 @@ SAICA Scribe helps you map your daily audit activities to the SAICA Competency F
     *   🪟 **Windows User?**
         Double-click `Run_SAICA_Scribe.bat`.
 
-3.  The application will automatically set itself up and open in your browser at `http://localhost:8000`.
+    *The launcher will automatically download Python if you don't have it, set up the environment, and launch the app.*
+
+3.  The application will open in your browser at `http://localhost:8000`.
 
 ### First Time Setup
 The app will guide you through a one-time setup wizard:
-1.  It will ask you to choose an AI provider (Gemini recommended).
-2.  It provides direct links to generate your **Free API Keys**.
+1.  Choose your AI provider (Gemini 2.0 or GitHub Models recommended).
+2.  Follow the **"Get Key"** links to grab your free API key.
 3.  Paste the key into the app, and you are ready to go!
 
 ## 💡 Usage Tips
-*   **Be Specific**: Mention the *Client*, *Task*, and *Outcome*.
-*   **Targeting**: Use the helper button or type `COMPETENCY: [Name] EVIDENCE: [Desc]` to force a specific mapping.
+*   **Be Specific**: Mention the *Client*, *Task*, and *Outcome* in your activity.
+*   **Targeting**:
+    *   **Broad Search**: Just type your activity. The AI finds all relevant matches.
+    *   **Specific Target**: Type `COMPETENCY: [Code or Name] EVIDENCE: [Desc]` to force a specific mapping.
+    *   *Example*: `COMPETENCY: 1a EVIDENCE: I reconciled the bank statement...` (This guarantees ONLY competency 1a is returned).
 
 ---
 *Made with ❤️ by [Adhir Singh](https://github.com/Adh-ir)*
