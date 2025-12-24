@@ -931,7 +931,7 @@ def show_guide_page():
             html_content = f.read()
         
         # Fix Frame Navigation: Ensure "Back" link breaks out of iframe
-        html_content = html_content.replace('<a href="/"', '<a href="/" target="_top"')
+        # html_content = html_content.replace('<a href="/"', '<a href="/" target="_top"') -> Button removed
         
         # Render in Iframe to support full HTML/CSS/Tailwind without Markdown interference
         components.html(html_content, height=1200, scrolling=True)
