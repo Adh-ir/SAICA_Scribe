@@ -615,51 +615,31 @@ def show_main_page():
         # Helper Prompt
         st.markdown("""
             <style>
-            /* Force full width and column layout for the button */
+            /* Left-align the Target Competency button */
             div.stButton > button[data-testid="stBaseButton-secondary"] {
-                width: 100% !important;
-                display: flex !important;
-                flex-direction: column !important;
-                align-items: flex-start !important;
-                justify-content: center !important;
-                text-align: left !important;
-                height: auto !important;
-                padding: 1rem !important;
-                border-color: #e2e8f0 !important;
-            }
-
-            /* Force the main text (p tag) to be left aligned */
-            div.stButton > button[data-testid="stBaseButton-secondary"] p {
-                text-align: left !important;
-                margin: 0 !important;
-                font-weight: 600 !important;
-                font-size: 1rem !important;
-                color: #0f172a !important; /* Dark slate */
-            }
-
-            /* Add the subtitle using ::after */
-            div.stButton > button[data-testid="stBaseButton-secondary"]::after {
-                content: "Click to autofill template";
-                font-size: 0.8rem !important;
-                color: #94a3b8 !important; /* Muted slate */
-                font-weight: 400 !important;
-                margin-top: 4px !important;
-                text-align: left !important;
-                display: block !important;
-                text-transform: none !important;
-                letter-spacing: normal !important;
-            }
-            
-            /* Remove hover transform/scale to keep it looking solid */
-            div.stButton > button[data-testid="stBaseButton-secondary"]:hover {
-                border-color: #38bdf8 !important;
-                background-color: #f8fafc !important;
+                justify-content: flex-start;
+                text-align: left;
+                padding-left: 1rem;
             }
             </style>
         """, unsafe_allow_html=True)
         
-        if st.button("Target Competency", help="Click to pre-fill a template", use_container_width=True):
+        if st.button("✨ Target Competency", help="Click to pre-fill a template", use_container_width=True):
             st.session_state.activity_input = "COMPETENCY: [Insert Name] EVIDENCE: "
+        
+        st.markdown("""
+            <div style="
+                margin-top: -0.75rem; 
+                margin-bottom: 1rem; 
+                font-size: 0.75rem; 
+                color: #94a3b8; 
+                font-weight: 500;
+                padding-left: 0.25rem;
+            ">
+                Click to autofill template
+            </div>
+        """, unsafe_allow_html=True)
+
         
         activity_val = st.session_state.get("activity_input", "")
         activity = st.text_area(
