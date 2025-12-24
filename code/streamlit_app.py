@@ -613,7 +613,7 @@ def show_main_page():
     # --- LEFT PANEL (Input) ---
     with main_col1:
         # Helper Prompt
-        if st.button("✨ Target Competency Template", help="Click to pre-fill a template"):
+        if st.button("✨ Target Competency Template", help="Click to pre-fill a template", use_container_width=True):
             st.session_state.activity_input = "COMPETENCY: [Insert Name] EVIDENCE: "
         
         activity_val = st.session_state.get("activity_input", "")
