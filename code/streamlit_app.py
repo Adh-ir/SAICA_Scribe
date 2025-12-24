@@ -621,21 +621,20 @@ def show_main_page():
                 text-align: left;
                 padding-left: 1rem;
             }
-            /* Remove blue flash on click/focus */
-            div.stButton > button[data-testid="stBaseButton-secondary"]:focus:not(:active) {
-                border-color: #ffffff00;
-                box-shadow: none;
-                color: inherit;
+            /* Completely remove blue flash/focus ring on all states */
+            div.stButton > button[data-testid="stBaseButton-secondary"]:focus,
+            div.stButton > button[data-testid="stBaseButton-secondary"]:active,
+            div.stButton > button[data-testid="stBaseButton-secondary"]:focus:not(:active),
+            div.stButton > button[data-testid="stBaseButton-secondary"]:focus-visible {
+                outline: none !important;
+                border-color: rgb(230, 234, 241) !important;
+                box-shadow: none !important;
+                background-color: rgb(255, 255, 255) !important;
             }
-            div.stButton > button[data-testid="stBaseButton-secondary"]:focus {
-                border-color: #ffffff00;
-                box-shadow: none;
-                color: inherit;
-            }
-            div.stButton > button[data-testid="stBaseButton-secondary"]:active {
-                background-color: transparent;
-                border-color: #ffffff00;
-                box-shadow: none;
+            /* Remove focus ring from button container */
+            div.stButton:focus-within {
+                outline: none !important;
+                box-shadow: none !important;
             }
             </style>
         """, unsafe_allow_html=True)
