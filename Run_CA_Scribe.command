@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# SAICA Scribe - Smart Launcher for Mac
+# CA Scribe - Smart Launcher for Mac
 # Double-click to run!
 
 # 1. Colors & UX
@@ -10,7 +10,7 @@ RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 echo -e "${BLUE}=========================================${NC}"
-echo -e "${BLUE}       SAICA Scribe - Auto Launcher      ${NC}"
+echo -e "${BLUE}       CA Scribe - Auto Launcher      ${NC}"
 echo -e "${BLUE}=========================================${NC}"
 echo ""
 
@@ -100,11 +100,8 @@ pip install -q -r requirements.txt
 echo -e "🚀 Launching Application..."
 echo -e "${GREEN}   Browser will open automatically.${NC}"
 
-# Open browser after 2 seconds
-(sleep 2 && open "http://localhost:8000") &
-
-# Run Server
-python web_app.py
+# Run Launcher (Handles browser opening & server start)
+python launcher.py
 
 # Keep terminal open on error
 echo ""

@@ -1,11 +1,11 @@
 @echo off
 setlocal enabledelayedexpansion
 
-TITLE SAICA Scribe - Auto Launcher
+TITLE CA Scribe - Auto Launcher
 cd /d "%~dp0\code"
 
 echo =========================================
-echo        SAICA Scribe - Auto Launcher      
+echo        CA Scribe - Auto Launcher      
 echo =========================================
 echo.
 
@@ -69,12 +69,10 @@ pip install -q pip-system-certs
 pip install -q -r requirements.txt
 
 :: 5. Launch
-echo [Launch] Starting Server...
-echo    Browser will open in 2 seconds.
+:: 5. Launch
+echo [Launch] Starting Server via Launcher...
 
-start "" cmd /c "timeout /t 2 >nul & start http://localhost:8000"
-
-python web_app.py
+python launcher.py
 
 echo.
 echo Server stopped.

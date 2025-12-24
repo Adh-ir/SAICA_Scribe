@@ -16,7 +16,7 @@ SAICA_URLS = [
     "https://www.saica.org.za/resources/training-offices"
 ]
 
-def load_saica_framework():
+def load_competency_framework():
     """
     Loads all SAICA framework data (Training Plan, Web Content, Context).
     Returns a dictionary suitable for the mapper.

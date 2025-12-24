@@ -6,7 +6,7 @@ def generate_markdown_content(mappings):
     Generates the markdown content string from mappings.
     """
     lines = []
-    lines.append("# SAICA_Scribe Assessment Report\n")
+    lines.append("# CA Scribe Assessment Report\n")
     lines.append(f"**Date Generated**: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}")
     lines.append("**Status**: Draft\n")
     

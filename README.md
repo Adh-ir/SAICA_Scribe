@@ -1,10 +1,10 @@
-# SAICA Scribe 🤖
+# CA Scribe 🤖
 
 **AI-Powered Competency Documentation Assistant for SAICA Trainees.**
 
 Developed by **[Adhir Singh](https://github.com/Adh-ir)**.
 
-SAICA Scribe helps you map your daily audit activities to the SAICA Competency Framework (2025 Training Plan) using advanced AI (Google Gemini 1.5 Pro/Flash or Groq Llama 3).
+CA Scribe helps you map your daily audit activities to the SAICA Competency Framework (2025 Training Plan) using advanced AI (Google Gemini 1.5 Pro/Flash or Groq Llama 3).
 
 ## 🚀 Features
 
@@ -28,11 +28,11 @@ SAICA Scribe helps you map your daily audit activities to the SAICA Competency F
 2.  **Double-click the Launcher**:
 
     *   🍎 **Mac User?**
-        Double-click `Run_SAICA_Scribe.command`.
+        Double-click `Run_CA_Scribe.command`.
         *(Note: First time might require Right-Click -> Open if MacOS warns about developers)*
 
     *   🪟 **Windows User?**
-        Double-click `Run_SAICA_Scribe.bat`.
+        Double-click `Run_CA_Scribe.bat`.
 
     *The launcher will automatically download Python if you don't have it, set up the environment, and launch the app.*
 

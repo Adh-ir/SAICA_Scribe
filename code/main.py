@@ -26,11 +26,11 @@ SAICA_URLS = [
 ]
 
 def main():
-    parser = argparse.ArgumentParser(description="SAICA Competency Mapping Agent")
+    parser = argparse.ArgumentParser(description="CA Scribe Competency Mapping Agent")
     parser.add_argument("--input", type=str, help="Trainee activity description", default=None)
     args = parser.parse_args()
 
-    logger.info("Starting SAICA_Scribe (Competency Mapping Agent)...")
+    logger.info("Starting CA Scribe (Competency Mapping Agent)...")
 
     # 1. Ingestion: Training Plan (Excel)
     logger.info(f"Ingesting Training Plan from: {EXCEL_PATH}")

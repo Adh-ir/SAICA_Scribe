@@ -12,3 +12,6 @@ output/
 
 # OS
 .DS_Store
+
+# Streamlit
+.streamlit/secrets.toml

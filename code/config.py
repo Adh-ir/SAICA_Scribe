@@ -1,6 +1,6 @@
 # Configuration Settings
 
-# SAICA_Scribe Configuration
+# CA_Scribe Configuration
 
 import os
 from dotenv import load_dotenv, set_key

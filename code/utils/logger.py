@@ -11,4 +11,4 @@ def setup_logger():
             logging.StreamHandler()
         ]
     )
-    return logging.getLogger("SAICA_Scribe")
+    return logging.getLogger("CA_Scribe")

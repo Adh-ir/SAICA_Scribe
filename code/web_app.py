@@ -17,16 +17,26 @@ print("  ____) |/ ____ \\ _| || |____ / ____ \\____) | (__| |  | |  | | |_) |  _
 print(" |_____/_/    \\_\\_____\\_____/_/    \\_\\_____/ \\___|_|  |_|  |_|_.__/ \\___|  ")
 print("                                                         Made by Adhir Singh")
 
-from ingestion.framework_loader import load_saica_framework
+from ingestion.framework_loader import load_competency_framework
 from analysis.mapper import map_activity_to_competency
 from reporting.generator import generate_markdown_content
 from config import GOOGLE_API_KEY, GROQ_API_KEY, LLM_PROVIDER, save_keys
 
 # Configure Logging
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("SAICA_Web")
+logger = logging.getLogger("CA_Web")
 
-app = FastAPI(title="SAICA Scribe UI")
+app = FastAPI(title="CA Scribe UI")
+
+# Enable CORS for local launcher (file:// access)
+from fastapi.middleware.cors import CORSMiddleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Templates
 BASE_DIR = Path(__file__).resolve().parent
@@ -51,7 +61,7 @@ async def startup_event():
     logger.info("Initializing... Made by Adhir Singh")
     if has_valid_keys():
         logger.info("Keys found. Loading framework data...")
-        framework_data = load_saica_framework()
+        framework_data = load_competency_framework()
         logger.info("Framework data loaded.")
     else:
         logger.warning("No API keys found. Waiting for user setup.")
@@ -134,7 +144,7 @@ async def map_competencies(
     
     if not framework_data:
         # Load now that keys might exist
-        framework_data = load_saica_framework()
+        framework_data = load_competency_framework()
         
     logger.info(f"Mapping request via {provider}: {activity[:50]}...")
     
