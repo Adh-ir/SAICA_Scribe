@@ -668,7 +668,7 @@ def show_setup_page():
             st.markdown("""
                 <div style="text-align: center; margin-top: 0.5rem; margin-bottom: 0.5rem;">
                     <a href="/?page=guide" target="_self" style="color: #64748b; font-size: 0.8rem; text-decoration: none; font-weight: 500; transition: color 0.2s;">
-                        Need help getting keys? View Guide ↗
+                        Need help getting keys? View Full Guide ↗
                     </a>
                 </div>
             """, unsafe_allow_html=True)
