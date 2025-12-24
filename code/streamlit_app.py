@@ -48,13 +48,10 @@ st.markdown("""
         background-color: #7dd3fc !important;
     }
     
-    /* Remove Sidebar/Main Padding for Fullscreen Loader */
-    .block-container {
-        padding-top: 0rem !important;
-        padding-bottom: 0rem !important;
-        padding-left: 0rem !important;
-        padding-right: 0rem !important;
-        max-width: 100% !important;
+    /* Header Background - MATCH ANIMATION BLUE */
+    header, [data-testid="stHeader"] {
+        background: #7dd3fc !important; 
+        background-color: #7dd3fc !important;
     }
     </style>
 """, unsafe_allow_html=True)
