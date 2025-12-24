@@ -124,6 +124,23 @@ st.markdown("""
         -webkit-tap-highlight-color: transparent !important;
     }
     </style>
+    <script>
+    // Prevent focus-related visual feedback on all elements
+    document.addEventListener('DOMContentLoaded', function() {
+        // Prevent focus on containers
+        document.addEventListener('focusin', function(e) {
+            const target = e.target;
+            if (target.hasAttribute('data-testid')) {
+                const testId = target.getAttribute('data-testid');
+                if (testId.includes('Horizontal') || testId.includes('Column') || testId.includes('Vertical')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    target.blur();
+                }
+            }
+        }, true);
+    });
+    </script>
 """, unsafe_allow_html=True)
 
 # --- LOADING ANIMATION (Local & Cloud Compatible) ---
