@@ -281,10 +281,13 @@ html, body, [class*="css"] {
 }
 
 /* TARGETED FIX: Make the main columns container white */
-[data-testid="stVerticalBlockBorderWrapper"] [data-testid="stHorizontalBlock"]:has(.stTextArea) {
+/* TARGETED FIX: Make the main columns container white */
+[data-testid="stVerticalBlockBorderWrapper"] [data-testid="stHorizontalBlock"]:has(.stTextArea),
+[data-testid="stVerticalBlockBorderWrapper"] [class*="stHorizontalBlock"]:has(.stTextArea),
+[data-testid="stVerticalBlockBorderWrapper"] [data-testid="stHorizontalBlock"]:has(.stSelectbox) {
     background-color: #ffffff !important;
     border-radius: 20px;
-    padding: 2rem;
+    padding: 15px !important;
 }
 
 /* --- LOGO STYLES (From Local Index.html) --- */
