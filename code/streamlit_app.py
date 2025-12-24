@@ -664,6 +664,15 @@ def show_setup_page():
                         
                     st.rerun()
 
+            # Helper Link
+            st.markdown("""
+                <div style="text-align: center; margin-top: 1rem; margin-bottom: 2rem;">
+                    <a href="https://github.com/Adh-ir/CA_Scribe" target="_blank" style="color: #64748b; font-size: 0.8rem; text-decoration: none; font-weight: 500; transition: color 0.2s;">
+                        Need help getting keys? View Guide ↗
+                    </a>
+                </div>
+            """, unsafe_allow_html=True)
+
         # Comprehensive Documentation Expander (matching guide.html)
         with st.expander("📘 Need Help? View Detailed API Key Guide"):
             st.markdown("""
