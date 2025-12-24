@@ -533,10 +533,17 @@ if not st.session_state.loading_complete:
 def get_api_keys():
     """Checks for API keys in Streamlit secrets or OS environ."""
     # Priority: Session > Secrets > OS > Input
+    # Safely get from secrets (may not exist on first run)
+    def safe_secrets_get(key):
+        try:
+            return st.secrets.get(key)
+        except:
+            return None
+    
     keys = {
-        "GOOGLE_API_KEY": st.session_state.get("GOOGLE_API_KEY") or st.secrets.get("GOOGLE_API_KEY") or os.getenv("GOOGLE_API_KEY"),
-        "GROQ_API_KEY": st.session_state.get("GROQ_API_KEY") or st.secrets.get("GROQ_API_KEY") or os.getenv("GROQ_API_KEY"),
-        "GITHUB_TOKEN": st.session_state.get("GITHUB_TOKEN") or st.secrets.get("GITHUB_TOKEN") or os.getenv("GITHUB_TOKEN"),
+        "GOOGLE_API_KEY": st.session_state.get("GOOGLE_API_KEY") or safe_secrets_get("GOOGLE_API_KEY") or os.getenv("GOOGLE_API_KEY"),
+        "GROQ_API_KEY": st.session_state.get("GROQ_API_KEY") or safe_secrets_get("GROQ_API_KEY") or os.getenv("GROQ_API_KEY"),
+        "GITHUB_TOKEN": st.session_state.get("GITHUB_TOKEN") or safe_secrets_get("GITHUB_TOKEN") or os.getenv("GITHUB_TOKEN"),
     }
     # Filter out empty strings
     return {k: v for k, v in keys.items() if v}
@@ -554,69 +561,88 @@ def show_setup_page():
     st.markdown(FONT_LINKS, unsafe_allow_html=True)
     st.markdown(SETUP_CSS, unsafe_allow_html=True)
     
-    # Background Elements
+    # Fluid Background Elements (matching main app)
     st.markdown("""
-        <div class="stars"></div>
-        <div class="aurora-secondary"></div>
-        <div class="aurora-container"></div>
-        <div class="beam"></div>
-        <div class="beam beam-2"></div>
+        <div class="fluid-bg">
+            <div class="fluid-shape shape-1"></div>
+            <div class="fluid-shape shape-2"></div>
+            <div class="fluid-shape shape-3"></div>
+        </div>
     """, unsafe_allow_html=True)
     
-    # Centered Cointainer
+    # Centered Container
     col1, col2, col3 = st.columns([1, 1.5, 1])
     with col2:
-        # Logo Section
+        # Enhanced Logo Section
         st.markdown("""
-            <div style="text-align: center; margin-bottom: 2rem; margin-top: 5vh;">
-                <div>
-                     <span style="font-family: 'Inter', sans-serif; font-weight: 800; font-size: 3.5rem; color: #ffffff; letter-spacing: -0.03em; text-shadow: 0 0 20px rgba(255,255,255,0.3);">CA</span>
-                     <span style="font-family: 'Playfair Display', serif; font-style: italic; font-weight: 600; font-size: 3.5rem; color: #7dd3fc; margin-left: 0.2rem; position: relative;">
-                        Scribe <span style="position: absolute; top: 0; right: -25px; font-size: 1.5rem; color: #38bdf8;">✦</span>
+            <div style="text-align: center; margin-bottom: 2.5rem; margin-top: 10vh;">
+                <div style="display: flex; align-items: baseline; justify-content: center; gap: 0.25rem; margin-bottom: 0.5rem;">
+                     <span class="logo-main" style="font-size: 4rem;">CA</span>
+                     <span class="logo-scribe" style="font-size: 4rem; position: relative;">
+                        Scribe 
+                        <span style="position: absolute; top: -8px; right: -28px; font-size: 1.75rem; color: #0ea5e9;">✦</span>
                      </span>
                 </div>
-                <div style="font-family: 'Inter', sans-serif; font-weight: 500; color: #94a3b8; letter-spacing: 0.05em; text-transform: uppercase; font-size: 0.75rem; margin-top: -0.5rem;">
+                <div style="font-family: 'Inter', sans-serif; font-weight: 600; color: #64748b; letter-spacing: 0.05em; text-transform: uppercase; font-size: 0.85rem; margin-top: -0.25rem;">
                     AI-Powered Competency Mapper
+                </div>
+                <div style="font-family: 'Inter', sans-serif; font-weight: 400; color: #94a3b8; font-size: 0.9rem; margin-top: 1.5rem; line-height: 1.5;">
+                    Connect your AI provider to get started
                 </div>
             </div>
         """, unsafe_allow_html=True)
 
         with st.form("setup_form"):
-            # Gemini Input
+            # Gemini Input Section
             st.markdown("""
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; margin-top: 10px;">
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <span style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">Connect Gemini</span>
-                        <span style="font-size: 0.6rem; font-weight: 700; color: #38bdf8; background: rgba(56, 189, 248, 0.1); padding: 2px 6px; border-radius: 99px; border: 1px solid rgba(56, 189, 248, 0.2);">RECOMMENDED</span>
+                        <span style="font-size: 0.75rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.05em;">✨ Google Gemini</span>
+                        <span style="font-size: 0.65rem; font-weight: 700; color: #0ea5e9; background: rgba(14, 165, 233, 0.1); padding: 3px 8px; border-radius: 99px; border: 1px solid rgba(14, 165, 233, 0.25);">RECOMMENDED</span>
                     </div>
-                    <a href="https://aistudio.google.com/app/apikey" target="_blank" style="font-size: 0.7rem; color: #38bdf8; text-decoration: none; font-weight: 600;">Get Free Key ↗</a>
+                    <a href="https://aistudio.google.com/app/apikey" target="_blank" style="font-size: 0.75rem; color: #0ea5e9; text-decoration: none; font-weight: 600; transition: color 0.2s;">Get Free Key ↗</a>
                 </div>
             """, unsafe_allow_html=True)
             g_key = st.text_input("Gemini Key", type="password", placeholder="Paste Google API Key (AIza...)", label_visibility="collapsed")
             
-            # Groq Input
+            # Groq Input Section
             st.markdown("""
-                <div style="margin-top: 15px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">Or Groq</span>
-                    <a href="https://console.groq.com/keys" target="_blank" style="font-size: 0.7rem; color: #94a3b8; text-decoration: none; font-weight: 600; hover:color: #38bdf8;">Get Free Key ↗</a>
+                <div style="margin-top: 20px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 0.75rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.05em;">⚡ Groq</span>
+                        <span style="font-size: 0.65rem; font-weight: 700; color: #f97316; background: rgba(249, 115, 22, 0.1); padding: 3px 8px; border-radius: 99px; border: 1px solid rgba(249, 115, 22, 0.25);">FASTEST</span>
+                    </div>
+                    <a href="https://console.groq.com/keys" target="_blank" style="font-size: 0.75rem; color: #0ea5e9; text-decoration: none; font-weight: 600; transition: color 0.2s;">Get Free Key ↗</a>
                 </div>
             """, unsafe_allow_html=True)
             q_key = st.text_input("Groq Key", type="password", placeholder="Paste Groq API Key (gsk_...)", label_visibility="collapsed")
             
-            # GitHub Input
+            # GitHub Input Section
             st.markdown("""
-                <div style="margin-top: 15px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">Or GitHub Models</span>
-                    <a href="https://github.com/marketplace/models" target="_blank" style="font-size: 0.7rem; color: #94a3b8; text-decoration: none; font-weight: 600;">Get Token ↗</a>
+                <div style="margin-top: 20px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 0.75rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.05em;">🐙 GitHub Models</span>
+                        <span style="font-size: 0.65rem; font-weight: 700; color: #64748b; background: rgba(100, 116, 139, 0.1); padding: 3px 8px; border-radius: 99px; border: 1px solid rgba(100, 116, 139, 0.25);">OPENAI GPT-4o</span>
+                    </div>
+                    <a href="https://github.com/marketplace/models" target="_blank" style="font-size: 0.75rem; color: #0ea5e9; text-decoration: none; font-weight: 600; transition: color 0.2s;">Get Token ↗</a>
                 </div>
             """, unsafe_allow_html=True)
-            gh_key = st.text_input("GitHub Token", type="password", placeholder="Personal Access Token", label_visibility="collapsed")
+            gh_key = st.text_input("GitHub Token", type="password", placeholder="Personal Access Token (ghp_...)", label_visibility="collapsed")
             
-            submitted = st.form_submit_button("Initialize CA Scribe →")
+            # Info note
+            st.markdown("""
+                <div style="text-align: center; margin: 1.5rem 0 1rem 0;">
+                    <span style="font-size: 0.7rem; color: #94a3b8; font-weight: 500;">
+                        Keys are stored locally in .streamlit/secrets.toml
+                    </span>
+                </div>
+            """, unsafe_allow_html=True)
+            
+            submitted = st.form_submit_button("Initialize CA Scribe →", use_container_width=True)
             
             if submitted:
                 if not (g_key or q_key or gh_key):
-                    st.error("Please enter at least one API key.")
+                    st.error("⚠️ Please enter at least one API key to continue.")
                 else:
                     if g_key: st.session_state["GOOGLE_API_KEY"] = g_key
                     if q_key: st.session_state["GROQ_API_KEY"] = q_key
@@ -635,26 +661,66 @@ def show_setup_page():
                         
                     st.rerun()
 
-        # Helper / Documentation Expander
-        with st.expander("📘 Need Help? View API Key Guide"):
+        # Comprehensive Documentation Expander (matching guide.html)
+        with st.expander("📘 Need Help? View Detailed API Key Guide"):
             st.markdown("""
-            ### 🔑 How to get your keys
+            ### 🔑 How to Get Your API Keys
             
-            **✨ Google Gemini (Recommended)**
-            1. Go to [Google AI Studio](https://aistudio.google.com/app/apikey).
-            2. Click **"Create API key"**.
-            3. Copy the key starting with `AIza...`.
+            Choose one or more providers below. All offer free tiers perfect for CA Scribe.
             
-            **⚡ Groq (Fastest)**
-            1. Go to [Groq Console](https://console.groq.com/keys).
-            2. Click **"Create API Key"**.
-            3. Copy the key starting with `gsk_...`.
+            ---
             
-            **🐙 GitHub Models (OpenAI)**
-            1. Go to [GitHub Settings > Tokens](https://github.com/settings/tokens).
-            2. Generate a **Personal Access Token (classic)**.
-            3. No special scopes needed. Copy the token starting with `ghp_...`.
+            #### ✨ **Google Gemini (Recommended)**
+            
+            1. Go to **[Google AI Studio](https://aistudio.google.com/app/apikey)**.
+            2. Sign in with your Google Account.
+            3. Click **"Create API key"**.
+            4. Select **"Create key in new project"** (or choose an existing project).
+            5. Copy the key starting with `AIza...` and paste it above.
+            
+            **Why Gemini?** Free tier, excellent quality, and optimized for complex analysis.
+            
+            ---
+            
+            #### ⚡ **Groq (Fastest)**
+            
+            1. Go to **[Groq Console](https://console.groq.com/keys)**.
+            2. Sign in with Google.
+            3. Click **"Create API Key"**.
+            4. Give it any name (e.g., "CA Scribe").
+            5. Copy the key starting with `gsk_...` and paste it above.
+            
+            **Why Groq?** Blazing fast inference with Llama 3 models.
+            
+            ---
+            
+            #### 🐙 **GitHub Models (OpenAI GPT-4o)**
+            
+            **Option 1: Personal Access Token**
+            1. Go to **[GitHub Settings > Developer Settings](https://github.com/settings/tokens)**.
+            2. Select **"Personal access tokens (classic)"**.
+            3. Click **"Generate new token (classic)"**.
+            4. **Note:** You do NOT need any specific scopes/permissions for Models.
+            5. Copy the token starting with `ghp_...` and paste it above.
+            
+            **Option 2: Marketplace Access**
+            - Alternatively, sign up for **[GitHub Models Marketplace](https://github.com/marketplace/models)** access if prompted.
+            
+            **Why GitHub?** Access to OpenAI's GPT-4o and GPT-4o-mini models through Azure.
+            
+            ---
+            
+            ### 🔒 Privacy & Security
+            
+            - All API keys are stored locally in your `.streamlit/secrets.toml` file
+            - No keys are ever sent to external servers (except your chosen AI provider)
+            - You can delete or update keys anytime through the Settings modal
+            
+            ### ❓ Need More Help?
+            
+            If you encounter any issues, please visit the [CA Scribe GitHub repository](https://github.com/Adh-ir/CA_Scribe) or report an issue.
             """)
+
 
 # --- 4. UI: MAIN PAGE ---
 def show_main_page():

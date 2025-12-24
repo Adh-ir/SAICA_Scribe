@@ -15,10 +15,10 @@ html, body, [class*="css"] {
     font-family: 'Inter', sans-serif;
 }
 
-/* Base Dark Theme for Setup */
+/* Light Gradient Background for Setup */
 .stApp {
-    background-color: #02040a; /* Deepest blue-black */
-    color: white;
+    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+    color: #1e3a8a;
 }
 
 /* Hide Streamlit elements */
@@ -26,155 +26,211 @@ html, body, [class*="css"] {
 footer {visibility: hidden;}
 header {visibility: hidden;}
 
-/* --- RAYCAST-LIKE AURORA --- */
-.aurora-container {
+/* --- FLUID BACKGROUND ENGINE --- */
+.fluid-bg {
     position: fixed;
-    top: -50%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 250vw;
-    height: 250vh;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     z-index: 0;
-    pointer-events: none;
-    background: 
-        radial-gradient(circle at 60% 60%, rgba(56, 189, 248, 0.4), transparent 40%),
-        conic-gradient(from 0deg at 50% 50%, rgba(14, 165, 233, 0.1), rgba(6, 182, 212, 0.3), rgba(37, 99, 235, 0.2), rgba(14, 165, 233, 0.1));
-    filter: blur(60px);
-    animation: rotateAurora 40s linear infinite;
-    mix-blend-mode: screen;
+    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+    overflow: hidden;
 }
 
-.aurora-secondary {
-    position: fixed;
-    top: -30%;
-    left: 40%;
-    width: 200vw;
-    height: 200vh;
-    background: radial-gradient(circle, rgba(99, 102, 241, 0.2), transparent 60%);
-    filter: blur(80px);
-    animation: pulseGlow 10s ease-in-out infinite alternate;
-    mix-blend-mode: screen;
-}
-
-.beam {
+.fluid-shape {
     position: absolute;
-    top: -20%;
-    left: 50%;
-    width: 150px;
-    height: 150vh;
-    background: linear-gradient(180deg, rgba(56, 189, 248, 0.6), transparent);
-    filter: blur(50px);
-    transform-origin: top center;
-    animation: swingBeam 8s ease-in-out infinite alternate;
-    mix-blend-mode: overlay;
+    border-radius: 50%;
+    filter: blur(65px);
+    opacity: 0.9;
+    animation: fluid-move 14s infinite ease-in-out;
+    will-change: transform;
+    mix-blend-mode: multiply;
 }
 
-.beam-2 {
-    animation-duration: 12s;
-    background: linear-gradient(180deg, rgba(168, 85, 247, 0.4), transparent); /* Subtle purple hint */
-    height: 180vh;
-    width: 200px;
-    animation-delay: -5s;
+.shape-1 {
+    background: #7dd3fc;
+    width: 65vw;
+    height: 65vw;
+    top: -15%;
+    left: -10%;
+    animation-duration: 16s;
 }
 
-@keyframes rotateAurora {
-    from { transform: translateX(-50%) rotate(0deg); }
-    to { transform: translateX(-50%) rotate(360deg); }
+.shape-2 {
+    background: #bae6fd;
+    width: 70vw;
+    height: 70vw;
+    top: 25%;
+    right: -25%;
+    animation-duration: 20s;
+    animation-delay: -4s;
 }
 
-@keyframes swingBeam {
-    from { transform: translateX(-50%) rotate(-25deg); }
-    to { transform: translateX(-50%) rotate(25deg); }
+.shape-3 {
+    background: #a5f3fc;
+    width: 55vw;
+    height: 55vw;
+    bottom: -15%;
+    left: 15%;
+    animation-duration: 14s;
+    animation-delay: -8s;
 }
 
-@keyframes pulseGlow {
-    0% { opacity: 0.3; transform: scale(1); }
-    100% { opacity: 0.7; transform: scale(1.1); }
-}
-
-/* --- STARS --- */
-.stars {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background-image: 
-        radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 3px),
-        radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 2px);
-    background-size: 550px 550px, 350px 350px;
-    background-position: 0 0, 40px 60px;
-    opacity: 0.4;
-    z-index: 0;
-    animation: twinkle 5s infinite alternate;
-}
-
-@keyframes twinkle {
-    0% { opacity: 0.3; }
-    100% { opacity: 0.5; }
+@keyframes fluid-move {
+    0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+    33% { transform: translate(45px, 65px) scale(1.1) rotate(8deg); }
+    66% { transform: translate(-35px, 25px) scale(0.9) rotate(-6deg); }
+    100% { transform: translate(0, 0) scale(1) rotate(0deg); }
 }
 
 /* --- GLASS CARD (Applied to Streamlit Form) --- */
 [data-testid="stForm"] {
     position: relative;
     z-index: 10;
-    background: rgba(10, 10, 15, 0.75); /* Darker, more contrast */
-    backdrop-filter: blur(40px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 2px solid rgba(147, 197, 253, 0.5);
     box-shadow: 
-        0 0 0 1px rgba(0,0,0,0.5),
-        0 20px 40px -10px rgba(0,0,0,0.8),
-        0 0 120px rgba(56, 189, 248, 0.25); /* Stronger blue glow */
-    border-radius: 20px;
-    padding: 3rem;
+        0 4px 6px -1px rgba(0, 0, 0, 0.05),
+        0 20px 40px -12px rgba(14, 165, 233, 0.15);
+    border-radius: 24px;
+    padding: 2.5rem;
     animation: cardFloat 6s ease-in-out infinite alternate;
 }
 
 @keyframes cardFloat {
     0% { transform: translateY(0); }
-    100% { transform: translateY(-10px); }
+    100% { transform: translateY(-8px); }
 }
 
-/* --- TEXT STYLES --- */
-h1 {
-    font-weight: 700;
+/* --- LOGO STYLES --- */
+.logo-main {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #003B5C;
 }
 
-/* Inputs */
+.logo-scribe {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-weight: 600;
+    color: #005F88;
+}
+
+/* --- INPUT STYLES --- */
 .stTextInput input {
-    background: rgba(0,0,0,0.4) !important;
-    border: 1px solid rgba(255,255,255,0.1) !important;
-    color: white !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1.5px solid #cbd5e1 !important;
+    color: #1e293b !important;
     border-radius: 12px !important;
     font-family: 'JetBrains Mono', monospace !important;
+    font-size: 0.9rem !important;
+    padding: 0.75rem !important;
+    transition: all 0.2s ease !important;
 }
 
 .stTextInput input:focus {
     border-color: #38bdf8 !important;
     box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.15) !important;
+    background: #ffffff !important;
 }
 
-/* Labels */
-label {
+.stTextInput input::placeholder {
     color: #94a3b8 !important;
-    font-size: 0.8rem !important;
+}
+
+/* --- LABELS --- */
+label {
+    color: #64748b !important;
+    font-size: 0.7rem !important;
     text-transform: uppercase !important;
     font-weight: 700 !important;
     letter-spacing: 0.05em !important;
 }
 
-/* Button */
+/* --- BUTTON STYLES --- */
 .stButton button {
-    background: white !important;
-    color: black !important;
+    background: linear-gradient(to right, #0ea5e9, #2563eb) !important;
+    color: white !important;
     font-weight: 700 !important;
     border-radius: 12px !important;
     border: none !important;
-    padding: 1rem !important;
-    transition: all 0.2s !important;
+    padding: 1rem 1.5rem !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 10px 15px -3px rgba(14, 165, 233, 0.3) !important;
+    font-size: 1rem !important;
 }
 
 .stButton button:hover {
     transform: translateY(-2px) !important;
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 15px 25px -5px rgba(14, 165, 233, 0.4) !important;
+    opacity: 0.95 !important;
+}
+
+.stButton button:active {
+    transform: translateY(0) !important;
+}
+
+/* --- EXPANDER STYLES --- */
+.streamlit-expanderHeader {
+    background: rgba(255, 255, 255, 0.6) !important;
+    border: 1px solid #e0f2fe !important;
+    border-radius: 12px !important;
+    color: #0369a1 !important;
+    font-weight: 600 !important;
+    padding: 0.75rem 1rem !important;
+}
+
+.streamlit-expanderHeader:hover {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border-color: #7dd3fc !important;
+}
+
+.streamlit-expanderContent {
+    background: rgba(255, 255, 255, 0.5) !important;
+    border: 1px solid #e0f2fe !important;
+    border-top: none !important;
+    border-radius: 0 0 12px 12px !important;
+    padding: 1rem !important;
+}
+
+/* --- MARKDOWN IN EXPANDER --- */
+[data-testid="stExpander"] p, 
+[data-testid="stExpander"] li {
+    color: #475569 !important;
+    line-height: 1.6 !important;
+}
+
+[data-testid="stExpander"] strong {
+    color: #1e293b !important;
+}
+
+[data-testid="stExpander"] a {
+    color: #0ea5e9 !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+}
+
+[data-testid="stExpander"] a:hover {
+    text-decoration: underline !important;
+}
+
+[data-testid="stExpander"] code {
+    background: rgba(148, 163, 184, 0.15) !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+    color: #0f172a !important;
+    font-family: 'JetBrains Mono', monospace !important;
+}
+
+/* --- ERROR/SUCCESS MESSAGES --- */
+.stAlert {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-radius: 12px !important;
+    border-left-width: 4px !important;
 }
 
 </style>
