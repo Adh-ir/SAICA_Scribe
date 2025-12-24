@@ -538,24 +538,40 @@ def show_main_page():
             except Exception:
                 st.error("Failed to load competency framework. Please check logs.")
     
-    # --- Main Content (Glass Card Layout) ---
+    # --- HEADER (Outside Card) ---
+    st.markdown("""
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; margin-bottom: 2rem;">
+            <div>
+                <span class="logo-main" style="font-size: 2rem;">CA</span>
+                <span class="logo-scribe" style="font-size: 2rem;">Scribe <span style="font-size: 1rem; color: #0ea5e9; vertical-align: top;">✦</span></span>
+                <div style="font-size: 0.8rem; color: #64748b; font-weight: 500; margin-top: -5px;">AI-Powered Competency Mapper</div>
+            </div>
+            <div>
+                <button style="
+                    background: rgba(255, 255, 255, 0.8); 
+                    backdrop-filter: blur(10px);
+                    border: 1px solid #7dd3fc; 
+                    border-radius: 8px; 
+                    padding: 8px 16px; 
+                    color: #0369a1; 
+                    font-weight: 600; 
+                    font-size: 0.8rem; 
+                    cursor: pointer; 
+                    display: flex; 
+                    align-items: center; 
+                    gap: 6px;
+                ">
+                    <span style="display: inline-block; width: 8px; height: 8px; background: #4ade80; border-radius: 50%;"></span>
+                    Settings
+                </button>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    # --- Main Content (The Glass Card) ---
     # We use st.container(border=True) to create the single glass card wrapper
     # The CSS targets [data-testid="stVerticalBlockBorderWrapper"]
     with st.container(border=True):
-        
-        # 1. HEADER (Inside the Card)
-        st.markdown("""
-            <div style="display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 2rem; border-bottom: 1px solid rgba(0,0,0,0.05); margin-bottom: 2rem;">
-                <div>
-                    <span class="logo-main">CA</span>
-                    <span class="logo-scribe">Scribe <span style="font-size: 1rem; color: #0ea5e9; vertical-align: top;">✦</span></span>
-                </div>
-                <div>
-                    <span style="font-size: 0.8rem; color: #0ea5e9; font-family: monospace;">STATUS: CONNECTED</span>
-                </div>
-            </div>
-        """, unsafe_allow_html=True)
-
         # 2. COLUMNS (Inputs & Report)
         main_col1, main_col2 = st.columns([4, 6], gap="large")
         
