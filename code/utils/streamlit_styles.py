@@ -13,12 +13,19 @@ SETUP_CSS = """
 /* Force Font globally */
 html, body, [class*="css"] {
     font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+    color: #1e3a8a;
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
 }
 
 /* Light Gradient Background for Setup */
 .stApp {
-    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
-    color: #1e3a8a;
+    
 }
 
 /* Hide Streamlit elements */
