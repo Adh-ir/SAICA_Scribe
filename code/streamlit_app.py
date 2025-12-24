@@ -613,8 +613,33 @@ def show_main_page():
     # --- LEFT PANEL (Input) ---
     with main_col1:
         # Helper Prompt
-        if st.button("✨ Target Competency Template", help="Click to pre-fill a template", use_container_width=True):
+        st.markdown("""
+            <style>
+            /* Left-align the Target Competency button */
+            div.stButton > button[data-testid="stBaseButton-secondary"] {
+                justify-content: flex-start;
+                text-align: left;
+                padding-left: 1rem;
+            }
+            </style>
+        """, unsafe_allow_html=True)
+        
+        if st.button("✨ Target Competency", help="Click to pre-fill a template", use_container_width=True):
             st.session_state.activity_input = "COMPETENCY: [Insert Name] EVIDENCE: "
+        
+        st.markdown("""
+            <div style="
+                margin-top: -0.75rem; 
+                margin-bottom: 1rem; 
+                font-size: 0.75rem; 
+                color: #94a3b8; 
+                font-weight: 500;
+                padding-left: 0.25rem;
+            ">
+                Click to autofill template
+            </div>
+        """, unsafe_allow_html=True)
+
         
         activity_val = st.session_state.get("activity_input", "")
         activity = st.text_area(
@@ -679,7 +704,7 @@ def show_main_page():
     # Footer
     # Footer
     footer_html = """
-    <div style="text-align: center; margin-top: 2rem; padding: 1.5rem; background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(6px); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 20px; color: #0284c7; font-family: 'Inter', sans-serif; width: fit-content; margin-left: auto; margin-right: auto; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+    <div style="text-align: center; margin-top: 2rem; padding: 1.5rem; background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(6px); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 20px; color: #0284c7; font-family: 'Inter', sans-serif; width: 100%; box-sizing: border-box; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
         <p style="margin-bottom: 10px; font-size: 1.1rem; color: #0284c7;">Made by <strong style="color: #075985;">Adhir Singh</strong></p>
         <div style="display: flex; justify-content: center; align-items: center; gap: 20px; transform: translateY(-5px);">
             <a href="https://github.com/Adh-ir/SAICA_Scribe/issues" target="_blank" style="text-decoration: none; color: #0284c7; display: flex; align-items: center; gap: 6px; transition: color 0.2s;">
