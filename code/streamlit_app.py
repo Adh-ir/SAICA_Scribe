@@ -67,17 +67,41 @@ st.markdown("""
     [data-testid="stAppViewContainer"]:focus-within,
     .main:focus,
     .main:focus-within {
-        outline: none !important;
+        outline: 0 !important;
+        outline-width: 0 !important;
+        outline-style: none !important;
+        outline-color: transparent !important;
         box-shadow: none !important;
         border: none !important;
+        -webkit-tap-highlight-color: transparent !important;
     }
     
-    /* Remove focus ring from all elements */
-    * {
-        outline: none !important;
+    /* Nuclear option: Remove ALL focus indicators from EVERYTHING */
+    *,
+    *:before,
+    *:after {
+        outline: 0 !important;
+        outline-width: 0 !important;
+        -webkit-tap-highlight-color: transparent !important;
     }
-    *:focus {
-        outline: none !important;
+    
+    *:focus,
+    *:active,
+    *:focus-visible,
+    *:focus-within {
+        outline: 0 !important;
+        outline-width: 0 !important;
+        outline-style: none !important;
+        outline-color: transparent !important;
+        box-shadow: none !important;
+        border-color: inherit !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+    
+    /* Prevent Streamlit's default focus behavior */
+    .stApp *:focus,
+    .stApp *:active {
+        outline: 0 !important;
         box-shadow: none !important;
     }
     </style>
