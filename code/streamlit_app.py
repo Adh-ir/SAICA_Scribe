@@ -55,7 +55,9 @@ st.markdown("""
         padding-bottom: 2rem !important;
         padding-left: 2rem !important;
         padding-right: 2rem !important;
-        margin: auto !important;
+        margin-top: -25px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
     }
     </style>
 """, unsafe_allow_html=True)
