@@ -247,23 +247,25 @@ html, body, [class*="css"] {
     100% { transform: translate(0, 0) scale(1) rotate(0deg); }
 }
 
-/* --- GLASS CARD WRAPPER (Applied to Streamlit Layout Blocks) --- */
-/* Target the main columns container */
-[data-testid="stHorizontalBlock"] {
+/* --- GLASS CARD WRAPPER (Applied to Streamlit Border Container) --- */
+/* Target the new st.container(border=True) */
+[data-testid="stVerticalBlockBorderWrapper"] {
     background: rgba(255, 255, 255, 0.60);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
-    border: 3px solid #93c5fd; /* Light Blue Border */
+    border: 3px solid #93c5fd !important; /* Light Blue Border override */
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 20px 40px -12px rgba(14, 165, 233, 0.1);
     border-radius: 20px;
-    padding: 2.5rem;
+    padding: 3rem !important;
     margin-top: 1rem;
-    gap: 2rem !important; /* Force gap between columns inside card */
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-/* Ensure inner columns don't have double padding/margin issues */
-[data-testid="stHorizontalBlock"] > [data-testid="column"] {
-    /* No extra styles needed usually, standard flex behavior */
+/* Hide the default tiny border Streamlit adds */
+[data-testid="stVerticalBlockBorderWrapper"] > div {
+    border: none !important;
 }
 
 /* --- UI ELEMENTS --- */

@@ -530,20 +530,6 @@ def show_main_page():
     st.markdown(MAIN_CSS, unsafe_allow_html=True)
     st.markdown('<div class="fluid-bg"><div class="fluid-shape shape-1"></div><div class="fluid-shape shape-2"></div><div class="fluid-shape shape-3"></div></div>', unsafe_allow_html=True)
     
-    # Header is static, show it even while loading
-    st.markdown("""
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; padding: 1rem 0;">
-            <div>
-                <span class="logo-main">CA</span>
-                <span class="logo-scribe">Scribe <span style="font-size: 1rem; color: #0ea5e9; vertical-align: top;">✦</span></span>
-            </div>
-            <div>
-                <span style="font-size: 0.8rem; color: #0ea5e9; font-family: monospace;">STATUS: CONNECTED</span>
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
-
-
     # Lazy Load Framework (Fallback if background loading failed)
     if st.session_state.framework_data is None:
         with st.spinner("Finalizing setup..."):
@@ -553,10 +539,24 @@ def show_main_page():
                 st.error("Failed to load competency framework. Please check logs.")
     
     # --- Main Content (Glass Card Layout) ---
-    container = st.container()
-    with container:
-        # Glass Card Effect is now applied via CSS to [data-testid="stHorizontalBlock"]
+    # We use st.container(border=True) to create the single glass card wrapper
+    # The CSS targets [data-testid="stVerticalBlockBorderWrapper"]
+    with st.container(border=True):
         
+        # 1. HEADER (Inside the Card)
+        st.markdown("""
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 2rem; border-bottom: 1px solid rgba(0,0,0,0.05); margin-bottom: 2rem;">
+                <div>
+                    <span class="logo-main">CA</span>
+                    <span class="logo-scribe">Scribe <span style="font-size: 1rem; color: #0ea5e9; vertical-align: top;">✦</span></span>
+                </div>
+                <div>
+                    <span style="font-size: 0.8rem; color: #0ea5e9; font-family: monospace;">STATUS: CONNECTED</span>
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+
+        # 2. COLUMNS (Inputs & Report)
         main_col1, main_col2 = st.columns([4, 6], gap="large")
         
         # --- LEFT PANEL (Input) ---
