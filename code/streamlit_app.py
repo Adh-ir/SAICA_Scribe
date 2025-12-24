@@ -627,8 +627,8 @@ def show_main_page():
     st.markdown("""
         <div style="text-align: center; margin-top: 3rem; color: #64748b; font-size: 0.8rem; border-top: 1px solid #e2e8f0; padding-top: 20px;">
             Made by <strong style="color: #0369a1;">Adhir Singh</strong>
-             &nbsp;•&nbsp; <a href="https://github.com/Adh-ir" target="_blank" style="color: #64748b; text-decoration: none;">GitHub</a>
-             &nbsp;•&nbsp; <a href="https://linkedin.com/in/adhirs" target="_blank" style="color: #64748b; text-decoration: none;">LinkedIn</a>
+             &nbsp;&bull;&nbsp; <a href="https://github.com/Adh-ir" target="_blank" style="color: #64748b; text-decoration: none;">GitHub</a>
+             &nbsp;&bull;&nbsp; <a href="https://linkedin.com/in/adhirs" target="_blank" style="color: #64748b; text-decoration: none;">LinkedIn</a>
         </div>
     """, unsafe_allow_html=True)
 
