@@ -923,8 +923,11 @@ def show_guide_page():
         with open(template_path, "r") as f:
             html_content = f.read()
         
-        # Inject HTML content (Tailwind CDN in template will load)
-        st.markdown(html_content, unsafe_allow_html=True)
+        # Fix Frame Navigation: Ensure "Back" link breaks out of iframe
+        html_content = html_content.replace('<a href="/"', '<a href="/" target="_top"')
+        
+        # Render in Iframe to support full HTML/CSS/Tailwind without Markdown interference
+        components.html(html_content, height=1200, scrolling=True)
         
     except Exception as e:
         st.error(f"Could not load guide: {e}")
