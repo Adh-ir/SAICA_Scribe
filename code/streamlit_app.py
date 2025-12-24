@@ -167,7 +167,14 @@ st.markdown("""
 
 # --- LOADING ANIMATION (Local & Cloud Compatible) ---
 if "loading_complete" not in st.session_state:
-    st.session_state.loading_complete = False
+    # Check if we should skip loading (e.g. for guide page)
+    should_skip = False
+    try:
+        if st.query_params.get("page") == "guide":
+            should_skip = True
+    except:
+        pass
+    st.session_state.loading_complete = should_skip
 
 if not st.session_state.loading_complete:
     # Fullscreen iframe hack & PADDING OVERRIDE
