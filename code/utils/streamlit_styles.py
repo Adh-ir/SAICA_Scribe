@@ -11,7 +11,11 @@ SETUP_CSS = """
 /* Font import handled via FONT_LINKS */
 
 /* Force Font globally */
-html, body, [class*="css"] {
+html {
+    background: #e0f2fe; /* Base color to prevent white flash */
+}
+
+body, [class*="css"] {
     font-family: 'Inter', sans-serif;
     background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
     color: #1e3a8a;
