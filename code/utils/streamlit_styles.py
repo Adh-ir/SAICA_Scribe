@@ -184,6 +184,11 @@ html, body, [class*="css"] {
     color: #1e3a8a;
 }
 
+/* Transparent Background for Streamlit Main Container */
+.stApp {
+    background-color: transparent !important;
+}
+
 /* --- FLUID BACKGROUND ENGINE --- */
 .fluid-bg {
     position: fixed;
