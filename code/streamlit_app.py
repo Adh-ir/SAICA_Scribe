@@ -22,7 +22,7 @@ except Exception:
 st.set_page_config(
     page_title="CA Scribe",
     page_icon=favicon,
-    layout="centered",
+    layout="wide",
     initial_sidebar_state="collapsed"
 )
 
@@ -48,10 +48,14 @@ st.markdown("""
         background-color: #7dd3fc !important;
     }
     
-    /* Header Background - MATCH ANIMATION BLUE */
-    header, [data-testid="stHeader"] {
-        background: #7dd3fc !important; 
-        background-color: #7dd3fc !important;
+    /* Custom Semi-Wide Layout (User Requested "Halfway" Width) */
+    .block-container {
+        max-width: 1200px !important;
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+        padding-left: 2rem !important;
+        padding-right: 2rem !important;
+        margin: auto !important;
     }
     </style>
 """, unsafe_allow_html=True)
