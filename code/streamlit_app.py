@@ -44,32 +44,66 @@ for k, v in keys.items():
 
 # --- 3. UI: SETUP PAGE ---
 def show_setup_page():
+    # Inject CSS
     st.markdown(SETUP_CSS, unsafe_allow_html=True)
-    st.markdown('<div class="gradient-bg"></div>', unsafe_allow_html=True)
     
+    # Background Elements
+    st.markdown("""
+        <div class="stars"></div>
+        <div class="aurora-secondary"></div>
+        <div class="aurora-container"></div>
+        <div class="beam"></div>
+        <div class="beam beam-2"></div>
+    """, unsafe_allow_html=True)
+    
+    # Simple Spacer to center vertically
+    st.markdown("<br>" * 5, unsafe_allow_html=True)
+
     # Centered Cointainer
-    col1, col2, col3 = st.columns([1, 2, 1])
+    col1, col2, col3 = st.columns([1, 1.5, 1])
     with col2:
-        st.markdown('<div class="setup-card">', unsafe_allow_html=True)
+        # Logo Section
         st.markdown("""
-            <h1 style='text-align: center; color: #1e3a8a; margin-bottom: 0;'>Welcome to CA Scribe</h1>
-            <p style='text-align: center; color: #64748b; margin-top: 0;'>AI-Powered Competency Documentation Assistant</p>
-            <hr style='margin: 20px 0; border: 0; border-top: 1px solid #e2e8f0;'>
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <div>
+                     <span style="font-family: 'Inter', sans-serif; font-weight: 800; font-size: 3.5rem; color: #ffffff; letter-spacing: -0.03em; text-shadow: 0 0 20px rgba(255,255,255,0.3);">CA</span>
+                     <span style="font-family: 'Playfair Display', serif; font-style: italic; font-weight: 600; font-size: 3.5rem; color: #7dd3fc; margin-left: 0.2rem; position: relative;">
+                        Scribe <span style="position: absolute; top: 0; right: -25px; font-size: 1.5rem; color: #38bdf8;">✦</span>
+                     </span>
+                </div>
+                <div style="font-family: 'Inter', sans-serif; font-weight: 500; color: #94a3b8; letter-spacing: 0.05em; text-transform: uppercase; font-size: 0.75rem; margin-top: -0.5rem;">
+                    AI-Powered Competency Mapper
+                </div>
+            </div>
         """, unsafe_allow_html=True)
 
-        st.info("💡 Connect your AI brains. Pick a favorite, or go wild and connect all 3!")
-
         with st.form("setup_form"):
-            st.markdown("### ✨ Google Gemini (Recommended)")
-            g_key = st.text_input("Gemini API Key", type="password", help="Starts with AIza...")
+            # Gemini Input
+            st.markdown("""
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <span style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">Connect Gemini</span>
+                    <span style="font-size: 0.6rem; font-weight: 700; color: #38bdf8; background: rgba(56, 189, 248, 0.1); padding: 2px 6px; border-radius: 99px; border: 1px solid rgba(56, 189, 248, 0.2);">RECOMMENDED</span>
+                </div>
+            """, unsafe_allow_html=True)
+            g_key = st.text_input("Gemini Key", type="password", placeholder="Paste Google API Key (AIza...)", label_visibility="collapsed")
             
-            st.markdown("### ⚡ Groq (Llama 3)")
-            q_key = st.text_input("Groq API Key", type="password", help="Starts with gsk_...")
+            # Groq Input
+            st.markdown("""
+                <div style="margin-top: 15px; margin-bottom: 5px;">
+                    <span style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">Or Groq</span>
+                </div>
+            """, unsafe_allow_html=True)
+            q_key = st.text_input("Groq Key", type="password", placeholder="Paste Groq API Key (gsk_...)", label_visibility="collapsed")
             
-            st.markdown("### 🐙 GitHub Models (OpenAI)")
-            gh_key = st.text_input("GitHub Token", type="password", help="Personal Access Token")
+            # GitHub Input
+            st.markdown("""
+                <div style="margin-top: 15px; margin-bottom: 5px;">
+                    <span style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">Or GitHub Models</span>
+                </div>
+            """, unsafe_allow_html=True)
+            gh_key = st.text_input("GitHub Token", type="password", placeholder="Personal Access Token", label_visibility="collapsed")
             
-            submitted = st.form_submit_button("Connect & Launch 🚀")
+            submitted = st.form_submit_button("Initialize CA Scribe →")
             
             if submitted:
                 if not (g_key or q_key or gh_key):
@@ -79,8 +113,7 @@ def show_setup_page():
                     if q_key: st.session_state["GROQ_API_KEY"] = q_key
                     if gh_key: st.session_state["GITHUB_TOKEN"] = gh_key
                     
-                    # Persist to local secrets if possible (Local Dev Only)
-                    # We skip writing to file in Streamlit Cloud environment to avoid errors
+                    # Persist to local secrets
                     try:
                         secrets_path = os.path.join(os.getcwd(), ".streamlit", "secrets.toml")
                         os.makedirs(os.path.dirname(secrets_path), exist_ok=True)
@@ -89,11 +122,9 @@ def show_setup_page():
                             f.write(f'GROQ_API_KEY = "{q_key}"\n')
                             f.write(f'GITHUB_TOKEN = "{gh_key}"\n')
                     except Exception:
-                        pass # Ignore file write errors on cloud
+                        pass 
                         
                     st.rerun()
-        
-        st.markdown('</div>', unsafe_allow_html=True)
 
 # --- 4. UI: MAIN PAGE ---
 def show_main_page():
