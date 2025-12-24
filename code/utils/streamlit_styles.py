@@ -152,6 +152,12 @@ header {visibility: hidden;}
     border-radius: 24px;
     padding: 2.5rem;
     animation: none !important;
+    transition: all 0.3s ease !important;
+}
+
+[data-testid="stForm"]:focus-within {
+    border-color: #1e3a8a !important;
+    box-shadow: 0 0 25px rgba(56, 189, 248, 0.4), 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
 }
 
 /* --- LOGO STYLES --- */
@@ -182,8 +188,8 @@ header {visibility: hidden;}
 }
 
 .stTextInput input:focus {
-    border-color: #38bdf8 !important;
-    box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.15) !important;
+    border-color: #1e3a8a !important;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.3) !important;
     background: #ffffff !important;
 }
 
