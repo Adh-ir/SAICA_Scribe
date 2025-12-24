@@ -634,7 +634,7 @@ def show_setup_page():
             
             # Info note
             st.markdown("""
-                <div style="text-align: center; margin: 1.5rem 0 1rem 0;">
+                <div style="text-align: center; margin: 0.5rem 0 0.5rem 0;">
                     <span style="font-size: 0.7rem; color: #94a3b8; font-weight: 500;">
                         Keys are stored locally in .streamlit/secrets.toml
                     </span>
@@ -666,7 +666,7 @@ def show_setup_page():
 
             # Helper Link
             st.markdown("""
-                <div style="text-align: center; margin-top: 1rem; margin-bottom: 2rem;">
+                <div style="text-align: center; margin-top: 0.5rem; margin-bottom: 0.5rem;">
                     <a href="https://github.com/Adh-ir/CA_Scribe" target="_blank" style="color: #64748b; font-size: 0.8rem; text-decoration: none; font-weight: 500; transition: color 0.2s;">
                         Need help getting keys? View Guide ↗
                     </a>
