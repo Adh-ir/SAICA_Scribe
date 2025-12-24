@@ -247,16 +247,23 @@ html, body, [class*="css"] {
     100% { transform: translate(0, 0) scale(1) rotate(0deg); }
 }
 
-/* --- GLASS CARD WRAPPER --- */
-.glass-card-container {
+/* --- GLASS CARD WRAPPER (Applied to Streamlit Layout Blocks) --- */
+/* Target the main columns container */
+[data-testid="stHorizontalBlock"] {
     background: rgba(255, 255, 255, 0.60);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
-    border: 3px solid #93c5fd;
+    border: 3px solid #93c5fd; /* Light Blue Border */
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 20px 40px -12px rgba(14, 165, 233, 0.1);
     border-radius: 20px;
     padding: 2.5rem;
     margin-top: 1rem;
+    gap: 2rem !important; /* Force gap between columns inside card */
+}
+
+/* Ensure inner columns don't have double padding/margin issues */
+[data-testid="stHorizontalBlock"] > [data-testid="column"] {
+    /* No extra styles needed usually, standard flex behavior */
 }
 
 /* --- UI ELEMENTS --- */

@@ -372,7 +372,12 @@ if not st.session_state.loading_complete:
     
     # Perform expensive loading HERE while animation is running on frontend
     if st.session_state.framework_data is None:
-        st.session_state.framework_data = load_competency_framework()
+        try:
+            st.session_state.framework_data = load_competency_framework()
+        except Exception as e:
+            print(f"Background Loading Failed: {e}")
+            # Ensure we don't crash, let the app proceed (it might handle None later or retry)
+            st.session_state.framework_data = None
         
     # Wait remaining time (Total 8.5s)
     elapsed = time.time() - t_start
@@ -537,19 +542,18 @@ def show_main_page():
     """, unsafe_allow_html=True)
 
 
-    # --- Main Content (Glass Card Layout) ---
-
+    # Lazy Load Framework (Fallback if background loading failed)
+    if st.session_state.framework_data is None:
+        with st.spinner("Finalizing setup..."):
+            try:
+                st.session_state.framework_data = load_competency_framework()
+            except Exception:
+                st.error("Failed to load competency framework. Please check logs.")
+    
     # --- Main Content (Glass Card Layout) ---
     container = st.container()
     with container:
-        # We wrap in a div for the glass card effect IF we want the whole area to be one card
-        # But index.html had a split inside the glass card. 
-        # Streamlit columns are hard to wrap in a single HTML div easily without custom component.
-        # So we apply glass styling to the CONTAINER via CSS or separate cards.
-        # Based on index.html, it was one big .glass-card with flex row. 
-        # We will attempt to simulate this by creating a wrapper div start/end.
-        
-        st.markdown('<div class="glass-card-container">', unsafe_allow_html=True)
+        # Glass Card Effect is now applied via CSS to [data-testid="stHorizontalBlock"]
         
         main_col1, main_col2 = st.columns([4, 6], gap="large")
         
@@ -615,7 +619,9 @@ def show_main_page():
                     </div>
                 """, unsafe_allow_html=True)
                 
-        st.markdown('</div>', unsafe_allow_html=True) # End glass-card-container
+                """, unsafe_allow_html=True)
+                
+        # st.markdown('</div>', unsafe_allow_html=True) # Removed invalid wrapper
 
     # Footer
     st.markdown("""
