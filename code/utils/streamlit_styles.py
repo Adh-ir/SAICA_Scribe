@@ -173,6 +173,7 @@ label {
 </style>
 """
 
+
 MAIN_CSS = """
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@1,600&family=JetBrains+Mono:wght@400;500&display=swap');
@@ -183,7 +184,7 @@ html, body, [class*="css"] {
     color: #1e3a8a;
 }
 
-/* Fluid Background */
+/* --- FLUID BACKGROUND ENGINE --- */
 .fluid-bg {
     position: fixed;
     top: 0;
@@ -192,57 +193,110 @@ html, body, [class*="css"] {
     height: 100vh;
     z-index: -1;
     background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+    overflow: hidden;
 }
 
-.glass-card {
+.fluid-shape {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(65px);
+    opacity: 0.9;
+    animation: fluid-move 14s infinite ease-in-out;
+    will-change: transform;
+    mix-blend-mode: multiply;
+}
+
+.shape-1 {
+    background: #7dd3fc;
+    width: 65vw;
+    height: 65vw;
+    top: -15%;
+    left: -10%;
+    animation-duration: 16s;
+}
+
+.shape-2 {
+    background: #bae6fd;
+    width: 70vw;
+    height: 70vw;
+    top: 25%;
+    right: -25%;
+    animation-duration: 20s;
+    animation-delay: -4s;
+}
+
+.shape-3 {
+    background: #a5f3fc;
+    width: 55vw;
+    height: 55vw;
+    bottom: -15%;
+    left: 15%;
+    animation-duration: 14s;
+    animation-delay: -8s;
+}
+
+@keyframes fluid-move {
+    0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+    33% { transform: translate(45px, 65px) scale(1.1) rotate(8deg); }
+    66% { transform: translate(-35px, 25px) scale(0.9) rotate(-6deg); }
+    100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+}
+
+/* --- GLASS CARD WRAPPER --- */
+.glass-card-container {
     background: rgba(255, 255, 255, 0.60);
     backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
     border: 3px solid #93c5fd;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 20px 40px -12px rgba(14, 165, 233, 0.1);
     border-radius: 20px;
-    padding: 2rem;
+    padding: 2.5rem;
+    margin-top: 1rem;
 }
 
-/* Branding */
-.logo-main {
-    font-family: 'Inter', sans-serif;
-    font-weight: 800;
-    color: #003B5C;
-    font-size: 2.5rem;
-}
+/* --- UI ELEMENTS --- */
 
-.logo-scribe {
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-weight: 600;
-    color: #005F88;
-    font-size: 2.5rem;
-}
-
-/* Input Areas */
-.stTextArea textarea {
+/* Text Area & Inputs */
+.stTextArea textarea, .stSelectbox div[data-baseweb="select"] {
     border: 1px solid #cbd5e1;
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 1rem;
-    padding: 1.25rem;
+    color: #1e293b;
 }
 
-.stTextArea textarea:focus {
+.stTextArea textarea:focus, .stSelectbox div[data-baseweb="select"]:focus-within {
     border-color: #38bdf8;
     box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.2);
 }
 
-/* Primary Button */
-.stButton button {
-    background: linear-gradient(to right, #0ea5e9, #2563eb);
-    color: white;
-    border: none;
-    border-radius: 0.75rem;
-    font-weight: 700;
-    transition: transform 0.1s;
+/* Primary Button (Gradient Blue) */
+button[kind="primary"] {
+    background: linear-gradient(to right, #0ea5e9, #2563eb) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 0.75rem !important;
+    font-weight: 700 !important;
+    padding: 0.75rem 1.5rem !important;
+    transition: transform 0.1s !important;
+    box-shadow: 0 10px 15px -3px rgba(14, 165, 233, 0.3) !important;
 }
-.stButton button:hover {
-    transform: translateY(-2px);
+
+button[kind="primary"]:hover {
+    transform: translateY(-2px) !important;
+    opacity: 0.95 !important;
+}
+
+/* Secondary Button (Helper) */
+button[kind="secondary"] {
+    border: 1px solid #e0f2fe !important;
+    background: white !important;
+    color: #0369a1 !important;
+}
+
+/* Headings */
+h1, h2, h3 {
+    font-family: 'Inter', sans-serif;
+    color: #0f172a;
 }
 </style>
 """

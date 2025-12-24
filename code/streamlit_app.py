@@ -13,7 +13,7 @@ from reporting.generator import generate_markdown_content
 # --- 1. CONFIG & STATE ---
 st.set_page_config(
     page_title="CA Scribe",
-    page_icon="static/favicon.png",
+    page_icon="code/static/favicon.png",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -152,71 +152,120 @@ def show_setup_page():
 # --- 4. UI: MAIN PAGE ---
 def show_main_page():
     st.markdown(MAIN_CSS, unsafe_allow_html=True)
-    st.markdown('<div class="fluid-bg"></div>', unsafe_allow_html=True)
+    st.markdown('<div class="fluid-bg"><div class="fluid-shape shape-1"></div><div class="fluid-shape shape-2"></div><div class="fluid-shape shape-3"></div></div>', unsafe_allow_html=True)
     
     # Lazy Load Framework
     if st.session_state.framework_data is None:
         with st.spinner("Loading Competency Framework..."):
             st.session_state.framework_data = load_competency_framework()
 
-    # Header
-    st.markdown("""
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; padding: 1rem 0;">
-            <div>
-                <span class="logo-main">CA</span>
-                <span class="logo-scribe">Scribe <span style="font-size: 1rem; color: #0ea5e9; vertical-align: top;">✦</span></span>
+    # --- Header (Logo Left, Settings Right) ---
+    col_head_1, col_head_2 = st.columns([1, 1])
+    with col_head_1:
+         st.markdown("""
+            <div style="display: flex; align-items: baseline;">
+                <span style="font-family: 'Inter', sans-serif; font-weight: 800; color: #003B5C; font-size: 2.2rem; letter-spacing: -0.02em;">CA</span>
+                <span style="font-family: 'Playfair Display', serif; font-style: italic; font-weight: 600; color: #005F88; font-size: 2.2rem; position: relative; margin-left: 2px;">
+                    Scribe <span style="position: absolute; top: -5px; right: -20px; color: #0ea5e9; font-size: 1.2rem;">✦</span>
+                </span>
+                <p style="margin-left: 10px; color: #0c4a6e; opacity: 0.6; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.05em; align-self: center; margin-top: 5px;">AI-Powered Competency Mapper</p>
             </div>
-            <div>
-                <span style="font-size: 0.8rem; color: #0ea5e9; font-family: monospace;">STATUS: CONNECTED</span>
+        """, unsafe_allow_html=True)
+    with col_head_2:
+        # Settings Button simulation (Right aligned)
+        st.markdown("""
+            <div style="display: flex; justify-content: flex-end; align-items: center; height: 100%; padding-top: 10px;">
+                <button style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: rgba(255,255,255,0.5); border: 1px solid #bae6fd; border-radius: 8px; color: #0369a1; font-weight: 600; font-size: 0.85rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                    <span style="width: 8px; height: 8px; background-color: #34d399; border-radius: 50%; box-shadow: 0 0 5px rgba(52,211,153,0.8);"></span>
+                    Active Session
+                </button>
             </div>
-        </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
-    # Main Card
-    st.markdown('<div class="glass-card">', unsafe_allow_html=True)
-    
-    col1, spacer, col2 = st.columns([40, 5, 55])
-    
-    with col1:
-        st.markdown("### Activity Input")
-        activity = st.text_area(
-            "Describe your activity...", 
-            height=300, 
-            placeholder="e.g. 'I managed the inventory count for the client...'"
-        )
+    # --- Main Content (Glass Card Layout) ---
+    container = st.container()
+    with container:
+        # We wrap in a div for the glass card effect IF we want the whole area to be one card
+        # But index.html had a split inside the glass card. 
+        # Streamlit columns are hard to wrap in a single HTML div easily without custom component.
+        # So we apply glass styling to the CONTAINER via CSS or separate cards.
+        # Based on index.html, it was one big .glass-card with flex row. 
+        # We will attempt to simulate this by creating a wrapper div start/end.
         
-        provider = st.selectbox("AI Provider", ["gemini", "groq", "github_mini", "github_4o"])
+        st.markdown('<div class="glass-card-container">', unsafe_allow_html=True)
         
-        if st.button("Generate Analysis 🚀", use_container_width=True):
-            if not activity.strip():
-                st.warning("Please describe your activity first.")
-            else:
-                with st.spinner("Analyzing with AI..."):
-                    try:
-                        # Map
-                        results = map_activity_to_competency(
-                            activity, 
-                            st.session_state.framework_data, 
-                            provider=provider
-                        )
-                        # Report
-                        st.session_state.markdown_report = generate_markdown_content(results)
-                    except Exception as e:
-                        st.error(f"Analysis failed: {e}")
-
-    with col2:
-        st.markdown("### Analysis Report")
-        if st.session_state.markdown_report:
-            st.markdown(st.session_state.markdown_report)
-        else:
-            st.info("Detailed mapping will appear here after analysis.")
+        main_col1, main_col2 = st.columns([4, 6], gap="large")
+        
+        # --- LEFT PANEL (Input) ---
+        with main_col1:
+            # Helper Prompt
+            if st.button("✨ Target Competency Template", help="Click to pre-fill a template"):
+                st.session_state.activity_input = "COMPETENCY: [Insert Name] EVIDENCE: "
             
-    st.markdown('</div>', unsafe_allow_html=True)
-    
+            activity_val = st.session_state.get("activity_input", "")
+            activity = st.text_area(
+                "Activity Description", 
+                value=activity_val,
+                height=350, 
+                placeholder="Describe your activity... e.g. 'I managed the inventory count for the client...'",
+                label_visibility="visible"
+            )
+            # Update state on change
+            st.session_state.activity_input = activity 
+            
+            st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
+            
+            provider = st.selectbox(
+                "AI Model", 
+                ["gemini", "groq", "github_mini", "github_4o"], 
+                format_func=lambda x: {
+                    "gemini": "✨ Gemini 2.0 Flash Exp",
+                    "groq": "⚡ Groq (Llama 3)",
+                    "github_mini": "🐙 GitHub - GPT-4o Mini",
+                    "github_4o": "🐙 GitHub - GPT-4o"
+                }.get(x, x)
+            )
+            
+            st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
+            
+            if st.button("Generate Analysis 🚀", use_container_width=True, type="primary"):
+                if not activity.strip():
+                    st.warning("Please describe your activity first.")
+                else:
+                    with st.spinner("Analyzing with AI..."):
+                        try:
+                            results = map_activity_to_competency(activity, st.session_state.framework_data, provider=provider)
+                            st.session_state.markdown_report = generate_markdown_content(results)
+                        except Exception as e:
+                            st.error(f"Analysis failed: {e}")
+
+        # --- RIGHT PANEL (Report) ---
+        with main_col2:
+            st.markdown("### Analysis Report")
+            if st.session_state.markdown_report:
+                st.markdown(st.session_state.markdown_report)
+            else:
+                st.markdown("""
+                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 400px; color: #94a3b8; opacity: 0.7;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        <p style="margin-top: 20px; font-weight: 500;">Detailed mapping will appear here</p>
+                    </div>
+                """, unsafe_allow_html=True)
+                
+        st.markdown('</div>', unsafe_allow_html=True) # End glass-card-container
+
     # Footer
     st.markdown("""
-        <div style="text-align: center; margin-top: 2rem; color: #64748b; font-size: 0.8rem;">
-            Made by <strong>Adhir Singh</strong>
+        <div style="text-align: center; margin-top: 3rem; color: #64748b; font-size: 0.8rem; border-top: 1px solid #e2e8f0; padding-top: 20px;">
+            Made by <strong style="color: #0369a1;">Adhir Singh</strong>
+             &nbsp;•&nbsp; <a href="https://github.com/Adh-ir" target="_blank" style="color: #64748b; text-decoration: none;">GitHub</a>
+             &nbsp;•&nbsp; <a href="https://linkedin.com/in/adhirs" target="_blank" style="color: #64748b; text-decoration: none;">LinkedIn</a>
         </div>
     """, unsafe_allow_html=True)
 
