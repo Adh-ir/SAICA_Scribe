@@ -139,6 +139,26 @@ st.markdown("""
                 }
             }
         }, true);
+        
+        // Specifically prevent textarea visual feedback after value changes
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                mutation.addedNodes.forEach(function(node) {
+                    if (node.tagName === 'TEXTAREA' || (node.querySelector && node.querySelector('textarea'))) {
+                        const textareas = node.tagName === 'TEXTAREA' ? [node] : node.querySelectorAll('textarea');
+                        textareas.forEach(function(textarea) {
+                            textarea.addEventListener('focus', function(e) {
+                                // Prevent default focus visual feedback
+                                e.target.style.boxShadow = 'none';
+                                e.target.style.borderColor = '#cbd5e1';
+                            });
+                        });
+                    }
+                });
+            });
+        });
+        
+        observer.observe(document.body, { childList: true, subtree: true });
     });
     </script>
 """, unsafe_allow_html=True)
@@ -753,8 +773,13 @@ def show_main_page():
         st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
         
         if st.button("Generate Analysis 🚀", use_container_width=True, type="primary"):
-            if not activity.strip():
-                st.warning("Please describe your activity first.")
+            # Check if activity is empty or just the template
+            is_empty = not activity.strip()
+            is_template_only = activity.strip() == "COMPETENCY: [Insert Name] EVIDENCE:"
+            has_no_evidence = "EVIDENCE:" in activity and activity.split("EVIDENCE:", 1)[1].strip() == ""
+            
+            if is_empty or is_template_only or has_no_evidence:
+                st.warning("Please describe your activity first. Fill in the template with your actual work details.")
             else:
                 with st.spinner("Analyzing with AI..."):
                     try:
