@@ -266,7 +266,7 @@ html, body, [class*="css"] {
         0 4px 6px -1px rgba(0, 0, 0, 0.02),
         0 20px 40px -12px rgba(14, 165, 233, 0.1);
     border-radius: 20px;
-    padding: 3rem !important;
+    padding: 1rem !important;
     margin-top: 1rem;
     max-width: 1400px;
     margin-left: auto;
