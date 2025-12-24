@@ -677,10 +677,11 @@ def show_main_page():
     # Footer
     # Footer
     # Footer
+    # Footer
     footer_html = """
-    <div style="text-align: center; margin-top: 1rem; color: #0284c7; font-family: 'Inter', sans-serif;">
+    <div style="text-align: center; margin-top: 2rem; padding: 1.5rem; background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(6px); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 20px; color: #0284c7; font-family: 'Inter', sans-serif; width: fit-content; margin-left: auto; margin-right: auto; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
         <p style="margin-bottom: 10px; font-size: 1.1rem; color: #0284c7;">Made by <strong style="color: #075985;">Adhir Singh</strong></p>
-        <div style="display: flex; justify-content: center; align-items: center; gap: 20px; transform: translateY(-3px);">
+        <div style="display: flex; justify-content: center; align-items: center; gap: 20px; transform: translateY(-5px);">
             <a href="https://github.com/Adh-ir/SAICA_Scribe/issues" target="_blank" style="text-decoration: none; color: #0284c7; display: flex; align-items: center; gap: 6px; transition: color 0.2s;">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="opacity: 0.9;"><path fill-rule="evenodd" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" clip-rule="evenodd" /></svg>
                 <span style="font-size: 0.9rem; font-weight: 600;">Report Issue</span>
