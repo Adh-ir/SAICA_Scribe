@@ -122,27 +122,6 @@ st.markdown("""
         box-shadow: none !important;
         border: none !important;
         -webkit-tap-highlight-color: transparent !important;
-        transition: none !important;
-        animation: none !important;
-    }
-    
-    /* Disable ALL transitions and animations globally to prevent flash */
-    [data-testid="stHorizontalBlock"] *,
-    [data-testid="stColumn"] *,
-    [data-testid="stVerticalBlock"] * {
-        transition: none !important;
-        animation: none !important;
-    }
-    
-    /* Target emotion-cache classes that might be causing the effect */
-    [class*="st-emotion-cache"]:focus,
-    [class*="st-emotion-cache"]:focus-within,
-    [class*="st-emotion-cache"]:active {
-        outline: 0 !important;
-        box-shadow: none !important;
-        border-color: inherit !important;
-        transition: none !important;
-        animation: none !important;
     }
     </style>
 """, unsafe_allow_html=True)
