@@ -324,9 +324,10 @@ div[class*="stHorizontalBlock"] {
 }
 
 .stTextArea textarea:focus, .stSelectbox div[data-baseweb="select"]:focus-within {
-    border-color: #38bdf8;
-    box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.2);
+    border-color: #cbd5e1;
+    /* Removed blue glow: box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.2); */
 }
+
 
 /* Primary Button (Gradient Blue) */
 button[kind="primary"] {
