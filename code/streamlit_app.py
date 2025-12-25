@@ -312,8 +312,8 @@ def render_settings_page():
         gh_key_val = st.session_state.get("GITHUB_TOKEN", "")
         gh_key = st.text_input("GitHub Token", value=gh_key_val, type="password", placeholder="Personal Access Token (ghp_...)", label_visibility="collapsed")
         
-        # Add spacing before buttons
-        st.markdown("<div style='height: 40px'></div>", unsafe_allow_html=True)
+        # Add spacing before buttons (increased to 60px)
+        st.markdown("<div style='height: 60px'></div>", unsafe_allow_html=True)
         
         col1, col2 = st.columns([1, 1], gap="medium")
         with col1:
@@ -366,11 +366,12 @@ def show_main_page():
     # --- HEADER (Outside Card) ---
     st.markdown("""
         <style>
-        .settings-link:hover {
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.6) !important;
-            border-color: #38bdf8 !important;
-            background: rgba(255, 255, 255, 0.95) !important;
-            transition: all 0.3s ease !important;
+        /* Stronger Glo Effect */
+        a.settings-link:hover {
+            box-shadow: 0 0 25px rgba(14, 165, 233, 0.6) !important;
+            border-color: #0ea5e9 !important;
+            background: rgba(255, 255, 255, 1.0) !important;
+            transform: translateY(-1px);
         }
         </style>
         <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; margin-bottom: 2rem;">
@@ -514,6 +515,7 @@ def show_main_page():
             # Wrapper for the animation to allow mode switching
             # Wrapper for the animation to allow mode switching
             # Wrapper for the animation to allow mode switching
+            # Wrapper for the animation to allow mode switching
             def get_loading_html(mode="ENTRY"):
                 # mode: "ENTRY" (Assemble + Breathe loop) or "EXIT" (Instant Explode)
                 
@@ -596,16 +598,16 @@ def show_main_page():
                                 star: '#0ea5e9' 
                             }};
 
-                            // EXACT PATH from user: M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z
-                            // Native size 24x24
+                            // Path: M12 0L14.59 9.41L24 12... (Native 24x24)
                             function drawTargetStar(ctx, x, y, size) {{
                                 ctx.save();
-                                // Align center
                                 ctx.translate(x, y);
-                                // Scale from 24px to target size
+                                
+                                // ROTATION: 28 degrees = ~0.488 radians
+                                ctx.rotate(28 * Math.PI / 180);
+                                
                                 const scale = size / 24;
                                 ctx.scale(scale, scale);
-                                // Center offset (path is 0,0 to 24,24, center is 12,12)
                                 ctx.translate(-12, -12);
                                 
                                 ctx.beginPath();
@@ -639,7 +641,6 @@ def show_main_page():
                                 const scribeWidth = tempCtx.measureText('Scribe').width;
                                 
                                 const spacing = 12;
-                                // Visual matching size
                                 const starSize = 40; 
                                 
                                 const totalWidth = caWidth + spacing + scribeWidth + spacing + starSize;
@@ -659,7 +660,7 @@ def show_main_page():
                                 tempCtx.fillText('Scribe', startX + caWidth + spacing, baseY);
                                 const scribeData = tempCtx.getImageData(0,0,w,h).data;
                                 
-                                // 3. Draw Star (USING PATH)
+                                // 3. Draw Star (ROTATED)
                                 tempCtx.clearRect(0,0,w,h);
                                 const starCenterX = startX + caWidth + spacing + scribeWidth + spacing + (starSize/2);
                                 const starCenterY = baseY - (fontSize / 4); 
@@ -672,14 +673,12 @@ def show_main_page():
                                 const groupScribe = [];
                                 const groupStar = [];
                                 
-                                // High density (step 2) for quality
                                 const step = 2; 
                                 
                                 for (let y = 0; y < h; y += step) {{
                                     for (let x = 0; x < w; x += step) {{
                                         const i = (y * w + x) * 4;
                                         
-                                        // Specificity check
                                         if (starData[i+3] > 128) {{
                                              groupStar.push({{
                                                 ox: x, oy: y,
