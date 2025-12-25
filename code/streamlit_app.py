@@ -382,7 +382,9 @@ def show_main_page():
 
     # --- RIGHT PANEL (Report) ---
     with main_col2:
-        st.markdown(f'<h3 style="color: #1e3a8a; font-family: \'Inter\', sans-serif; margin-top: 0; margin-bottom: 1rem;">Analysis Report</h3>', unsafe_allow_html=True)
+        # Static Header (Only show if no report generated)
+        if not st.session_state.get("markdown_report"):
+            st.markdown(f'<h3 style="color: #1e3a8a; font-family: \'Inter\', sans-serif; margin-top: 0; margin-bottom: 1rem;">Analysis Report</h3>', unsafe_allow_html=True)
         
         # Check if analysis was triggered
         if st.session_state.get("run_analysis", False):
