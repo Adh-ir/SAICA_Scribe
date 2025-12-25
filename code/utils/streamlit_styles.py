@@ -396,33 +396,7 @@ html, body, [class*="css"] {
     padding-bottom: 1rem !important;
 }
 
-/* NUCLEAR FIX: Force ALL Horizontal Blocks to be White + Padded */
-/* NUCLEAR FIX: Force ALL Horizontal Blocks to be White + Padded */
-[data-testid="stHorizontalBlock"] {
-    background-color: #ffffff !important;
-    border-radius: 20px;
-    padding: 30px !important;
-    border: 4px solid #93c5fd !important;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02),
-                0 20px 40px -12px rgba(14, 165, 233, 0.1) !important;
-    margin-top: -40px !important;
-    transition: none !important;
-    animation: none !important;
-}
-
-/* Prevent focus-related visual changes on horizontal block */
-[data-testid="stHorizontalBlock"]:focus,
-[data-testid="stHorizontalBlock"]:focus-within {
-    background-color: #ffffff !important;
-    border-radius: 20px !important;
-    padding: 30px !important;
-    border: 4px solid #93c5fd !important;
-    outline: none !important;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02),
-                0 20px 40px -12px rgba(14, 165, 233, 0.1) !important;
-    transition: none !important;
-    animation: none !important;
-}
+/* Main Container (stHorizontalBlock) styling moved to GLOBAL_HACKS_CSS for flash fix */
 
 /* --- LOGO STYLES (From Local Index.html) --- */
 .logo-main {
@@ -546,7 +520,7 @@ h1, h2, h3 {
     right: 50%;
     margin-left: -50vw;
     margin-right: -50vw;
-    background: rgba(255, 255, 255, 0.30);
+    background: rgba(255, 255, 255, 0.70);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-top: 1px solid rgba(224, 242, 254, 0.8);
@@ -605,33 +579,29 @@ header, [data-testid="stHeader"] {
     -webkit-tap-highlight-color: transparent !important;
 }
 
-/* Nuclear option: Remove ALL focus indicators from EVERYTHING */
-*,
-*:before,
-*:after {
+/* Nuclear option: Remove ALL focus indicators - BUT EXCLUDE stHorizontalBlock */
+*:not([data-testid="stHorizontalBlock"]),
+*:not([data-testid="stHorizontalBlock"]):before,
+*:not([data-testid="stHorizontalBlock"]):after {
     outline: 0 !important;
     outline-width: 0 !important;
     -webkit-tap-highlight-color: transparent !important;
 }
 
-*:focus,
-*:active,
-*:focus-visible,
-*:focus-within {
+*:not([data-testid="stHorizontalBlock"]):focus,
+*:not([data-testid="stHorizontalBlock"]):active,
+*:not([data-testid="stHorizontalBlock"]):focus-visible {
     outline: 0 !important;
     outline-width: 0 !important;
     outline-style: none !important;
     outline-color: transparent !important;
-    box-shadow: none !important;
-    border-color: inherit !important;
     -webkit-tap-highlight-color: transparent !important;
 }
 
-/* Prevent Streamlit's default focus behavior */
-.stApp *:focus,
-.stApp *:active {
+/* Prevent Streamlit's default focus behavior - exclude main container */
+.stApp *:not([data-testid="stHorizontalBlock"]):focus,
+.stApp *:not([data-testid="stHorizontalBlock"]):active {
     outline: 0 !important;
-    box-shadow: none !important;
 }
 
 /* TARGET THE SPECIFIC CONTAINERS THAT FLASH BLUE */
@@ -651,18 +621,46 @@ header, [data-testid="stHeader"] {
     -webkit-tap-highlight-color: transparent !important;
 }
 
-/* Force Main Container Shadow on Focus (Override Nuclear Option) */
+/* ============================================= */
+/* CRITICAL FIX: Main Container - ALL States    */
+/* ============================================= */
+/* Normal State */
+[data-testid="stHorizontalBlock"] {
+    background-color: #ffffff !important;
+    border-radius: 20px !important;
+    padding: 30px !important;
+    border: 4px solid #93c5fd !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02),
+                0 20px 40px -12px rgba(14, 165, 233, 0.1) !important;
+    margin-top: -40px !important;
+    transition: none !important;
+    animation: none !important;
+}
+
+/* Focus States - EXACT SAME as Normal to prevent any visual change */
 [data-testid="stHorizontalBlock"]:focus,
-[data-testid="stHorizontalBlock"]:focus-within {
+[data-testid="stHorizontalBlock"]:focus-within,
+[data-testid="stHorizontalBlock"]:active,
+[data-testid="stHorizontalBlock"]:focus-visible {
     background-color: #ffffff !important;
     border-radius: 20px !important;
     padding: 30px !important;
     border: 4px solid #93c5fd !important;
     outline: none !important;
+    outline-width: 0 !important;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02),
                 0 20px 40px -12px rgba(14, 165, 233, 0.1) !important;
     transition: none !important;
     animation: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Ensure buttons inside don't cause container flash */
+[data-testid="stHorizontalBlock"] button:focus,
+[data-testid="stHorizontalBlock"] button:active,
+[data-testid="stHorizontalBlock"] button:focus-visible {
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent !important;
 }
 </style>
 """
