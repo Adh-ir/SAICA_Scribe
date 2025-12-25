@@ -532,7 +532,7 @@ def show_main_page():
                                                 ox: x, oy: y,
                                                 x: x, y: y,
                                                 color: `rgb(${r},${g},${b})`,
-                                                size: 0.5, // Fixed fine size
+                                                size: 1.1, // Bumped for visibility check
                                                 // Drift properties
                                                 vx: (Math.random() - 0.5) * 0.5,
                                                 vy: (Math.random() - 0.5) * 0.5,
@@ -541,6 +541,14 @@ def show_main_page():
                                         }
                                     }
                                 }
+                                
+                                // Debug telemetry
+                                const debugDiv = document.getElementById('error-display');
+                                if (debugDiv) {
+                                    debugDiv.style.color = 'gray';
+                                    debugDiv.innerText = `Particles: ${particles.length}`;
+                                }
+                                
                                 return particles;
                             }
                             
