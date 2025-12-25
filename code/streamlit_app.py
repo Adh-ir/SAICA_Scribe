@@ -382,7 +382,12 @@ def show_main_page():
 
     # --- RIGHT PANEL (Report) ---
     with main_col2:
-        st.markdown(f'<h3 style="color: #1e3a8a; font-family: \'Inter\', sans-serif; margin-top: 0; margin-bottom: 1rem;">Analysis Report</h3>', unsafe_allow_html=True)
+        # Header Placeholder - allows us to remove it when report is ready
+        header_placeholder = st.empty()
+        
+        # Only show header if we don't have a report yet
+        if not st.session_state.markdown_report:
+            header_placeholder.markdown(f'<h3 style="color: #1e3a8a; font-family: \'Inter\', sans-serif; margin-top: 0; margin-bottom: 1rem;">Analysis Report</h3>', unsafe_allow_html=True)
         
         # Check if analysis was triggered
         if st.session_state.get("run_analysis", False):
@@ -412,8 +417,8 @@ def show_main_page():
                             background: transparent;
                         }
                         #text-canvas {
-                            width: 280px;
-                            height: 80px;
+                            width: 800px;
+                            height: 200px;
                         }
                         .loading-text {
                             margin-top: 20px;
@@ -589,6 +594,7 @@ def show_main_page():
                 results = map_activity_to_competency(current_activity, st.session_state.framework_data, provider=current_provider)
                 st.session_state.markdown_report = generate_markdown_content(results)
                 loading_placeholder.empty()  # Clear loading animation
+                header_placeholder.empty()   # Clear header now that report is ready
             except Exception as e:
                 loading_placeholder.empty()
                 st.error(f"Analysis failed: {e}")
