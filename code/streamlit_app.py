@@ -523,7 +523,11 @@ if not st.session_state.loading_complete:
     # Fullscreen iframe hack
     st.markdown("""
         <style>
-        header, .stHeader, [data-testid="stHeader"] { display: none !important; }
+        header, .stHeader, [data-testid="stHeader"], [data-testid="stDecoration"], [data-testid="stToolbar"] { 
+            display: none !important; 
+            height: 0 !important;
+            visibility: hidden !important;
+        }
         .stApp { background: #e0f2fe !important; }
         iframe[title="streamlit.components.v1.html"] {
             position: fixed;
