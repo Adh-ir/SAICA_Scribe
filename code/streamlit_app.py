@@ -482,7 +482,7 @@ def show_main_page():
                                 tempCanvas.height = h;
                                 const tempCtx = tempCanvas.getContext('2d');
                                 
-                                const fontSize = 100;
+                                const fontSize = 70;
                                 const baseY = h / 2 + fontSize / 3;
                                 
                                 // Layout
@@ -493,9 +493,13 @@ def show_main_page():
                                 tempCtx.font = `italic 600 ${fontSize}px "Playfair Display", serif`;
                                 const scribeWidth = tempCtx.measureText('Scribe').width;
                                 
-                                const starSize = fontSize * 0.35;
-                                const spacing = 10;
-                                const totalWidth = caWidth + spacing + scribeWidth + spacing + starSize * 2;
+                                // Star sizing (matched to logo proportions)
+                                const starFontSize = fontSize * 0.45; 
+                                tempCtx.font = `${starFontSize}px "Inter", sans-serif`; # Use standard font for symbol
+                                const starWidth = tempCtx.measureText('✦').width;
+                                
+                                const spacing = 12;
+                                const totalWidth = caWidth + spacing + scribeWidth + spacing + starWidth;
                                 const startX = (w - totalWidth) / 2;
                                 
                                 // Draw Text to Temp Canvas
@@ -507,18 +511,17 @@ def show_main_page():
                                 tempCtx.fillStyle = colors.scribe;
                                 tempCtx.fillText('Scribe', startX + caWidth + spacing, baseY);
                                 
-                                // Draw Star
-                                const starX = startX + caWidth + spacing + scribeWidth + spacing + starSize;
-                                const starY = baseY - fontSize * 0.6;
+                                // Draw Star (Character match)
+                                const starX = startX + caWidth + spacing + scribeWidth + 5; # Tighter spacing for star
+                                const starY = baseY - (fontSize * 0.4); # Lifted like the CSS logo
+                                tempCtx.font = `${starFontSize}px "Inter", sans-serif`;
                                 tempCtx.fillStyle = colors.star;
-                                tempCtx.beginPath();
-                                drawStar(tempCtx, starX, starY, 5, starSize, starSize/2);
-                                tempCtx.fill();
+                                tempCtx.fillText('✦', starX, starY);
                                 
                                 // Sample Pixels
                                 const imageData = tempCtx.getImageData(0, 0, w, h).data;
                                 const particles = [];
-                                const step = 1; // High density for solid look
+                                const step = 1; // High density
                                 
                                 for (let y = 0; y < h; y += step) {
                                     for (let x = 0; x < w; x += step) {
@@ -529,7 +532,7 @@ def show_main_page():
                                                 ox: x, oy: y,
                                                 x: x, y: y,
                                                 color: `rgb(${r},${g},${b})`,
-                                                size: Math.random() < 0.5 ? 1 : 1.5,
+                                                size: 0.5, // Fixed fine size
                                                 // Drift properties
                                                 vx: (Math.random() - 0.5) * 0.5,
                                                 vy: (Math.random() - 0.5) * 0.5,
@@ -539,28 +542,6 @@ def show_main_page():
                                     }
                                 }
                                 return particles;
-                            }
-
-                            function drawStar(ctx, cx, cy, spikes, outerRadius, innerRadius) {
-                                let rot = Math.PI / 2 * 3;
-                                let x = cx;
-                                let y = cy;
-                                let step = Math.PI / spikes;
-            
-                                ctx.moveTo(cx, cy - outerRadius);
-                                for (let i = 0; i < spikes; i++) {
-                                    x = cx + Math.cos(rot) * outerRadius;
-                                    y = cy + Math.sin(rot) * outerRadius;
-                                    ctx.lineTo(x, y);
-                                    rot += step;
-            
-                                    x = cx + Math.cos(rot) * innerRadius;
-                                    y = cy + Math.sin(rot) * innerRadius;
-                                    ctx.lineTo(x, y);
-                                    rot += step;
-                                }
-                                ctx.lineTo(cx, cy - outerRadius);
-                                ctx.closePath();
                             }
                             
                             // Initialize
