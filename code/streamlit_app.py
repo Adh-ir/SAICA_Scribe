@@ -453,7 +453,7 @@ def show_main_page():
                             const colors = ['#003B5C', '#005F88', '#0ea5e9', '#7dd3fc'];
                             
                             const particles = [];
-                            const numParticles = 1200;
+                            const numParticles = 2000;
                             const goldenRatio = (1 + Math.sqrt(5)) / 2;
                             
                             for (let i = 0; i < numParticles; i++) {
