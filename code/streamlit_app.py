@@ -556,6 +556,11 @@ def show_main_page():
                     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@800&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
                     <style>
                         body {{ margin: 0; padding: 0; background: transparent; overflow: hidden; }}
+                        @keyframes fadeOut {{
+                            0% {{ opacity: 1; }}
+                            70% {{ opacity: 1; }}
+                            100% {{ opacity: 0; }}
+                        }}
                         .loading-container {{
                             display: flex;
                             flex-direction: column;
@@ -564,6 +569,7 @@ def show_main_page():
                             height: 350px;
                             background: transparent;
                             position: relative;
+                            { 'animation: fadeOut 1.2s ease-out forwards;' if mode == 'EXIT' else '' }
                         }}
                         #text-canvas {{
                             width: 800px;
@@ -577,7 +583,7 @@ def show_main_page():
                             color: #0369a1;
                             font-family: 'Inter', sans-serif;
                             z-index: 2;
-                            transition: opacity 0.5s;
+                            transition: opacity 0.3s;
                             opacity: { '0' if mode == 'EXIT' else '1' };
                         }}
                         .loading-subtext {{
@@ -586,7 +592,7 @@ def show_main_page():
                             color: #94a3b8;
                             font-family: 'Inter', sans-serif;
                             z-index: 2;
-                            transition: opacity 0.5s;
+                            transition: opacity 0.3s;
                             opacity: { '0' if mode == 'EXIT' else '1' };
                         }}
                     </style>
@@ -833,7 +839,7 @@ def show_main_page():
                 with content_area.container():
                     components.html(get_loading_html("EXIT"), height=370)
                 
-                time.sleep(1.0) # Brief wait for explosion animation
+                time.sleep(1.3) # Match the 1.2s fade-out animation
                 
                 content_area.empty()  # Remove
                 st.rerun()
