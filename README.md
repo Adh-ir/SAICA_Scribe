@@ -78,4 +78,4 @@ CA_Scribe/
 ```
 
 ---
-*Made with ❤️ by [Adhir Singh](https://github.com/Adh-ir)*
+*Made by [Adhir Singh](https://github.com/Adh-ir)*
