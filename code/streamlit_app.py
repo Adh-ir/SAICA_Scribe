@@ -248,9 +248,9 @@ def render_settings_page():
 
     # Re-use setup_page styles but wrapped in a card approach
     st.markdown("""
-        <div style="display: flex; justify-content: center; margin-top: 5vh; margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: center; margin-top: calc(5vh - 20px); margin-bottom: 2rem;">
             <div style="
-                background: rgba(255, 255, 255, 0.75); 
+                background: rgba(255, 255, 255, 0.50); 
                 backdrop-filter: blur(20px); 
                 padding: 3rem; 
                 border-radius: 24px; 
@@ -261,10 +261,10 @@ def render_settings_page():
             ">
                 <div style="text-align: center; margin-bottom: 2rem;">
                     <div style="display: flex; justify-content: center; align-items: baseline; gap: 0.25rem; margin-bottom: 0.5rem;">
-                         <span class="logo-main" style="font-size: 2rem;">CA</span>
-                         <span class="logo-scribe" style="font-size: 2rem; position: relative;">
+                         <span class="logo-main" style="font-size: 2.4rem;">CA</span>
+                         <span class="logo-scribe" style="font-size: 2.4rem; position: relative;">
                             Scribe 
-                            <span style="position: absolute; top: -6px; right: -20px; font-size: 1.25rem; color: #0ea5e9;">✦</span>
+                            <span style="position: absolute; top: -6px; right: -24px; font-size: 1.5rem; color: #0ea5e9;">✦</span>
                          </span>
                     </div>
                     <h2 style="font-family: 'Inter', sans-serif; color: #1e293b; font-size: 1.25rem;">API Configuration</h2>
