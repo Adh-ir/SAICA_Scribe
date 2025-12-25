@@ -295,75 +295,12 @@ def show_main_page():
     # 2. COLUMNS (Inputs & Report)
     main_col1, main_col2 = st.columns([4, 6], gap="large")
 
-    # --- LEFT PANEL (Input) ---
-    with main_col1:
-        # Custom styled button that triggers the hidden real button
-        st.markdown("""
-            <style>
-            /* Hide the real Streamlit button */
-            #template-btn-hidden {
-                display: none !important;
-            }
-            .custom-template-btn {
-                width: 100%;
-                padding: 0.85rem 1.5rem;
-                background: #ffffff;
-                border: 1px solid #e0f2fe;
-                border-radius: 0.75rem;
-                color: #0369a1;
-                font-weight: 600;
-                font-size: 0.95rem;
-                text-align: left;
-                cursor: pointer;
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                font-family: 'Inter', sans-serif;
-                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                margin-bottom: 10px;
-            }
-            .custom-template-btn:hover {
-                background: #f0f9ff;
-                border-color: #7dd3fc;
-                transform: translateY(-2px);
-                box-shadow: 0 10px 15px -3px rgba(14, 165, 233, 0.15);
-                color: #0284c7;
-            }
-            .custom-template-btn:active {
-                transform: translateY(0);
-                box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
-            }
-            </style>
-            <button class="custom-template-btn" onclick="
-                const hiddenBtn = document.querySelector('[data-testid=\\'stBaseButton-secondary\\']');
-                if (hiddenBtn) hiddenBtn.click();
-            ">
-                <span style="font-size: 1.1em;">✨</span>
-                <span>Target Competency</span>
-                <span style="margin-left: auto; color: #cbd5e1; font-weight: 300; font-size: 1.2rem;">+</span>
-            </button>
-        """, unsafe_allow_html=True)
-        
-        # Hidden real button (styled to be invisible)
-        if st.button("_", key="template_btn_hidden", type="secondary"):
+        # Simple native Streamlit button for template
+        if st.button("✨ Target Competency  +", use_container_width=True, type="secondary"):
             st.session_state.activity_input = "COMPETENCY: [Insert Name] EVIDENCE: "
+            st.rerun()
         
-        # Hide the real button with inline CSS
-        st.markdown("""
-            <style>
-            button[kind="secondary"]:has(p:contains("_")) {
-                display: none !important;
-            }
-            /* Fallback: hide by key attribute approach */
-            [data-testid="stBaseButton-secondary"] {
-                position: absolute !important;
-                left: -9999px !important;
-                opacity: 0 !important;
-                pointer-events: none !important;
-            }
-            </style>
-        """, unsafe_allow_html=True)
+        st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
         
         activity_val = st.session_state.get("activity_input", "")
         activity = st.text_area(
