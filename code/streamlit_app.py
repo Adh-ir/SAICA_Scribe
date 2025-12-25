@@ -835,7 +835,7 @@ def show_main_page():
                 with loading_placeholder.container():
                     components.html(get_loading_html("EXIT"), height=370)
                 
-                time.sleep(2.5) # Extended wait for browser load + 0.5s pause + explosion
+                time.sleep(1.0) # Brief wait for explosion animation
                 
                 loading_placeholder.empty()  # Remove
                 st.rerun()
