@@ -140,14 +140,26 @@ def show_setup_page():
     # Centered Container
     col1, col2, col3 = st.columns([1, 1.5, 1])
     with col2:
-        # Enhanced Logo Section - Moved UP by ~50px (10vh -> 5vh)
+        # CSS-based star using ::after pseudo-element (bypasses HTML sanitization)
         st.markdown("""
+            <style>
+            .logo-star-setup::after {
+                content: '';
+                position: absolute;
+                top: -5px;
+                right: -30px;
+                width: 28px;
+                height: 28px;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg transform='rotate(28 12 12)'%3E%3Cpath d='M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z' fill='%230ea5e9'/%3E%3C/g%3E%3C/svg%3E");
+                background-size: contain;
+                background-repeat: no-repeat;
+            }
+            </style>
             <div style="text-align: center; margin-bottom: 2.5rem; margin-top: 2vh;">
                 <div style="display: flex; align-items: baseline; justify-content: center; gap: 0.25rem; margin-bottom: 0.5rem;">
                      <span class="logo-main" style="font-size: 4rem;">CA</span>
-                     <span class="logo-scribe" style="font-size: 4rem; position: relative;">
-                        Scribe 
-                        <span style="position: absolute; top: -5px; right: -30px;"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgdHJhbnNmb3JtPSJyb3RhdGUoMjggMTIgMTIpIj4KPHBhdGggZD0iTTEyIDBMMTQuNTkgOS40MUwyNCAxMkwxNC41OSAxNC41OUwxMiAyNEw5LjQxIDE0LjU5TDAgMTJMOS40MSA5LjQxTDEyIDBaIiBmaWxsPSIjMGVhNWU5Ii8+CjwvZz4KPC9zdmc+" style="width: 28px; height: 28px;" alt="star"></span>
+                     <span class="logo-scribe logo-star-setup" style="font-size: 4rem; position: relative;">
+                        Scribe
                      </span>
                 </div>
                 <div style="font-family: 'Inter', sans-serif; font-weight: 600; color: #64748b; letter-spacing: 0.05em; text-transform: uppercase; font-size: 0.85rem; margin-top: -0.25rem;">
