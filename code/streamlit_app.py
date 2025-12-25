@@ -297,11 +297,57 @@ def show_main_page():
 
     # --- LEFT PANEL (Input) ---
     with main_col1:
-        # Native Streamlit button for template (more reliable than JS)
-        if st.button("✨ Target Competency  +", use_container_width=True, type="secondary"):
+        # Hybrid button: Custom styled HTML + invisible real Streamlit button
+        st.markdown("""
+            <style>
+            .template-btn-wrapper {
+                position: relative;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            .template-btn-display {
+                width: 100%;
+                padding: 0.85rem 1.5rem;
+                background: #ffffff;
+                border: 1px solid #e0f2fe;
+                border-radius: 0.75rem;
+                color: #0369a1;
+                font-weight: 600;
+                font-size: 0.95rem;
+                font-family: 'Inter', sans-serif;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                pointer-events: none;
+            }
+            /* Hide the real Streamlit button visually but keep it clickable */
+            .template-btn-wrapper .stButton {
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                opacity: 0 !important;
+            }
+            .template-btn-wrapper .stButton button {
+                width: 100% !important;
+                height: 100% !important;
+                cursor: pointer !important;
+            }
+            </style>
+            <div class="template-btn-wrapper">
+                <div class="template-btn-display">
+                    <span style="font-size: 1.1em;">✨</span>
+                    <span>Target Competency</span>
+                    <span style="margin-left: auto; color: #cbd5e1; font-weight: 300; font-size: 1.2rem;">+</span>
+                </div>
+        """, unsafe_allow_html=True)
+        
+        if st.button("Target Competency", key="template_btn", use_container_width=True, type="secondary"):
             st.session_state.activity_input = "COMPETENCY: [Insert Name] EVIDENCE: "
         
-        st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
         
         activity_val = st.session_state.get("activity_input", "")
         activity = st.text_area(
