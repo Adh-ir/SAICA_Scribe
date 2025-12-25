@@ -399,7 +399,8 @@ def show_main_page():
                 <head>
                     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@800&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
                     <style>
-                        body { margin: 0; padding: 0; background: transparent; }
+                        /* Debugging background - remove later */
+                        body { margin: 0; padding: 0; background: aliceblue; } 
                         @keyframes dots {
                             0%, 20% { content: '.'; }
                             40% { content: '..'; }
@@ -411,7 +412,8 @@ def show_main_page():
                             align-items: center;
                             justify-content: center;
                             height: 350px;
-                            background: transparent;
+                            /* Debugging background - remove later */
+                            background: aliceblue; 
                         }
                         #text-canvas {
                             width: 800px;
@@ -582,7 +584,7 @@ def show_main_page():
                 </html>
             """
             # Run analysis
-            time.sleep(0.1) # Yield to UI
+            time.sleep(0.5) # Yield to UI
             try:
                 current_activity = st.session_state.get("activity_input", "")
                 current_provider = st.session_state.get("selected_provider", "gemini")
