@@ -246,33 +246,40 @@ def render_settings_page():
     st.markdown(MAIN_CSS, unsafe_allow_html=True)
     st.markdown('<div class="fluid-bg"><div class="fluid-shape shape-1"></div><div class="fluid-shape shape-2"></div><div class="fluid-shape shape-3"></div></div>', unsafe_allow_html=True)
 
-    # Re-use setup_page styles but wrapped in a card approach
+    # Inject CSS to style the form itself as the Glass Card
     st.markdown("""
-        <div style="display: flex; justify-content: center; margin-top: calc(5vh - 20px); margin-bottom: 2rem;">
-            <div style="
-                background: rgba(255, 255, 255, 0.50); 
-                backdrop-filter: blur(20px); 
-                padding: 3rem; 
-                border-radius: 24px; 
-                box-shadow: 0 20px 40px -10px rgba(14, 165, 233, 0.15); 
-                border: 1px solid rgba(255, 255, 255, 0.5); 
-                max-width: 420px; 
-                width: 100%;
-            ">
-                <div style="text-align: center; margin-bottom: 2rem;">
-                    <div style="display: flex; justify-content: center; align-items: baseline; gap: 0.25rem; margin-bottom: 0.5rem;">
-                         <span class="logo-main" style="font-size: 2.4rem;">CA</span>
-                         <span class="logo-scribe" style="font-size: 2.4rem; position: relative;">
-                            Scribe 
-                            <span style="position: absolute; top: -6px; right: -24px; font-size: 1.5rem; color: #0ea5e9;">✦</span>
-                         </span>
-                    </div>
-                    <h2 style="font-family: 'Inter', sans-serif; color: #1e293b; font-size: 1.25rem;">API Configuration</h2>
-                    <p style="color: #64748b; font-size: 0.9rem;">Update your API keys below</p>
-                </div>
+        <style>
+        /* Target the specific form used for settings */
+        [data-testid="stForm"] {
+            background: rgba(255, 255, 255, 0.50); 
+            backdrop-filter: blur(20px); 
+            padding: 3rem; 
+            border-radius: 24px; 
+            box-shadow: 0 20px 40px -10px rgba(14, 165, 233, 0.15); 
+            border: 1px solid rgba(255, 255, 255, 0.5); 
+            max-width: 420px; 
+            margin: 0 auto;
+            margin-top: calc(5vh - 20px);
+        }
+        </style>
     """, unsafe_allow_html=True)
 
     with st.form("settings_form"):
+        # 1. Logo & Header (Inside the form now)
+        st.markdown("""
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <div style="display: flex; justify-content: center; align-items: baseline; gap: 0.25rem; margin-bottom: 0.5rem;">
+                     <span class="logo-main" style="font-size: 2.4rem;">CA</span>
+                     <span class="logo-scribe" style="font-size: 2.4rem; position: relative;">
+                        Scribe 
+                        <span style="position: absolute; top: -6px; right: -24px; font-size: 1.5rem; color: #0ea5e9;">✦</span>
+                     </span>
+                </div>
+                <h2 style="font-family: 'Inter', sans-serif; color: #1e293b; font-size: 1.25rem;">API Configuration</h2>
+                <p style="color: #64748b; font-size: 0.9rem;">Update your API keys below</p>
+            </div>
+        """, unsafe_allow_html=True)
+
         # Gemini Input Section
         st.markdown("""
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; margin-top: 10px;">
@@ -343,8 +350,6 @@ def render_settings_page():
                 try: st.query_params.clear() 
                 except: pass
                 st.rerun()
-
-    st.markdown("</div></div>", unsafe_allow_html=True)
 
 
 # --- 4. UI: MAIN PAGE ---
