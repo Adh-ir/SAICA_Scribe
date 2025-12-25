@@ -436,7 +436,7 @@ def show_main_page():
                 </head>
                 <body>
                     <div class="loading-container">
-                        <canvas id="text-canvas" width="560" height="160"></canvas>
+                        <canvas id="text-canvas" width="800" height="200"></canvas>
                         <p class="loading-text">Analyzing with AI<span class="loading-dots"></span></p>
                         <p class="loading-subtext">Mapping competencies from your activity</p>
                     </div>
@@ -460,7 +460,7 @@ def show_main_page():
                             tempCanvas.height = h;
                             const tempCtx = tempCanvas.getContext('2d');
                             
-                            const fontSize = 70;
+                            const fontSize = 100;
                             const baseY = h / 2 + fontSize / 3;
                             
                             // Measure total width first for centering
@@ -511,7 +511,7 @@ def show_main_page():
                                     if (imageData[i + 3] > 128) {
                                         const r = imageData[i], g = imageData[i + 1], b = imageData[i + 2];
                                         const color = `rgb(${r},${g},${b})`;
-                                        const size = 0.5;
+                                        const size = 1;
                                         const phase = Math.random() * Math.PI * 2;
                                         particles.push({ x, y, color, size, phase });
                                     }
