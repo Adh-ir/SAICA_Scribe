@@ -654,17 +654,8 @@ FOCUS_FIX_JS = """
 // Prevent focus-related visual feedback on all elements
 document.addEventListener('DOMContentLoaded', function() {
     // Prevent focus on containers
-    document.addEventListener('focusin', function(e) {
-        const target = e.target;
-        if (target.hasAttribute('data-testid')) {
-            const testId = target.getAttribute('data-testid');
-            if (testId.includes('Horizontal') || testId.includes('Column') || testId.includes('Vertical')) {
-                e.preventDefault();
-                e.stopPropagation();
-                target.blur();
-            }
-        }
-    }, true);
+    // Prevent focus on containers DOES MORE HARM THAN GOOD FOR CSS-MATCHED CONTAINERS
+    // document.addEventListener('focusin', function(e) { ... removed ... }, true);
     
     // Removed textarea focus suppression to allow the new glow effect
 });
