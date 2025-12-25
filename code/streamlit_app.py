@@ -257,9 +257,9 @@ def render_settings_page():
             border-radius: 24px; 
             box-shadow: 0 20px 40px -10px rgba(14, 165, 233, 0.15); 
             border: 1px solid rgba(255, 255, 255, 0.5); 
-            max-width: 420px; 
+            max-width: 460px; 
             margin: 0 auto;
-            margin-top: calc(5vh - 20px);
+            margin-top: calc(5vh - 50px);
         }
         </style>
     """, unsafe_allow_html=True)
