@@ -251,7 +251,7 @@ def render_settings_page():
         <style>
         /* Target the specific form used for settings */
         [data-testid="stForm"] {
-            background: rgba(255, 255, 255, 0.50); 
+            background: rgba(255, 255, 255, 0.95); 
             backdrop-filter: blur(20px); 
             padding: 3rem; 
             border-radius: 24px; 
