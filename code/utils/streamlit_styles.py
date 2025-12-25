@@ -419,6 +419,15 @@ html, body, [class*="css"] {
     padding-left: 2rem !important;
 }
 
+/* Report Title Styling - Matches Activity Description Label */
+[data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:nth-of-type(2) h1 {
+    color: #1e3a8a !important;
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.02em !important;
+    margin-bottom: 0.5rem !important;
+}
+
 /* --- UI ELEMENTS --- */
 
 /* Text Area & Inputs (New Style) */
