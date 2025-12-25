@@ -470,6 +470,33 @@ div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:last-child h1
     outline: none !important;
 }
 
+/* Report Scroll Container */
+.report-scroll-container {
+    max_height: 600px;
+    overflow-y: auto;
+    padding-right: 10px; /* Space for scrollbar */
+    margin-right: -10px; /* Counteract padding */
+}
+
+/* Custom Scrollbar for Report */
+.report-scroll-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.report-scroll-container::-webkit-scrollbar-track {
+    background: rgba(224, 242, 254, 0.3);
+    border-radius: 4px;
+}
+
+.report-scroll-container::-webkit-scrollbar-thumb {
+    background: rgba(147, 197, 253, 0.8);
+    border-radius: 4px;
+}
+
+.report-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(56, 189, 248, 1);
+}
+
 .stSelectbox div[data-baseweb="select"]:focus-within {
     border-color: #cbd5e1 !important;
     box-shadow: none !important;
