@@ -392,15 +392,23 @@ def show_main_page():
             # Show modern loading animation in placeholder area
             loading_placeholder = st.empty()
             
-            # Robust modern loading animation
-            loading_html = """
+            # Wrapper for the animation to allow mode switching
+            def get_loading_html(mode="ENTRY"):
+                # mode: "ENTRY" (Assemble + Breathe loop) or "EXIT" (Instant Explode)
+                
+                # JS Logic Configuration
+                js_config = f"""
+                    const MODE = "{mode}"; 
+                """
+                
+                return f"""
                 <!DOCTYPE html>
                 <html>
                 <head>
                     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@800&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
                     <style>
-                        body { margin: 0; padding: 0; background: transparent; overflow: hidden; }
-                        .loading-container {
+                        body {{ margin: 0; padding: 0; background: transparent; overflow: hidden; }}
+                        .loading-container {{
                             display: flex;
                             flex-direction: column;
                             align-items: center;
@@ -408,239 +416,206 @@ def show_main_page():
                             height: 350px;
                             background: transparent;
                             position: relative;
-                        }
-                        #text-canvas {
+                        }}
+                        #text-canvas {{
                             width: 800px;
                             height: 200px;
                             z-index: 2;
-                        }
-                        .loading-text {
+                        }}
+                        .loading-text {{
                             margin-top: 10px;
                             font-weight: 600;
                             font-size: 1rem;
                             color: #0369a1;
                             font-family: 'Inter', sans-serif;
                             z-index: 2;
-                        }
-                        .loading-subtext {
+                            transition: opacity 0.5s;
+                            opacity: { '0' if mode == 'EXIT' else '1' };
+                        }}
+                        .loading-subtext {{
                             margin-top: 4px;
                             font-size: 0.85rem;
                             color: #94a3b8;
                             font-family: 'Inter', sans-serif;
                             z-index: 2;
-                        }
-                        #error-display {
-                            position: absolute;
-                            top: 10px;
-                            left: 10px;
-                            color: red;
-                            font-family: monospace;
-                            font-size: 12px;
-                            z-index: 100;
-                            pointer-events: none;
-                        }
+                            transition: opacity 0.5s;
+                            opacity: { '0' if mode == 'EXIT' else '1' };
+                        }}
                     </style>
                 </head>
                 <body>
-                    <div id="error-display"></div>
                     <div class="loading-container">
                         <canvas id="text-canvas" width="800" height="200"></canvas>
                         <p class="loading-text">Analyzing with AI...</p>
                         <p class="loading-subtext">Mapping competencies</p>
                     </div>
                     <script>
-                        // Global error handler to catch crashes
-                        window.onerror = function(msg, url, lineNo, columnNo, error) {
-                            const errorDiv = document.getElementById('error-display');
-                            if (errorDiv) errorDiv.innerHTML = `Error: ${msg} at line ${lineNo}`;
-                            return false;
-                        };
-
-                        // Main Logic
-                        (function() {
+                        {js_config}
+                        
+                        (function() {{
                             const canvas = document.getElementById('text-canvas');
                             if (!canvas) return;
                             
                             const ctx = canvas.getContext('2d');
-                            // Ensure 1:1 pixel mapping
                             canvas.width = 800;
                             canvas.height = 200;
-                            
                             const w = canvas.width;
                             const h = canvas.height;
                             
-                            const colors = {
-                                ca: '#003B5C',
-                                scribe: '#005F88', 
-                                star: '#0ea5e9'
-                            };
+                            const colors = {{ ca: '#003B5C', scribe: '#005F88', star: '#0ea5e9' }};
                             
-                            // 1. Create particles from text
-                            function createParticles() {
+                            // 1. Create particles
+                            function createParticles() {{
                                 const tempCanvas = document.createElement('canvas');
                                 tempCanvas.width = w;
                                 tempCanvas.height = h;
                                 const tempCtx = tempCanvas.getContext('2d');
                                 
+                                // Layout
                                 const fontSize = 70;
                                 const baseY = h / 2 + fontSize / 3;
-                                
-                                // Layout
-                                tempCtx.font = `800 ${fontSize}px "Inter", sans-serif`;
+                                tempCtx.font = `800 ${{fontSize}}px "Inter", sans-serif`;
                                 const caWidth = tempCtx.measureText('CA').width;
-                                
-                                // Fallback font stack in case Playfair doesn't load instantly
-                                tempCtx.font = `italic 600 ${fontSize}px "Playfair Display", serif`;
+                                tempCtx.font = `italic 600 ${{fontSize}}px "Playfair Display", serif`;
                                 const scribeWidth = tempCtx.measureText('Scribe').width;
                                 
-                                // Star sizing (matched to logo proportions)
+                                // Star
                                 const starFontSize = fontSize * 0.45; 
-                                tempCtx.font = `${starFontSize}px "Inter", sans-serif`; // Use standard font for symbol
+                                tempCtx.font = `${{starFontSize}}px "Inter", sans-serif`;
                                 const starWidth = tempCtx.measureText('✦').width;
                                 
                                 const spacing = 12;
                                 const totalWidth = caWidth + spacing + scribeWidth + spacing + starWidth;
                                 const startX = (w - totalWidth) / 2;
                                 
-                                // Draw Text to Temp Canvas
-                                tempCtx.font = `800 ${fontSize}px "Inter", sans-serif`;
+                                // Draw
+                                tempCtx.font = `800 ${{fontSize}}px "Inter", sans-serif`;
                                 tempCtx.fillStyle = colors.ca;
                                 tempCtx.fillText('CA', startX, baseY);
                                 
-                                tempCtx.font = `italic 600 ${fontSize}px "Playfair Display", serif`;
+                                tempCtx.font = `italic 600 ${{fontSize}}px "Playfair Display", serif`;
                                 tempCtx.fillStyle = colors.scribe;
                                 tempCtx.fillText('Scribe', startX + caWidth + spacing, baseY);
                                 
-                                // Draw Star (Character match)
-                                const starX = startX + caWidth + spacing + scribeWidth + 5; // Tighter spacing for star
-                                const starY = baseY - (fontSize * 0.4); // Lifted like the CSS logo
-                                tempCtx.font = `${starFontSize}px "Inter", sans-serif`;
+                                const starX = startX + caWidth + spacing + scribeWidth + 5;
+                                const starY = baseY - (fontSize * 0.4);
+                                tempCtx.font = `${{starFontSize}}px "Inter", sans-serif`;
                                 tempCtx.fillStyle = colors.star;
                                 tempCtx.fillText('✦', starX, starY);
                                 
-                                // Sample Pixels
+                                // Sample
                                 const imageData = tempCtx.getImageData(0, 0, w, h).data;
                                 const particles = [];
-                                const step = 2; // Medium density
+                                const step = 2; 
                                 
-                                for (let y = 0; y < h; y += step) {
-                                    for (let x = 0; x < w; x += step) {
+                                for (let y = 0; y < h; y += step) {{
+                                    for (let x = 0; x < w; x += step) {{
                                         const i = (y * w + x) * 4;
-                                        // Brightness check + Random culling to hit ~1000 target
-                                        if (imageData[i + 3] > 128 && Math.random() > 0.4) {
+                                        if (imageData[i + 3] > 128 && Math.random() > 0.4) {{
                                             const r = imageData[i], g = imageData[i + 1], b = imageData[i + 2];
-                                            particles.push({
-                                                // Target ("Organic") Position
+                                            particles.push({{
                                                 ox: x, oy: y,
-                                                // Current Position (Start random for assembly)
-                                                x: Math.random() * w,
-                                                y: Math.random() * h,
-                                                color: `rgb(${r},${g},${b})`,
+                                                // MODE CHECK: If Exit, start formed. If Entry, start random.
+                                                x: (MODE === "EXIT") ? x : Math.random() * w,
+                                                y: (MODE === "EXIT") ? y : Math.random() * h,
+                                                color: `rgb(${{r}},${{g}},${{b}})`,
                                                 size: 0.65, 
                                                 phase: Math.random() * Math.PI * 2,
-                                                // Explosion Velocity
                                                 vx: (Math.random() - 0.5) * 4,
                                                 vy: (Math.random() - 0.5) * 4    
-                                            });
-                                        }
-                                    }
-                                }
+                                            }});
+                                        }}
+                                    }}
+                                }}
                                 return particles;
-                            }
+                            }}
                             
-                            // Initialize
                             let particles = createParticles();
                             
                             // Animation State
                             let time = 0;
                             const cx = w / 2;
                             const cy = h / 2;
-                            let phase = "ASSEMBLE"; // ASSEMBLE -> BREATHE -> EXPLODE
+                            let phase = (MODE === "EXIT") ? "EXPLODE" : "ASSEMBLE"; 
                             
-                            function animate() {
+                            function animate() {{
                                 ctx.clearRect(0, 0, w, h);
                                 time += 0.02;
                                 
-                                // Cycle Control (Total cycle ~8s)
-                                const cycleTime = time % 8;
+                                // Logic Control
+                                if (MODE === "ENTRY") {{
+                                    // Assemble -> Breathe Loop
+                                    if (time < 2.5) phase = "ASSEMBLE";
+                                    else phase = "BREATHE";
+                                }}
+                                // If MODE === "EXIT", phase stays EXPLODE forever
                                 
-                                if (cycleTime < 2.5) phase = "ASSEMBLE";
-                                else if (cycleTime < 6.5) phase = "BREATHE";
-                                else phase = "EXPLODE";
-                                
-                                // Global scale for breathing
                                 const breatheScale = 1 + Math.sin(time * 2) * 0.02;
 
-                                particles.forEach(p => {
-                                    if (phase === "ASSEMBLE") {
-                                        // Ease to target
+                                particles.forEach(p => {{
+                                    if (phase === "ASSEMBLE") {{
                                         p.x += (p.ox - p.x) * 0.05;
                                         p.y += (p.oy - p.y) * 0.05;
-                                        
-                                    } else if (phase === "BREATHE") {
-                                        // Lock to target + Breathing
-                                        // 1. Radial Breathing
+                                    }} else if (phase === "BREATHE") {{
                                         const dx = p.ox - cx;
                                         const dy = p.oy - cy;
                                         const bx = cx + dx * breatheScale;
                                         const by = cy + dy * breatheScale;
-                                        
-                                        // 2. Drift
                                         const driftX = Math.sin(time + p.phase) * 1.5;
                                         const driftY = Math.cos(time + p.phase * 0.7) * 1.5;
-                                        
-                                        // Smooth transition from Assemble
                                         p.x += (bx + driftX - p.x) * 0.1;
                                         p.y += (by + driftY - p.y) * 0.1;
-                                        
-                                    } else if (phase === "EXPLODE") {
+                                    }} else if (phase === "EXPLODE") {{
                                         p.x += p.vx;
                                         p.y += p.vy;
-                                        p.vx *= 1.05; // Accelerate
+                                        p.vx *= 1.05; 
                                         p.vy *= 1.05;
-                                    }
-                                    
-                                    // Reset velocities for next cycle
-                                    if (phase !== "EXPLODE") {
-                                        // Recalculate random velocity for next text explosion using consistent seed logic 
-                                        // (or just random is fine for chaos)
-                                        if (Math.abs(p.vx) > 10) {
-                                            p.vx = (Math.random() - 0.5) * 4;
-                                            p.vy = (Math.random() - 0.5) * 4;
-                                        }
-                                    }
+                                    }}
                                     
                                     ctx.fillStyle = p.color;
                                     ctx.beginPath();
                                     ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                                     ctx.fill();
-                                });
-                                
+                                }});
                                 requestAnimationFrame(animate);
-                            }
+                            }}
                             animate();
-                            
-                        })();
+                        }})();
                     </script>
                 </body>
                 </html>
-            """
+                """
+
+            # 1. ENTRY PHASE: Assemble & Breathe
+            loading_placeholder = st.empty()
             with loading_placeholder.container():
-                components.html(loading_html, height=370)
+                components.html(get_loading_html("ENTRY"), height=370)
             
-            # Run analysis
-            time.sleep(0.5) # Yield to UI
+            # Yield to UI for render
+            time.sleep(0.5) 
+            
             try:
+                # Do Work
                 current_activity = st.session_state.get("activity_input", "")
                 current_provider = st.session_state.get("selected_provider", "gemini")
                 results = map_activity_to_competency(current_activity, st.session_state.framework_data, provider=current_provider)
                 st.session_state.markdown_report = generate_markdown_content(results)
                 st.session_state.run_analysis = False
-                loading_placeholder.empty()  # Clear loading animation
+                
+                # 2. EXIT PHASE: Explode
+                with loading_placeholder.container():
+                    components.html(get_loading_html("EXIT"), height=370)
+                
+                time.sleep(1.2) # Wait for explosion to clear screen
+                
+                loading_placeholder.empty()  # Remove
                 st.rerun()
+                
             except Exception as e:
                 loading_placeholder.empty()
                 st.error(f"Analysis failed: {e}")
+        
+        # Display results or placeholder
         
         # Display results or placeholder
         if st.session_state.markdown_report:
