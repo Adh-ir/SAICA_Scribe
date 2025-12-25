@@ -576,7 +576,7 @@ def show_main_page():
                                 requestAnimationFrame(animate);
                             }
                             animate();
-                        } # End if canvas
+                        } // End if canvas
                     </script>
                 </body>
                 </html>
