@@ -428,6 +428,9 @@ html, body, [class*="css"] {
     border-radius: 0.75rem !important; /* Match button radius */
     color: #1e293b;
     transition: all 0.2s ease-in-out;
+    resize: none !important; /* Disable resize handle */
+    height: 350px !important; /* Fixed height */
+    max-height: 350px !important; /* Prevent expansion */
 }
 
 /* Remove default Streamlit outer border to prevent double-border */
