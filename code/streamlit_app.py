@@ -237,9 +237,33 @@ LOADING_HTML = """
     .cross-fade #introCanvas { opacity: 0; }
     .cross-fade #precise-text { opacity: 1; }
     .cross-fade #loading-label { opacity: 0; }
+
+    /* Fluid Background Animation */
+    .fluid-shape {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.4;
+        animation: fluid-move 14s infinite ease-in-out;
+        will-change: transform;
+        mix-blend-mode: multiply;
+        z-index: 0;
+    }
+    .shape-1 { background: #7dd3fc; width: 65vw; height: 65vw; top: -15%; left: -10%; animation-duration: 16s; }
+    .shape-2 { background: #bae6fd; width: 70vw; height: 70vw; top: 25%; right: -25%; animation-duration: 20s; animation-delay: -4s; }
+    .shape-3 { background: #a5f3fc; width: 55vw; height: 55vw; bottom: -15%; left: 15%; animation-duration: 14s; animation-delay: -8s; }
+    @keyframes fluid-move {
+        0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+        33% { transform: translate(45px, 65px) scale(1.1) rotate(8deg); }
+        66% { transform: translate(-35px, 25px) scale(0.9) rotate(-6deg); }
+        100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+    }
   </style>
 </head>
 <body>
+    <div class="fluid-shape shape-1"></div>
+    <div class="fluid-shape shape-2"></div>
+    <div class="fluid-shape shape-3"></div>
   <div id="container">
     <canvas id="introCanvas"></canvas>
     <div id="loading-label">LOADING...</div>
