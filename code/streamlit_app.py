@@ -331,10 +331,12 @@ def show_main_page():
             }
             </style>
             <button class="custom-template-btn" onclick="
-                const textarea = document.querySelector('textarea[aria-label=\\'Activity Description\\']');
+                const textarea = document.querySelector('textarea[aria-label=&quot;Activity Description&quot;]');
                 if (textarea) {
-                    textarea.value = 'COMPETENCY: [Insert Name] EVIDENCE: ';
-                    textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                    const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set;
+                    nativeInputValueSetter.call(textarea, 'COMPETENCY: [Insert Name] EVIDENCE: ');
+                    const event = new Event('input', { bubbles: true });
+                    textarea.dispatchEvent(event);
                 }
             ">
             <span style="font-size: 1.1em;">✨</span> 
