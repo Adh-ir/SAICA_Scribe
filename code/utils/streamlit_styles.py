@@ -459,7 +459,7 @@ html, body, [class*="css"] {
 .stTextArea textarea:focus, .stSelectbox div[data-baseweb="select"]:focus-within {
     border: 2px solid #38bdf8 !important; /* Double thickness (2px) + Sky Blue */
     padding: calc(0.75rem - 1px) !important; /* Adjust padding to prevent layout shift */
-    box-shadow: 0 0 18px rgba(56, 189, 248, 0.5) !important; /* Increased glow (+20%) */
+    box-shadow: 0 0 22px rgba(56, 189, 248, 0.6) !important; /* Maximized glow (+40%) */
     outline: none !important;
 }
 
