@@ -366,7 +366,6 @@ html, body, [class*="css"] {
 }
 
 /* --- GLASS CARD WRAPPER (Applied to Streamlit Border Container) --- */
-/* --- GLASS CARD WRAPPER (Applied to Streamlit Border Container) --- */
 /* Target the new st.container(border=True) */
 [data-testid="stVerticalBlockBorderWrapper"] {
     background: transparent !important;
@@ -466,6 +465,13 @@ button[kind="primary"]:hover {
     opacity: 0.95 !important;
 }
 
+button[kind="primary"]:focus,
+button[kind="primary"]:focus-visible {
+    outline: none !important;
+    border: none !important;
+    box-shadow: 0 10px 15px -3px rgba(14, 165, 233, 0.3) !important;
+}
+
 /* Secondary Button (Helper) */
 button[kind="secondary"] {
     border: 1px solid #e0f2fe !important;
@@ -473,10 +479,185 @@ button[kind="secondary"] {
     color: #0369a1 !important;
 }
 
+button[kind="secondary"]:focus,
+button[kind="secondary"]:focus-visible {
+    outline: none !important;
+    border: 1px solid #e0f2fe !important;
+    box-shadow: none !important;
+}
+
 /* Headings */
 h1, h2, h3 {
     font-family: 'Inter', sans-serif;
     color: #0f172a;
+}
+</style>
+"""
+
+# --- GLOBAL HACKS & OVERRIDES (Focus & Layout) ---
+GLOBAL_HACKS_CSS = """
+<style>
+/* Force Transparent Background for App */
+.stApp, [data-testid="stAppViewContainer"] {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+/* Hide Streamlit Header/Toolbar */
+header, [data-testid="stHeader"] {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Custom Semi-Wide Layout (User Requested "Halfway" Width) */
+.block-container {
+    max-width: 1200px !important;
+    padding-top: 0rem !important;
+    padding-bottom: 2rem !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+    margin-top: -40px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* Remove blue flash/focus ring from entire container */
+.block-container:focus,
+.block-container:focus-within,
+[data-testid="stAppViewContainer"]:focus,
+[data-testid="stAppViewContainer"]:focus-within,
+.main:focus,
+.main:focus-within {
+    outline: 0 !important;
+    outline-width: 0 !important;
+    outline-style: none !important;
+    outline-color: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Nuclear option: Remove ALL focus indicators from EVERYTHING */
+*,
+*:before,
+*:after {
+    outline: 0 !important;
+    outline-width: 0 !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+*:focus,
+*:active,
+*:focus-visible,
+*:focus-within {
+    outline: 0 !important;
+    outline-width: 0 !important;
+    outline-style: none !important;
+    outline-color: transparent !important;
+    box-shadow: none !important;
+    border-color: inherit !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Prevent Streamlit's default focus behavior */
+.stApp *:focus,
+.stApp *:active {
+    outline: 0 !important;
+    box-shadow: none !important;
+}
+
+/* TARGET THE SPECIFIC CONTAINERS THAT FLASH BLUE */
+[data-testid="stHorizontalBlock"],
+[data-testid="stHorizontalBlock"]:focus,
+[data-testid="stHorizontalBlock"]:focus-within,
+[data-testid="stColumn"],
+[data-testid="stColumn"]:focus,
+[data-testid="stColumn"]:focus-within,
+[data-testid="stVerticalBlock"],
+[data-testid="stVerticalBlock"]:focus,
+[data-testid="stVerticalBlock"]:focus-within {
+    outline: 0 !important;
+    outline-width: 0 !important;
+    outline-style: none !important;
+    outline-color: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+</style>
+"""
+
+FOCUS_FIX_JS = """
+<script>
+// Prevent focus-related visual feedback on all elements
+document.addEventListener('DOMContentLoaded', function() {
+    // Prevent focus on containers
+    document.addEventListener('focusin', function(e) {
+        const target = e.target;
+        if (target.hasAttribute('data-testid')) {
+            const testId = target.getAttribute('data-testid');
+            if (testId.includes('Horizontal') || testId.includes('Column') || testId.includes('Vertical')) {
+                e.preventDefault();
+                e.stopPropagation();
+                target.blur();
+            }
+        }
+    }, true);
+    
+    // Specifically prevent textarea visual feedback after value changes
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            mutation.addedNodes.forEach(function(node) {
+                if (node.tagName === 'TEXTAREA' || (node.querySelector && node.querySelector('textarea'))) {
+                    const textareas = node.tagName === 'TEXTAREA' ? [node] : node.querySelectorAll('textarea');
+                    textareas.forEach(function(textarea) {
+                        textarea.addEventListener('focus', function(e) {
+                            // Prevent default focus visual feedback
+                            e.target.style.boxShadow = 'none';
+                            e.target.style.borderColor = '#cbd5e1';
+                        });
+                    });
+                }
+            });
+        });
+    });
+    
+    observer.observe(document.body, { childList: true, subtree: true });
+});
+</script>
+"""
+
+LOADING_MODE_CSS = """
+<style>
+/* Hide EVERYTHING at the top */
+header, .stHeader, [data-testid="stHeader"], [data-testid="stDecoration"], [data-testid="stToolbar"] { 
+    display: none !important; 
+    height: 0 !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+/* Match Background to Blue Gradient (Hides white bars) */
+.stApp, [data-testid="stAppViewContainer"] {
+    background: linear-gradient(135deg, #7dd3fc 0%, #bae6fd 100%) !important;
+}
+
+/* Kill container padding */
+.block-container {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Nuclear Iframe Positioning */
+iframe[title="streamlit.components.v1.html"], iframe {
+    position: fixed;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 2147483647 !important;
+    border: none !important;
 }
 </style>
 """
