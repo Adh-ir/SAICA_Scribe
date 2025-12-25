@@ -421,16 +421,29 @@ html, body, [class*="css"] {
 
 /* --- UI ELEMENTS --- */
 
-/* Text Area & Inputs */
-.stTextArea textarea, .stSelectbox div[data-baseweb="select"], .stTextInput input {
-    border: 1px solid #e0f2fe !important; /* Softer border to match button */
+/* Text Area & Inputs (New Style) */
+.stTextArea textarea, .stTextInput input {
+    border: 1px solid #e0f2fe !important;
     background-color: #ffffff !important;
-    border-radius: 0.75rem !important; /* Match button radius */
+    border-radius: 0.75rem !important;
     color: #1e293b;
     transition: all 0.2s ease-in-out;
-    resize: none !important; /* Disable resize handle */
-    height: 350px !important; /* Fixed height */
-    max-height: 350px !important; /* Prevent expansion */
+}
+
+/* Specific Fix for Text Area Height */
+.stTextArea textarea {
+    resize: none !important;
+    height: 350px !important;
+    max-height: 350px !important;
+}
+
+/* Model Select Box (Reverted Style) */
+.stSelectbox div[data-baseweb="select"] {
+    border: 1px solid #cbd5e1 !important;
+    background-color: #ffffff !important;
+    border-radius: 1rem !important;
+    color: #1e293b;
+    transition: all 0.2s ease-in-out;
 }
 
 /* Remove default Streamlit outer border to prevent double-border */
@@ -439,10 +452,16 @@ html, body, [class*="css"] {
     background: transparent !important;
 }
 
-.stTextArea textarea:focus, .stSelectbox div[data-baseweb="select"]:focus-within {
-    border: 2px solid #38bdf8 !important; /* Double thickness (2px) + Sky Blue */
-    padding: calc(0.75rem - 1px) !important; /* Adjust padding to prevent layout shift */
-    box-shadow: 0 0 22px rgba(56, 189, 248, 0.6) !important; /* Maximized glow (+40%) */
+.stTextArea textarea:focus, .stTextInput input:focus {
+    border: 2px solid #38bdf8 !important;
+    padding: calc(0.75rem - 1px) !important;
+    box-shadow: 0 0 22px rgba(56, 189, 248, 0.6) !important;
+    outline: none !important;
+}
+
+.stSelectbox div[data-baseweb="select"]:focus-within {
+    border-color: #cbd5e1 !important;
+    box-shadow: none !important;
     outline: none !important;
 }
 
@@ -582,33 +601,26 @@ header, [data-testid="stHeader"] {
     -webkit-tap-highlight-color: transparent !important;
 }
 
-/* Nuclear option: Remove ALL focus indicators - BUT EXCLUDE stHorizontalBlock */
-*:not([data-testid="stHorizontalBlock"]),
-*:not([data-testid="stHorizontalBlock"]):before,
-*:not([data-testid="stHorizontalBlock"]):after {
-    outline: 0 !important;
+/* 1. GLOBAL FOCUS RESET (Simplified) */
+/* We reset outline for everything BUT we don't kill box-shadow globally
+   because that causes the flash on our container. */
+*:focus,
+*:focus-visible,
+*:focus-within,
+*:active {
+    outline: none !important;
     outline-width: 0 !important;
     -webkit-tap-highlight-color: transparent !important;
 }
 
-*:not([data-testid="stHorizontalBlock"]):focus,
-*:not([data-testid="stHorizontalBlock"]):active,
-*:not([data-testid="stHorizontalBlock"]):focus-visible {
-    outline: 0 !important;
-    outline-width: 0 !important;
-    outline-style: none !important;
-    outline-color: transparent !important;
-    -webkit-tap-highlight-color: transparent !important;
-}
-
-/* Prevent Streamlit's default focus behavior - exclude main container */
-.stApp *:not([data-testid="stHorizontalBlock"]):focus,
-.stApp *:not([data-testid="stHorizontalBlock"]):active {
+/* Prevent Streamlit's default focus behavior */
+.stApp *:focus,
+.stApp *:active {
     outline: 0 !important;
 }
 
-/* TARGET THE SPECIFIC CONTAINERS THAT FLASH BLUE */
-/* Excludes HorizontalBlock to allow custom shadow */
+/* 2. TARGET THE SPECIFIC CONTAINERS THAT FLASH BLUE */
+/* Explicitly remove shadow/border from the generic wrappers */
 [data-testid="stColumn"],
 [data-testid="stColumn"]:focus,
 [data-testid="stColumn"]:focus-within,
@@ -616,19 +628,18 @@ header, [data-testid="stHeader"] {
 [data-testid="stVerticalBlock"]:focus,
 [data-testid="stVerticalBlock"]:focus-within {
     outline: 0 !important;
-    outline-width: 0 !important;
-    outline-style: none !important;
-    outline-color: transparent !important;
     box-shadow: none !important;
     border: none !important;
-    -webkit-tap-highlight-color: transparent !important;
 }
 
-/* ============================================= */
-/* CRITICAL FIX: Main Container - ALL States    */
-/* ============================================= */
-/* Normal State */
-[data-testid="stHorizontalBlock"] {
+/* 3. THE MAIN CONTAINER - INDESTRUCTIBLE STYLING */
+/* Applies to Normal AND all focus states equally */
+[data-testid="stHorizontalBlock"],
+[data-testid="stHorizontalBlock"]:focus,
+[data-testid="stHorizontalBlock"]:focus-within,
+[data-testid="stHorizontalBlock"]:active,
+[data-testid="stHorizontalBlock"]:focus-visible,
+[data-testid="stHorizontalBlock"]:target {
     background-color: #ffffff !important;
     border-radius: 20px !important;
     padding: 30px !important;
@@ -636,25 +647,12 @@ header, [data-testid="stHeader"] {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02),
                 0 20px 40px -12px rgba(14, 165, 233, 0.1) !important;
     margin-top: -40px !important;
+    
+    /* Performance & Stability Hooks */
     transition: none !important;
     animation: none !important;
-}
-
-/* Focus States - EXACT SAME as Normal to prevent any visual change */
-[data-testid="stHorizontalBlock"]:focus,
-[data-testid="stHorizontalBlock"]:focus-within,
-[data-testid="stHorizontalBlock"]:active,
-[data-testid="stHorizontalBlock"]:focus-visible {
-    background-color: #ffffff !important;
-    border-radius: 20px !important;
-    padding: 30px !important;
-    border: 4px solid #93c5fd !important;
+    transform: translateZ(0); /* Force GPU layer */
     outline: none !important;
-    outline-width: 0 !important;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02),
-                0 20px 40px -12px rgba(14, 165, 233, 0.1) !important;
-    transition: none !important;
-    animation: none !important;
     -webkit-tap-highlight-color: transparent !important;
 }
 
@@ -663,7 +661,7 @@ header, [data-testid="stHeader"] {
 [data-testid="stHorizontalBlock"] button:active,
 [data-testid="stHorizontalBlock"] button:focus-visible {
     outline: none !important;
-    -webkit-tap-highlight-color: transparent !important;
+    box-shadow: 0 10px 15px -3px rgba(14, 165, 233, 0.3) !important; /* Keep button shadow */
 }
 </style>
 """
