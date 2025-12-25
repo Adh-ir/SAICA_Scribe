@@ -332,9 +332,7 @@ def show_main_page():
         """, unsafe_allow_html=True)
         
         if st.button("✨ Target Competency                                                              +", use_container_width=True, type="secondary"):
-            st.session_state.activity_input = "COMPETENCY: [Insert Name] EVIDENCE: "
-        
-        st.markdown("<div style='height: 5px;'></div>", unsafe_allow_html=True)
+        st.session_state.activity_input = "COMPETENCY: [Insert Name] EVIDENCE: "
         
         activity_val = st.session_state.get("activity_input", "")
         activity = st.text_area(
@@ -347,7 +345,7 @@ def show_main_page():
         # Update state on change
         st.session_state.activity_input = activity 
         
-        st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
+        st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
         
         provider = st.selectbox(
             "AI Model", 
