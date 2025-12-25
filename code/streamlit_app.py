@@ -482,6 +482,7 @@ def show_main_page():
             # Wrapper for the animation to allow mode switching
             # Wrapper for the animation to allow mode switching
             # Wrapper for the animation to allow mode switching
+            # Wrapper for the animation to allow mode switching
             def get_loading_html(mode="ENTRY"):
                 # mode: "ENTRY" (Assemble + Breathe loop) or "EXIT" (Instant Explode)
                 
@@ -548,18 +549,16 @@ def show_main_page():
                             const ctx = canvas.getContext('2d');
                             // Optimize canvas scaling for Retina/HighDPI
                             const dpr = window.devicePixelRatio || 1;
-                            const rect = canvas.getBoundingClientRect();
                             
                             canvas.width = 800 * dpr;
                             canvas.height = 200 * dpr;
                             ctx.scale(dpr, dpr);
                             
-                            // Visual size remains fixed
                             canvas.style.width = '800px';
                             canvas.style.height = '200px';
                             
-                            const w = 800; // Logical width
-                            const h = 200; // Logical height
+                            const w = 800; 
+                            const h = 200; 
                             
                             const colors = {{ 
                                 ca: '#003B5C', 
@@ -567,31 +566,6 @@ def show_main_page():
                                 star: '#0ea5e9' 
                             }};
 
-                            function drawStar(ctx, cx, cy, spikes, outerRadius, innerRadius) {{
-                                let rot = Math.PI / 2 * 3;
-                                let x = cx;
-                                let y = cy;
-                                let step = Math.PI / spikes;
-
-                                ctx.beginPath();
-                                ctx.moveTo(cx, cy - outerRadius);
-                                for (let i = 0; i < spikes; i++) {{
-                                    x = cx + Math.cos(rot) * outerRadius;
-                                    y = cy + Math.sin(rot) * outerRadius;
-                                    ctx.lineTo(x, y);
-                                    rot += step;
-
-                                    x = cx + Math.cos(rot) * innerRadius;
-                                    y = cy + Math.sin(rot) * innerRadius;
-                                    ctx.lineTo(x, y);
-                                    rot += step;
-                                }}
-                                ctx.lineTo(cx, cy - outerRadius);
-                                ctx.closePath();
-                                ctx.fillStyle = colors.star;
-                                ctx.fill();
-                            }}
-                            
                             function createParticleGroups() {{
                                 const tempCanvas = document.createElement('canvas');
                                 tempCanvas.width = w;
@@ -607,15 +581,18 @@ def show_main_page():
                                 const scribeWidth = tempCtx.measureText('Scribe').width;
                                 
                                 const spacing = 12;
-                                const starRadius = fontSize * 0.25; 
-                                const starWidth = starRadius * 2;
+                                // Font-based sizing for the star to match header
+                                const starFontSize = fontSize * 0.55; 
+                                tempCtx.font = `${{starFontSize}}px "Inter", sans-serif`;
+                                const starWidth = tempCtx.measureText('✦').width;
+                                
                                 const totalWidth = caWidth + spacing + scribeWidth + spacing + starWidth;
                                 const startX = (w - totalWidth) / 2;
                                 
                                 // 1. Draw CA (Group 1)
                                 tempCtx.clearRect(0,0,w,h);
                                 tempCtx.font = `800 ${{fontSize}}px "Inter", sans-serif`;
-                                tempCtx.fillStyle = '#FFFFFF'; # Mask color
+                                tempCtx.fillStyle = '#FFFFFF'; 
                                 tempCtx.fillText('CA', startX, baseY);
                                 const caData = tempCtx.getImageData(0,0,w,h).data;
                                 
@@ -626,12 +603,13 @@ def show_main_page():
                                 tempCtx.fillText('Scribe', startX + caWidth + spacing, baseY);
                                 const scribeData = tempCtx.getImageData(0,0,w,h).data;
                                 
-                                // 3. Draw Star (Group 3)
+                                // 3. Draw Star (Group 3) - USING CHARACTER
                                 tempCtx.clearRect(0,0,w,h);
-                                const starX = startX + caWidth + spacing + scribeWidth + spacing + starRadius;
-                                const starY = baseY - (fontSize * 0.25);
+                                const starX = startX + caWidth + spacing + scribeWidth + spacing;
+                                const starY = baseY - (fontSize * 0.4); 
+                                tempCtx.font = `${{starFontSize}}px "Inter", sans-serif`;
                                 tempCtx.fillStyle = '#FFFFFF';
-                                drawStar(tempCtx, starX, starY, 4, starRadius, starRadius * 0.4);
+                                tempCtx.fillText('✦', starX, starY);
                                 const starData = tempCtx.getImageData(0,0,w,h).data;
                                 
                                 // Generate Particles
@@ -639,26 +617,42 @@ def show_main_page():
                                 const groupScribe = [];
                                 const groupStar = [];
                                 
-                                // Density: Step 2 ensures high quality (looks "full")
-                                // Optimization: Batch rendering makes step=2 instant.
-                                const step = 3; 
+                                // Optimization: Batch rendering makes step=2 (high density) performant.
+                                const step = 2; 
                                 
                                 for (let y = 0; y < h; y += step) {{
                                     for (let x = 0; x < w; x += step) {{
                                         const i = (y * w + x) * 4;
                                         
-                                        let targetGroup = null;
-                                        // Specificity check
-                                        if (starData[i+3] > 128) targetGroup = groupStar;
-                                        else if (scribeData[i+3] > 128) targetGroup = groupScribe;
-                                        else if (caData[i+3] > 128) targetGroup = groupCA;
-                                        
-                                        if (targetGroup) {{
-                                            targetGroup.push({{
+                                        // Simple threshold
+                                        if (starData[i+3] > 128) {{
+                                             groupStar.push({{
                                                 ox: x, oy: y,
                                                 x: (MODE === "EXIT") ? x : Math.random() * w,
                                                 y: (MODE === "EXIT") ? y : Math.random() * h,
-                                                size: 1.5, // Slightly larger for robust look
+                                                size: 1.5, 
+                                                phase: Math.random() * Math.PI * 2,
+                                                vx: (Math.random() - 0.5) * 4,
+                                                vy: (Math.random() - 0.5) * 4    
+                                            }});
+                                        }}
+                                        else if (scribeData[i+3] > 128) {{
+                                            groupScribe.push({{
+                                                ox: x, oy: y,
+                                                x: (MODE === "EXIT") ? x : Math.random() * w,
+                                                y: (MODE === "EXIT") ? y : Math.random() * h,
+                                                size: 1.5,
+                                                phase: Math.random() * Math.PI * 2,
+                                                vx: (Math.random() - 0.5) * 4,
+                                                vy: (Math.random() - 0.5) * 4    
+                                            }});
+                                        }}
+                                        else if (caData[i+3] > 128) {{
+                                            groupCA.push({{
+                                                ox: x, oy: y,
+                                                x: (MODE === "EXIT") ? x : Math.random() * w,
+                                                y: (MODE === "EXIT") ? y : Math.random() * h,
+                                                size: 1.5,
                                                 phase: Math.random() * Math.PI * 2,
                                                 vx: (Math.random() - 0.5) * 4,
                                                 vy: (Math.random() - 0.5) * 4    
@@ -708,7 +702,7 @@ def show_main_page():
                                             p.vy *= 1.05;
                                         }}
                                         
-                                        // Draw (Batching rectangular pixels is fastest)
+                                        // Draw
                                         ctx.rect(p.x, p.y, p.size, p.size);
                                     }}
                                     ctx.fill();
@@ -728,7 +722,6 @@ def show_main_page():
                                         else phase = "EXPLODE";
                                     }}
                                     
-                                    // Batch Render distinct colors
                                     updateAndDrawGroup(groups.groupCA, colors.ca);
                                     updateAndDrawGroup(groups.groupScribe, colors.scribe);
                                     updateAndDrawGroup(groups.groupStar, colors.star);
