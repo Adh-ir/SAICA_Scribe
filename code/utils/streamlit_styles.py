@@ -599,9 +599,7 @@ header, [data-testid="stHeader"] {
 }
 
 /* TARGET THE SPECIFIC CONTAINERS THAT FLASH BLUE */
-[data-testid="stHorizontalBlock"],
-[data-testid="stHorizontalBlock"]:focus,
-[data-testid="stHorizontalBlock"]:focus-within,
+/* Excludes HorizontalBlock to allow custom shadow */
 [data-testid="stColumn"],
 [data-testid="stColumn"]:focus,
 [data-testid="stColumn"]:focus-within,
@@ -615,6 +613,15 @@ header, [data-testid="stHeader"] {
     box-shadow: none !important;
     border: none !important;
     -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Force Main Container Shadow on Focus (Override Nuclear Option) */
+[data-testid="stHorizontalBlock"]:focus,
+[data-testid="stHorizontalBlock"]:focus-within {
+    border: 4px solid #93c5fd !important;
+    outline: none !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02),
+                0 20px 40px -12px rgba(14, 165, 233, 0.1) !important;
 }
 </style>
 """
