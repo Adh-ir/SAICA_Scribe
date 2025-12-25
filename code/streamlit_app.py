@@ -399,6 +399,9 @@ def show_main_page():
                 except Exception as e:
                     st.error(f"Analysis failed: {e}")
         
+        # Fixed-height scrollable container for results
+        st.markdown('<div style="height: 450px; overflow-y: auto; padding-right: 10px;">', unsafe_allow_html=True)
+        
         # Display results or placeholder
         if st.session_state.markdown_report:
             st.markdown(st.session_state.markdown_report)
@@ -415,6 +418,8 @@ def show_main_page():
                     <p style="margin-top: 20px; font-weight: 500;">Detailed mapping will appear here</p>
                 </div>
             """, unsafe_allow_html=True)
+        
+        st.markdown('</div>', unsafe_allow_html=True)
                 
         # st.markdown('</div>', unsafe_allow_html=True) # Removed invalid wrapper
 
