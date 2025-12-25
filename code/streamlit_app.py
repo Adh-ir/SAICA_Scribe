@@ -260,6 +260,15 @@ def render_settings_page():
             max-width: 500px; 
             margin: 0 auto;
             margin-top: calc(5vh - 50px);
+            text-align: center;
+        }
+        /* Ensure buttons don't wrap */
+        [data-testid="stForm"] button {
+            white-space: nowrap !important;
+        }
+        /* Make button columns wider */
+        [data-testid="stForm"] [data-testid="stHorizontalBlock"] {
+            gap: 1rem !important;
         }
         </style>
     """, unsafe_allow_html=True)
