@@ -297,56 +297,11 @@ def show_main_page():
 
     # --- LEFT PANEL (Input) ---
     with main_col1:
-        # Custom HTML button to avoid Streamlit rerun flash
-        st.markdown("""
-            <style>
-            .custom-template-btn {
-                width: 100%;
-                padding: 0.85rem 1.5rem;
-                background: #ffffff;
-                border: 1px solid #e0f2fe;
-                border-radius: 0.75rem;
-                color: #0369a1;
-                font-weight: 600;
-                font-size: 0.95rem;
-                text-align: left;
-                cursor: pointer;
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                font-family: 'Inter', sans-serif;
-                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            }
-            .custom-template-btn:hover {
-                background: #f0f9ff;
-                border-color: #7dd3fc;
-                transform: translateY(-2px);
-                box-shadow: 0 10px 15px -3px rgba(14, 165, 233, 0.15);
-                color: #0284c7;
-            }
-            .custom-template-btn:active {
-                transform: translateY(0);
-                box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
-            }
-            </style>
-            <button class="custom-template-btn" onclick="
-                const textarea = document.querySelector('textarea[aria-label=&quot;Activity Description&quot;]');
-                if (textarea) {
-                    const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set;
-                    nativeInputValueSetter.call(textarea, 'COMPETENCY: [Insert Name] EVIDENCE: ');
-                    const event = new Event('input', { bubbles: true });
-                    textarea.dispatchEvent(event);
-                }
-            ">
-            <span style="font-size: 1.1em;">✨</span> 
-            <span>Target Competency</span>
-            <span style="margin-left: auto; color: #cbd5e1; font-weight: 300; font-size: 1.2rem;">+</span>
-            </button>
-        """, unsafe_allow_html=True)
+        # Native Streamlit button for template (more reliable than JS)
+        if st.button("✨ Target Competency  +", use_container_width=True, type="secondary"):
+            st.session_state.activity_input = "COMPETENCY: [Insert Name] EVIDENCE: "
         
-
-
+        st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
         
         activity_val = st.session_state.get("activity_input", "")
         activity = st.text_area(
