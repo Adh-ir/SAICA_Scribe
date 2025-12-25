@@ -519,7 +519,7 @@ def show_main_page():
                                                 // MODE CHECK: If Exit, start formed. If Entry, start random.
                                                 x: (MODE === "EXIT") ? x : Math.random() * w,
                                                 y: (MODE === "EXIT") ? y : Math.random() * h,
-                                                color: `rgb(${r},${g},${b})`,
+                                                color: `rgb(${{r}},${{g}},${{b}})`,
                                                 size: 0.65, 
                                                 phase: Math.random() * Math.PI * 2,
                                                 vx: (Math.random() - 0.5) * 4,
