@@ -256,7 +256,7 @@ def render_settings_page():
             padding: 3rem 3rem 1.2rem 3rem; 
             border-radius: 24px; 
             box-shadow: 0 20px 40px -10px rgba(14, 165, 233, 0.15); 
-            border: 1px solid rgba(255, 255, 255, 0.5); 
+            border: 0.5px solid rgba(200, 230, 255, 0.5); 
             max-width: 500px; 
             margin: 0 auto;
             margin-top: calc(5vh - 50px);
@@ -359,6 +359,15 @@ def render_settings_page():
                 try: st.query_params.clear() 
                 except: pass
                 st.rerun()
+
+        # Helper Link
+        st.markdown("""
+            <div style="text-align: center; margin-top: 1rem; margin-bottom: 0.5rem;">
+                <a href="/?page=guide" target="_blank" style="color: #64748b; font-size: 0.8rem; text-decoration: none; font-weight: 500; transition: color 0.2s;">
+                    Need help getting keys? View Full Guide ↗
+                </a>
+            </div>
+        """, unsafe_allow_html=True)
 
 
 # --- 4. UI: MAIN PAGE ---
