@@ -532,23 +532,12 @@ def show_main_page():
                                                 ox: x, oy: y,
                                                 x: x, y: y,
                                                 color: `rgb(${r},${g},${b})`,
-                                                size: 1.1, // Bumped for visibility check
-                                                // Drift properties
-                                                vx: (Math.random() - 0.5) * 0.5,
-                                                vy: (Math.random() - 0.5) * 0.5,
+                                                size: 0.65, // Fine powder look
                                                 phase: Math.random() * Math.PI * 2
                                             });
                                         }
                                     }
                                 }
-                                
-                                // Debug telemetry
-                                const debugDiv = document.getElementById('error-display');
-                                if (debugDiv) {
-                                    debugDiv.style.color = 'gray';
-                                    debugDiv.innerText = `Particles: ${particles.length}`;
-                                }
-                                
                                 return particles;
                             }
                             
@@ -557,18 +546,30 @@ def show_main_page():
                             
                             // Animation Loop
                             let time = 0;
+                            const cx = w / 2;
+                            const cy = h / 2;
+                            
                             function animate() {
                                 ctx.clearRect(0, 0, w, h);
-                                time += 0.02;
+                                time += 0.03;
+                                
+                                // Breathing Scale (Coordinated)
+                                const scale = 1 + Math.sin(time * 1.5) * 0.03; // +/- 3% expansion
                                 
                                 particles.forEach(p => {
-                                    // Slight organic movement
-                                    const driftX = Math.sin(time + p.phase) * 1.5;
-                                    const driftY = Math.cos(time + p.phase * 0.5) * 1.5;
+                                    // 1. Radial Breathing Position
+                                    const dx = p.ox - cx;
+                                    const dy = p.oy - cy;
+                                    const bx = cx + dx * scale;
+                                    const by = cy + dy * scale;
+                                    
+                                    // 2. Slight Organic Drift
+                                    const driftX = Math.sin(time + p.phase) * 1.0;
+                                    const driftY = Math.cos(time + p.phase * 0.7) * 1.0;
                                     
                                     ctx.fillStyle = p.color;
                                     ctx.beginPath();
-                                    ctx.arc(p.ox + driftX, p.oy + driftY, p.size, 0, Math.PI * 2);
+                                    ctx.arc(bx + driftX, by + driftY, p.size, 0, Math.PI * 2);
                                     ctx.fill();
                                 });
                                 
