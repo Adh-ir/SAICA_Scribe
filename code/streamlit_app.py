@@ -332,7 +332,7 @@ def show_main_page():
         """, unsafe_allow_html=True)
         
         if st.button("✨ Target Competency                                                              +", use_container_width=True, type="secondary"):
-        st.session_state.activity_input = "COMPETENCY: [Insert Name] EVIDENCE: "
+            st.session_state.activity_input = "COMPETENCY: [Insert Name] EVIDENCE: "
         
         activity_val = st.session_state.get("activity_input", "")
         activity = st.text_area(
