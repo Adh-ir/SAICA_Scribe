@@ -372,22 +372,32 @@ def show_main_page():
         
         st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
         
-        # Recreated Button for Fresh Render (Fix Blue Flash)
-        if st.button("Generate Analysis 🚀", use_container_width=True, type="primary"):
-            # Check if activity is empty or just the template
-            is_empty = not activity.strip()
-            is_template_only = activity.strip() == "COMPETENCY: [Insert Name] EVIDENCE:"
-            has_no_evidence = "EVIDENCE:" in activity and activity.split("EVIDENCE:", 1)[1].strip() == ""
-            
-            if is_empty or is_template_only or has_no_evidence:
-                st.warning("Please describe your activity first. Fill in the template with your actual work details.")
-            else:
-                with st.spinner("Analyzing with AI..."):
-                    try:
-                        results = map_activity_to_competency(activity, st.session_state.framework_data, provider=provider)
-                        st.session_state.markdown_report = generate_markdown_content(results)
-                    except Exception as e:
-                        st.error(f"Analysis failed: {e}")
+        # --- FRAGMENT: Isolate button rerun to prevent container flash ---
+        @st.fragment
+        def run_analysis():
+            if st.button("Generate Analysis 🚀", use_container_width=True, type="primary"):
+                # Get current values from session state (set outside fragment)
+                current_activity = st.session_state.get("activity_input", "")
+                current_provider = st.session_state.get("selected_provider", "gemini")
+                
+                # Check if activity is empty or just the template
+                is_empty = not current_activity.strip()
+                is_template_only = current_activity.strip() == "COMPETENCY: [Insert Name] EVIDENCE:"
+                has_no_evidence = "EVIDENCE:" in current_activity and current_activity.split("EVIDENCE:", 1)[1].strip() == ""
+                
+                if is_empty or is_template_only or has_no_evidence:
+                    st.warning("Please describe your activity first. Fill in the template with your actual work details.")
+                else:
+                    with st.spinner("Analyzing with AI..."):
+                        try:
+                            results = map_activity_to_competency(current_activity, st.session_state.framework_data, provider=current_provider)
+                            st.session_state.markdown_report = generate_markdown_content(results)
+                        except Exception as e:
+                            st.error(f"Analysis failed: {e}")
+        
+        # Store provider in session state for fragment access
+        st.session_state.selected_provider = provider
+        run_analysis()
 
     # --- RIGHT PANEL (Report) ---
     with main_col2:
