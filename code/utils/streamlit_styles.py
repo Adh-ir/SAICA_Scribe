@@ -430,7 +430,9 @@ div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:last-child > 
 /* Report Title Styling - Applies to h1 inside the scrollable column */
 div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-of-type(2) h1,
 div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:last-child h1 {
-    color: #1e3a8a !important;
+    background: -webkit-linear-gradient(120deg, #1e3a8a, #0284c7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     font-family: 'Inter', sans-serif !important;
     font-weight: 800 !important;
     letter-spacing: -0.02em !important;
