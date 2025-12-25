@@ -639,6 +639,9 @@ header, [data-testid="stHeader"] {
 /* Force Main Container Shadow on Focus (Override Nuclear Option) */
 [data-testid="stHorizontalBlock"]:focus,
 [data-testid="stHorizontalBlock"]:focus-within {
+    background-color: #ffffff !important;
+    border-radius: 20px !important;
+    padding: 30px !important;
     border: 4px solid #93c5fd !important;
     outline: none !important;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02),
