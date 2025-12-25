@@ -496,29 +496,41 @@ div.stButton > button[kind="primary"]:focus-visible {
     transform: translateY(0) !important;
 }
 
-/* Secondary Button - Strict Override */
+/* Secondary Button - Target Competency Style */
 div.stButton > button[kind="secondary"] {
+    width: 100% !important;
     border: 1px solid #e0f2fe !important;
-    background: white !important;
+    background: #ffffff !important;
     color: #0369a1 !important;
     font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    font-family: 'Inter', sans-serif !important;
+    text-align: left !important;
     border-radius: 0.75rem !important;
-    padding: 0.75rem 1.5rem !important;
+    padding: 0.85rem 1.5rem !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     outline: none !important;
 }
 
 div.stButton > button[kind="secondary"]:hover {
-    border-color: #7dd3fc !important;
-    color: #0284c7 !important;
     background: #f0f9ff !important;
+    border-color: #7dd3fc !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 15px -3px rgba(14, 165, 233, 0.15) !important;
+    color: #0284c7 !important;
+}
+
+div.stButton > button[kind="secondary"]:active {
+    transform: translateY(0) !important;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05) !important;
 }
 
 div.stButton > button[kind="secondary"]:focus,
-div.stButton > button[kind="secondary"]:active,
 div.stButton > button[kind="secondary"]:focus-visible {
     outline: none !important;
     border: 1px solid #e0f2fe !important;
-    box-shadow: none !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
     background: white !important;
 }
 
