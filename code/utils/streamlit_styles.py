@@ -439,6 +439,12 @@ html, body, [class*="css"] {
     color: #005F88 !important;
 }
 
+/* Vertical Separator for the Report Column (Right Side) */
+[data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:nth-of-type(2) {
+    border-left: 1px solid rgba(224, 242, 254, 0.8) !important;
+    padding-left: 2rem !important;
+}
+
 /* --- UI ELEMENTS --- */
 
 /* Text Area & Inputs */
