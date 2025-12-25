@@ -595,8 +595,7 @@ def show_main_page():
                             color: #0369a1;
                             font-family: 'Inter', sans-serif;
                             z-index: 2;
-                            transition: opacity 0.3s;
-                            opacity: { '0' if mode == 'EXIT' else '1' };
+                            opacity: 1;
                         }}
                         .loading-subtext {{
                             margin-top: 4px;
@@ -604,8 +603,7 @@ def show_main_page():
                             color: #94a3b8;
                             font-family: 'Inter', sans-serif;
                             z-index: 2;
-                            transition: opacity 0.3s;
-                            opacity: { '0' if mode == 'EXIT' else '1' };
+                            opacity: 1;
                         }}
                     </style>
                 </head>
