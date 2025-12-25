@@ -391,129 +391,136 @@ def show_main_page():
             
             # Show modern loading animation in placeholder area
             loading_placeholder = st.empty()
-            loading_placeholder.markdown("""
-                <style>
-                    @keyframes dots {
-                        0%, 20% { content: '.'; }
-                        40% { content: '..'; }
-                        60%, 100% { content: '...'; }
-                    }
-                    .loading-container {
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        justify-content: center;
-                        min-height: 400px;
-                    }
-                    #sphere-canvas {
-                        width: 80px;
-                        height: 80px;
-                    }
-                    .loading-text {
-                        margin-top: 24px;
-                        font-weight: 600;
-                        font-size: 1rem;
-                        color: #0369a1;
-                        font-family: 'Inter', sans-serif;
-                    }
-                    .loading-dots::after {
-                        content: '';
-                        animation: dots 1.5s steps(1, end) infinite;
-                    }
-                    .loading-subtext {
-                        margin-top: 8px;
-                        font-size: 0.85rem;
-                        color: #94a3b8;
-                        font-family: 'Inter', sans-serif;
-                    }
-                </style>
-                <div class="loading-container">
-                    <canvas id="sphere-canvas" width="160" height="160"></canvas>
-                    <p class="loading-text">Analyzing with AI<span class="loading-dots"></span></p>
-                    <p class="loading-subtext">Mapping competencies from your activity</p>
-                </div>
-                <script>
-                    (function() {
-                        const canvas = document.getElementById('sphere-canvas');
-                        if (!canvas) return;
-                        const ctx = canvas.getContext('2d');
-                        const w = canvas.width;
-                        const h = canvas.height;
-                        const cx = w / 2;
-                        const cy = h / 2;
-                        const radius = 55;
-                        const colors = ['#003B5C', '#005F88', '#0ea5e9', '#7dd3fc'];
-                        
-                        // Generate ~1000 points on sphere using fibonacci spiral
-                        const particles = [];
-                        const numParticles = 800;
-                        const goldenRatio = (1 + Math.sqrt(5)) / 2;
-                        
-                        for (let i = 0; i < numParticles; i++) {
-                            const theta = 2 * Math.PI * i / goldenRatio;
-                            const phi = Math.acos(1 - 2 * (i + 0.5) / numParticles);
-                            const x = Math.cos(theta) * Math.sin(phi);
-                            const y = Math.sin(theta) * Math.sin(phi);
-                            const z = Math.cos(phi);
-                            const color = colors[Math.floor(Math.random() * colors.length)];
-                            const size = 0.5 + Math.random() * 1;
-                            particles.push({ x, y, z, color, size });
+            loading_html = """
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+                    <style>
+                        body { margin: 0; padding: 0; background: transparent; }
+                        @keyframes dots {
+                            0%, 20% { content: '.'; }
+                            40% { content: '..'; }
+                            60%, 100% { content: '...'; }
                         }
-                        
-                        let rotX = 0;
-                        let rotY = 0;
-                        let scale = 1;
-                        let scaleDir = 1;
-                        
-                        function animate() {
-                            ctx.clearRect(0, 0, w, h);
+                        .loading-container {
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                            height: 200px;
+                            background: transparent;
+                        }
+                        #sphere-canvas {
+                            width: 80px;
+                            height: 80px;
+                        }
+                        .loading-text {
+                            margin-top: 20px;
+                            font-weight: 600;
+                            font-size: 1rem;
+                            color: #0369a1;
+                            font-family: 'Inter', sans-serif;
+                        }
+                        .loading-dots::after {
+                            content: '';
+                            animation: dots 1.5s steps(1, end) infinite;
+                        }
+                        .loading-subtext {
+                            margin-top: 6px;
+                            font-size: 0.85rem;
+                            color: #94a3b8;
+                            font-family: 'Inter', sans-serif;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="loading-container">
+                        <canvas id="sphere-canvas" width="160" height="160"></canvas>
+                        <p class="loading-text">Analyzing with AI<span class="loading-dots"></span></p>
+                        <p class="loading-subtext">Mapping competencies from your activity</p>
+                    </div>
+                    <script>
+                        (function() {
+                            const canvas = document.getElementById('sphere-canvas');
+                            if (!canvas) return;
+                            const ctx = canvas.getContext('2d');
+                            const w = canvas.width;
+                            const h = canvas.height;
+                            const cx = w / 2;
+                            const cy = h / 2;
+                            const radius = 55;
+                            const colors = ['#003B5C', '#005F88', '#0ea5e9', '#7dd3fc'];
                             
-                            rotX += 0.008;
-                            rotY += 0.012;
+                            const particles = [];
+                            const numParticles = 800;
+                            const goldenRatio = (1 + Math.sqrt(5)) / 2;
                             
-                            // Breathing effect
-                            scale += 0.003 * scaleDir;
-                            if (scale > 1.08) scaleDir = -1;
-                            if (scale < 0.92) scaleDir = 1;
+                            for (let i = 0; i < numParticles; i++) {
+                                const theta = 2 * Math.PI * i / goldenRatio;
+                                const phi = Math.acos(1 - 2 * (i + 0.5) / numParticles);
+                                const x = Math.cos(theta) * Math.sin(phi);
+                                const y = Math.sin(theta) * Math.sin(phi);
+                                const z = Math.cos(phi);
+                                const color = colors[Math.floor(Math.random() * colors.length)];
+                                const size = 0.5 + Math.random() * 1;
+                                particles.push({ x, y, z, color, size });
+                            }
                             
-                            const cosX = Math.cos(rotX);
-                            const sinX = Math.sin(rotX);
-                            const cosY = Math.cos(rotY);
-                            const sinY = Math.sin(rotY);
+                            let rotX = 0;
+                            let rotY = 0;
+                            let scale = 1;
+                            let scaleDir = 1;
                             
-                            // Sort by z for depth
-                            const projected = particles.map(p => {
-                                let x = p.x, y = p.y, z = p.z;
-                                // Rotate around X
-                                let y1 = y * cosX - z * sinX;
-                                let z1 = y * sinX + z * cosX;
-                                // Rotate around Y
-                                let x1 = x * cosY + z1 * sinY;
-                                let z2 = -x * sinY + z1 * cosY;
-                                return { x: x1, y: y1, z: z2, color: p.color, size: p.size };
-                            }).sort((a, b) => a.z - b.z);
-                            
-                            projected.forEach(p => {
-                                const depth = (p.z + 1) / 2;
-                                const px = cx + p.x * radius * scale;
-                                const py = cy + p.y * radius * scale;
-                                const alpha = 0.3 + depth * 0.7;
-                                const sz = p.size * (0.5 + depth * 0.5);
+                            function animate() {
+                                ctx.clearRect(0, 0, w, h);
                                 
-                                ctx.beginPath();
-                                ctx.arc(px, py, sz, 0, Math.PI * 2);
-                                ctx.fillStyle = p.color;
-                                ctx.globalAlpha = alpha;
-                                ctx.fill();
-                            });
-                            ctx.globalAlpha = 1;
-                            
-                            requestAnimationFrame(animate);
-                        }
-                        animate();
-                    })();
-                </script>
-            """, unsafe_allow_html=True)
+                                rotX += 0.008;
+                                rotY += 0.012;
+                                
+                                scale += 0.003 * scaleDir;
+                                if (scale > 1.08) scaleDir = -1;
+                                if (scale < 0.92) scaleDir = 1;
+                                
+                                const cosX = Math.cos(rotX);
+                                const sinX = Math.sin(rotX);
+                                const cosY = Math.cos(rotY);
+                                const sinY = Math.sin(rotY);
+                                
+                                const projected = particles.map(p => {
+                                    let x = p.x, y = p.y, z = p.z;
+                                    let y1 = y * cosX - z * sinX;
+                                    let z1 = y * sinX + z * cosX;
+                                    let x1 = x * cosY + z1 * sinY;
+                                    let z2 = -x * sinY + z1 * cosY;
+                                    return { x: x1, y: y1, z: z2, color: p.color, size: p.size };
+                                }).sort((a, b) => a.z - b.z);
+                                
+                                projected.forEach(p => {
+                                    const depth = (p.z + 1) / 2;
+                                    const px = cx + p.x * radius * scale;
+                                    const py = cy + p.y * radius * scale;
+                                    const alpha = 0.3 + depth * 0.7;
+                                    const sz = p.size * (0.5 + depth * 0.5);
+                                    
+                                    ctx.beginPath();
+                                    ctx.arc(px, py, sz, 0, Math.PI * 2);
+                                    ctx.fillStyle = p.color;
+                                    ctx.globalAlpha = alpha;
+                                    ctx.fill();
+                                });
+                                ctx.globalAlpha = 1;
+                                
+                                requestAnimationFrame(animate);
+                            }
+                            animate();
+                        })();
+                    </script>
+                </body>
+                </html>
+            """
+            with loading_placeholder.container():
+                components.html(loading_html, height=220)
             
             # Run analysis
             try:
