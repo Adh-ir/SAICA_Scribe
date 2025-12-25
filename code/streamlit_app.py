@@ -505,88 +505,88 @@ def show_main_page():
                                 // Sample
                                 const imageData = tempCtx.getImageData(0, 0, w, h).data;
                                 const particles = [];
-                                const step = 2; 
+                                const step = 3; // Optimized for performance (was 2)
                                 
-                                for (let y = 0; y < h; y += step) {{
-                                    for (let x = 0; x < w; x += step) {{
+                                for (let y = 0; y < h; y += step) {
+                                    for (let x = 0; x < w; x += step) {
                                         const i = (y * w + x) * 4;
-                                        // Brightness check + Random culling (Adjusted for ~1200 particles)
-                                        if (imageData[i + 3] > 128 && Math.random() > 0.3) {{
+                                        // Brightness check + Culling (Keep ~800-900 particles)
+                                        if (imageData[i + 3] > 128 && Math.random() > 0.2) {
                                             const r = imageData[i], g = imageData[i + 1], b = imageData[i + 2];
-                                            particles.push({{
+                                            particles.push({
                                                 ox: x, oy: y,
-                                                // MODE CHECK: If Exit, start formed. If Entry, start random.
+                                                // MODE CHECK
                                                 x: (MODE === "EXIT") ? x : Math.random() * w,
                                                 y: (MODE === "EXIT") ? y : Math.random() * h,
-                                                color: `rgb(${{r}},${{g}},${{b}})`,
-                                                size: 0.65, 
+                                                color: `rgb(${r},${g},${b})`,
+                                                size: 0.85, 
                                                 phase: Math.random() * Math.PI * 2,
                                                 vx: (Math.random() - 0.5) * 4,
                                                 vy: (Math.random() - 0.5) * 4    
-                                            }});
-                                        }}
-                                    }}
-                                }}
+                                            });
+                                        }
+                                    }
+                                }
                                 return particles;
-                            }}
+                            }
                             
-                            let particles = createParticles();
-                            
-                            // Animation State
-                            let time = 0;
-                            const cx = w / 2;
-                            const cy = h / 2;
-                            // Start Phase Logic
-                            let phase = "ASSEMBLE"; 
-                            if (MODE === "EXIT") phase = "BREATHE"; // Start visible, then explode
-                            
-                            function animate() {{
-                                ctx.clearRect(0, 0, w, h);
-                                time += 0.02;
+                            // Initialize AFTER fonts load to ensure symbol matches
+                            document.fonts.ready.then(() => {
+                                let particles = createParticles();
                                 
-                                // Logic Control
-                                if (MODE === "ENTRY") {{
-                                    // Assemble -> Breathe Loop
-                                    if (time < 2.5) phase = "ASSEMBLE";
-                                    else phase = "BREATHE";
-                                }}
-                                else if (MODE === "EXIT") {{
-                                    // Hold for 0.5s, then EXPLODE
-                                    if (time < 0.5) phase = "BREATHE";
-                                    else phase = "EXPLODE";
-                                }}
+                                // Animation State
+                                let time = 0;
+                                const cx = w / 2;
+                                const cy = h / 2;
+                                let phase = "ASSEMBLE"; 
+                                if (MODE === "EXIT") phase = "BREATHE"; 
                                 
-                                const breatheScale = 1 + Math.sin(time * 2) * 0.02;
-
-                                particles.forEach(p => {{
-                                    if (phase === "ASSEMBLE") {{
-                                        p.x += (p.ox - p.x) * 0.05;
-                                        p.y += (p.oy - p.y) * 0.05;
-                                    }} else if (phase === "BREATHE") {{
-                                        const dx = p.ox - cx;
-                                        const dy = p.oy - cy;
-                                        const bx = cx + dx * breatheScale;
-                                        const by = cy + dy * breatheScale;
-                                        const driftX = Math.sin(time + p.phase) * 1.5;
-                                        const driftY = Math.cos(time + p.phase * 0.7) * 1.5;
-                                        p.x += (bx + driftX - p.x) * 0.1;
-                                        p.y += (by + driftY - p.y) * 0.1;
-                                    }} else if (phase === "EXPLODE") {{
-                                        p.x += p.vx;
-                                        p.y += p.vy;
-                                        p.vx *= 1.05; 
-                                        p.vy *= 1.05;
-                                    }}
+                                function animate() {
+                                    ctx.clearRect(0, 0, w, h);
+                                    time += 0.02;
                                     
-                                    ctx.fillStyle = p.color;
-                                    ctx.beginPath();
-                                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                                    ctx.fill();
-                                }});
-                                requestAnimationFrame(animate);
-                            }}
-                            animate();
-                        }})();
+                                    // Logic Control
+                                    if (MODE === "ENTRY") {
+                                        if (time < 2.5) phase = "ASSEMBLE";
+                                        else phase = "BREATHE";
+                                    }
+                                    else if (MODE === "EXIT") {
+                                        if (time < 0.5) phase = "BREATHE";
+                                        else phase = "EXPLODE";
+                                    }
+                                    
+                                    const breatheScale = 1 + Math.sin(time * 2) * 0.02;
+
+                                    particles.forEach(p => {
+                                        if (phase === "ASSEMBLE") {
+                                            p.x += (p.ox - p.x) * 0.05;
+                                            p.y += (p.oy - p.y) * 0.05;
+                                        } else if (phase === "BREATHE") {
+                                            const dx = p.ox - cx;
+                                            const dy = p.oy - cy;
+                                            const bx = cx + dx * breatheScale;
+                                            const by = cy + dy * breatheScale;
+                                            const driftX = Math.sin(time + p.phase) * 1.5;
+                                            const driftY = Math.cos(time + p.phase * 0.7) * 1.5;
+                                            p.x += (bx + driftX - p.x) * 0.1;
+                                            p.y += (by + driftY - p.y) * 0.1;
+                                        } else if (phase === "EXPLODE") {
+                                            p.x += p.vx;
+                                            p.y += p.vy;
+                                            p.vx *= 1.05; 
+                                            p.vy *= 1.05;
+                                        }
+                                        
+                                        ctx.fillStyle = p.color;
+                                        ctx.beginPath();
+                                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                                        ctx.fill();
+                                    });
+                                    requestAnimationFrame(animate);
+                                }
+                                animate();
+                            });
+                        })();
                     </script>
                 </body>
                 </html>
