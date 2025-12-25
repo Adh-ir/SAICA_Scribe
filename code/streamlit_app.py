@@ -367,7 +367,6 @@ def show_main_page():
         if st.button("Generate Analysis 🚀", use_container_width=True, type="primary"):
             # Get current values from session state
             current_activity = st.session_state.get("activity_input", "")
-            current_provider = st.session_state.get("selected_provider", "gemini")
             
             # Check if activity is empty or just the template
             is_empty = not current_activity.strip()
@@ -377,16 +376,30 @@ def show_main_page():
             if is_empty or is_template_only or has_no_evidence:
                 st.warning("Please describe your activity first. Fill in the template with your actual work details.")
             else:
-                with st.spinner("Analyzing with AI..."):
-                    try:
-                        results = map_activity_to_competency(current_activity, st.session_state.framework_data, provider=current_provider)
-                        st.session_state.markdown_report = generate_markdown_content(results)
-                    except Exception as e:
-                        st.error(f"Analysis failed: {e}")
+                # Set flag to trigger analysis in right panel
+                st.session_state.run_analysis = True
+                st.rerun()
 
     # --- RIGHT PANEL (Report) ---
     with main_col2:
         st.markdown(f'<h3 style="color: #1e3a8a; font-family: \'Inter\', sans-serif;">Analysis Report</h3>', unsafe_allow_html=True)
+        
+        # Check if analysis was triggered
+        if st.session_state.get("run_analysis", False):
+            # Clear the flag
+            st.session_state.run_analysis = False
+            
+            # Run analysis with spinner in the right panel
+            with st.spinner("Analyzing with AI..."):
+                try:
+                    current_activity = st.session_state.get("activity_input", "")
+                    current_provider = st.session_state.get("selected_provider", "gemini")
+                    results = map_activity_to_competency(current_activity, st.session_state.framework_data, provider=current_provider)
+                    st.session_state.markdown_report = generate_markdown_content(results)
+                except Exception as e:
+                    st.error(f"Analysis failed: {e}")
+        
+        # Display results or placeholder
         if st.session_state.markdown_report:
             st.markdown(st.session_state.markdown_report)
         else:
