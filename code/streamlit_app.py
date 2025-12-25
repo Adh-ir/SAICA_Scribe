@@ -391,7 +391,7 @@ def show_main_page():
 
     # --- RIGHT PANEL (Report) ---
     with main_col2:
-        st.markdown("### Analysis Report")
+        st.markdown(f'<h3 style="color: #1e3a8a; font-family: \'Inter\', sans-serif;">Analysis Report</h3>', unsafe_allow_html=True)
         if st.session_state.markdown_report:
             st.markdown(st.session_state.markdown_report)
         else:
