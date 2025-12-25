@@ -512,8 +512,18 @@ def show_main_page():
                                         const r = imageData[i], g = imageData[i + 1], b = imageData[i + 2];
                                         const color = `rgb(${r},${g},${b})`;
                                         const size = 1;
-                                        const phase = Math.random() * Math.PI * 2;
-                                        particles.push({ x, y, color, size, phase });
+                                        // Random movement properties for each particle
+                                        const speedX = (Math.random() - 0.5) * 0.8;
+                                        const speedY = (Math.random() - 0.5) * 0.8;
+                                        const phaseX = Math.random() * Math.PI * 2;
+                                        const phaseY = Math.random() * Math.PI * 2;
+                                        const amp = 3 + Math.random() * 4;
+                                        particles.push({ 
+                                            ox: x, oy: y, // original position
+                                            x, y, 
+                                            color, size, 
+                                            speedX, speedY, phaseX, phaseY, amp
+                                        });
                                     }
                                 }
                             }
@@ -522,33 +532,27 @@ def show_main_page():
                             
                             function animate() {
                                 ctx.clearRect(0, 0, w, h);
-                                time += 0.05;
-                                
-                                const cx = w / 2;
-                                const cy = h / 2;
+                                time += 0.03;
                                 
                                 particles.forEach(p => {
-                                    // Individual breathing - each particle has its own phase
-                                    const particleBreathe = Math.sin(time * 1.2 + p.phase) * 5;
+                                    // Organic wandering motion - each particle drifts independently
+                                    const driftX = Math.sin(time * p.speedX + p.phaseX) * p.amp;
+                                    const driftY = Math.cos(time * p.speedY + p.phaseY) * p.amp;
                                     
-                                    // Direction from center for this particle
-                                    const dx = p.x - cx;
-                                    const dy = p.y - cy;
-                                    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-                                    const nx = dx / dist;
-                                    const ny = dy / dist;
+                                    // Secondary subtle motion for more life
+                                    const wobbleX = Math.sin(time * 2.5 + p.phaseY) * 1.5;
+                                    const wobbleY = Math.cos(time * 2.5 + p.phaseX) * 1.5;
                                     
-                                    // Move outward/inward based on individual phase
-                                    const px = p.x + nx * particleBreathe;
-                                    const py = p.y + ny * particleBreathe;
+                                    const px = p.ox + driftX + wobbleX;
+                                    const py = p.oy + driftY + wobbleY;
                                     
-                                    // Size shimmer
-                                    const shimmer = Math.sin(time * 2 + p.phase) * 0.3 + 0.85;
+                                    // Very subtle size variation
+                                    const sizeVar = 0.9 + Math.sin(time * 1.5 + p.phaseX) * 0.15;
                                     
                                     ctx.beginPath();
-                                    ctx.arc(px, py, p.size * shimmer, 0, Math.PI * 2);
+                                    ctx.arc(px, py, p.size * sizeVar, 0, Math.PI * 2);
                                     ctx.fillStyle = p.color;
-                                    ctx.globalAlpha = 0.7 + shimmer * 0.3;
+                                    ctx.globalAlpha = 0.85;
                                     ctx.fill();
                                 });
                                 ctx.globalAlpha = 1;
