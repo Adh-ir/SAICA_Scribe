@@ -295,12 +295,45 @@ def show_main_page():
     # 2. COLUMNS (Inputs & Report)
     main_col1, main_col2 = st.columns([4, 6], gap="large")
 
-        # Simple native Streamlit button for template
-        if st.button("✨ Target Competency  +", use_container_width=True, type="secondary"):
-            st.session_state.activity_input = "COMPETENCY: [Insert Name] EVIDENCE: "
-            st.rerun()
+    # --- LEFT PANEL (Input) ---
+    with main_col1:
+        # Inject CSS to make Streamlit secondary button look like custom design
+        st.markdown("""
+            <style>
+            /* Force secondary button to match custom design */
+            div.stButton > button[kind="secondary"] {
+                width: 100% !important;
+                padding: 0.85rem 1.5rem !important;
+                background: #ffffff !important;
+                border: 1px solid #e0f2fe !important;
+                border-radius: 0.75rem !important;
+                color: #0369a1 !important;
+                font-weight: 600 !important;
+                font-size: 0.95rem !important;
+                text-align: left !important;
+                font-family: 'Inter', sans-serif !important;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                justify-content: flex-start !important;
+            }
+            div.stButton > button[kind="secondary"]:hover {
+                background: #f0f9ff !important;
+                border-color: #7dd3fc !important;
+                transform: translateY(-2px) !important;
+                box-shadow: 0 10px 15px -3px rgba(14, 165, 233, 0.15) !important;
+                color: #0284c7 !important;
+            }
+            div.stButton > button[kind="secondary"]:active {
+                transform: translateY(0) !important;
+                box-shadow: inset 0 2px 4px rgba(0,0,0,0.05) !important;
+            }
+            </style>
+        """, unsafe_allow_html=True)
         
-        st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
+        if st.button("✨ Target Competency                                                              +", use_container_width=True, type="secondary"):
+            st.session_state.activity_input = "COMPETENCY: [Insert Name] EVIDENCE: "
+        
+        st.markdown("<div style='height: 5px;'></div>", unsafe_allow_html=True)
         
         activity_val = st.session_state.get("activity_input", "")
         activity = st.text_area(
@@ -326,33 +359,29 @@ def show_main_page():
             }.get(x, x)
         )
         
-        # --- FRAGMENT: Isolate button rerun to prevent container flash ---
-        @st.fragment
-        def run_analysis():
-            if st.button("Generate Analysis 🚀", use_container_width=True, type="primary"):
-                # Get current values from session state (set outside fragment)
-                current_activity = st.session_state.get("activity_input", "")
-                current_provider = st.session_state.get("selected_provider", "gemini")
-                
-                # Check if activity is empty or just the template
-                is_empty = not current_activity.strip()
-                is_template_only = current_activity.strip() == "COMPETENCY: [Insert Name] EVIDENCE:"
-                has_no_evidence = "EVIDENCE:" in current_activity and current_activity.split("EVIDENCE:", 1)[1].strip() == ""
-                
-                if is_empty or is_template_only or has_no_evidence:
-                    st.warning("Please describe your activity first. Fill in the template with your actual work details.")
-                else:
-                    with st.spinner("Analyzing with AI..."):
-                        try:
-                            results = map_activity_to_competency(current_activity, st.session_state.framework_data, provider=current_provider)
-                            st.session_state.markdown_report = generate_markdown_content(results)
-                            st.rerun()  # Refresh page to display results in right panel
-                        except Exception as e:
-                            st.error(f"Analysis failed: {e}")
-        
-        # Store provider in session state for fragment access
+        # --- Generate Analysis Button ---
+        # Store provider in session state
         st.session_state.selected_provider = provider
-        run_analysis()
+        
+        if st.button("Generate Analysis 🚀", use_container_width=True, type="primary"):
+            # Get current values from session state
+            current_activity = st.session_state.get("activity_input", "")
+            current_provider = st.session_state.get("selected_provider", "gemini")
+            
+            # Check if activity is empty or just the template
+            is_empty = not current_activity.strip()
+            is_template_only = current_activity.strip() == "COMPETENCY: [Insert Name] EVIDENCE:"
+            has_no_evidence = "EVIDENCE:" in current_activity and current_activity.split("EVIDENCE:", 1)[1].strip() == ""
+            
+            if is_empty or is_template_only or has_no_evidence:
+                st.warning("Please describe your activity first. Fill in the template with your actual work details.")
+            else:
+                with st.spinner("Analyzing with AI..."):
+                    try:
+                        results = map_activity_to_competency(current_activity, st.session_state.framework_data, provider=current_provider)
+                        st.session_state.markdown_report = generate_markdown_content(results)
+                    except Exception as e:
+                        st.error(f"Analysis failed: {e}")
 
     # --- RIGHT PANEL (Report) ---
     with main_col2:
