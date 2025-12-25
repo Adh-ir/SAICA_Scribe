@@ -534,12 +534,14 @@ h1, h2, h3 {
     right: 50%;
     margin-left: -50vw;
     margin-right: -50vw;
-    background: #ffffff;
-    border-top: 1px solid #e0f2fe;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(224, 242, 254, 0.8);
     text-align: center;
     padding: 2.5rem 0;
     margin-top: 3rem;
-    box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.02);
+    box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.01);
 }
 </style>
 """
