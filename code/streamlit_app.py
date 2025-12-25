@@ -372,6 +372,7 @@ def show_main_page():
         
         st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
         
+        # Recreated Button for Fresh Render (Fix Blue Flash)
         if st.button("Generate Analysis 🚀", use_container_width=True, type="primary"):
             # Check if activity is empty or just the template
             is_empty = not activity.strip()
