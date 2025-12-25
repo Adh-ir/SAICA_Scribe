@@ -337,7 +337,9 @@ def show_main_page():
                     textarea.dispatchEvent(new Event('input', { bubbles: true }));
                 }
             ">
-            <span style="font-size: 1.1em;">✨</span> Target Competency
+            <span style="font-size: 1.1em;">✨</span> 
+            <span>Target Competency</span>
+            <span style="margin-left: auto; color: #cbd5e1; font-weight: 300; font-size: 1.2rem;">+</span>
             </button>
         """, unsafe_allow_html=True)
         
