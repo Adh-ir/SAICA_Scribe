@@ -451,8 +451,9 @@ div[class*="stHorizontalBlock"]:focus-within {
 }
 
 .stTextArea textarea:focus, .stSelectbox div[data-baseweb="select"]:focus-within {
-    border-color: #38bdf8 !important; /* Sky Blue */
-    box-shadow: 0 0 15px rgba(56, 189, 248, 0.4) !important; /* Soft Blue Glow */
+    border: 2px solid #38bdf8 !important; /* Double thickness (2px) + Sky Blue */
+    padding: calc(0.75rem - 1px) !important; /* Adjust padding to prevent layout shift */
+    box-shadow: 0 0 18px rgba(56, 189, 248, 0.5) !important; /* Increased glow (+20%) */
     outline: none !important;
 }
 
