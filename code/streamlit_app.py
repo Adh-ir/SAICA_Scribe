@@ -370,7 +370,7 @@ def show_main_page():
             }.get(x, x)
         )
         
-        st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
+        st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
         
         # --- FRAGMENT: Isolate button rerun to prevent container flash ---
         @st.fragment
