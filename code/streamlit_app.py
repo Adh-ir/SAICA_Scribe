@@ -256,7 +256,7 @@ def render_settings_page():
                 border-radius: 24px; 
                 box-shadow: 0 20px 40px -10px rgba(14, 165, 233, 0.15); 
                 border: 1px solid rgba(255, 255, 255, 0.5); 
-                max-width: 500px; 
+                max-width: 420px; 
                 width: 100%;
             ">
                 <div style="text-align: center; margin-bottom: 2rem;">
@@ -312,9 +312,10 @@ def render_settings_page():
         gh_key_val = st.session_state.get("GITHUB_TOKEN", "")
         gh_key = st.text_input("GitHub Token", value=gh_key_val, type="password", placeholder="Personal Access Token (ghp_...)", label_visibility="collapsed")
         
-        st.markdown("<div style='height: 20px'></div>", unsafe_allow_html=True)
+        # Add spacing before buttons
+        st.markdown("<div style='height: 40px'></div>", unsafe_allow_html=True)
         
-        col1, col2 = st.columns([1, 1], gap="small")
+        col1, col2 = st.columns([1, 1], gap="medium")
         with col1:
             if st.form_submit_button("Cancel", type="secondary", use_container_width=True):
                 st.session_state.view_mode = "main"
@@ -363,8 +364,15 @@ def show_main_page():
                 st.error("Failed to load competency framework. Please check logs.")
     
     # --- HEADER (Outside Card) ---
-    # --- HEADER (Outside Card) ---
     st.markdown("""
+        <style>
+        .settings-link:hover {
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.6) !important;
+            border-color: #38bdf8 !important;
+            background: rgba(255, 255, 255, 0.95) !important;
+            transition: all 0.3s ease !important;
+        }
+        </style>
         <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; margin-bottom: 2rem;">
             <div>
                 <div style="display: flex; align-items: baseline; gap: 0.25rem;">
@@ -377,7 +385,7 @@ def show_main_page():
                 <div style="font-size: 1rem; color: #64748b; font-weight: 500; margin-top: -10px; letter-spacing: 0.025em; padding-left: 0.25rem;">AI-Powered Competency Mapper</div>
             </div>
             <div>
-                <a href="/?page=settings" target="_blank" style="
+                <a href="/?page=settings" target="_blank" class="settings-link" style="
                     background: rgba(255, 255, 255, 0.8); 
                     backdrop-filter: blur(10px);
                     border: 1px solid #7dd3fc; 
@@ -391,6 +399,7 @@ def show_main_page():
                     align-items: center; 
                     gap: 6px;
                     text-decoration: none;
+                    transition: all 0.3s ease;
                 ">
                     <span style="display: inline-block; width: 8px; height: 8px; background: #4ade80; border-radius: 50%;"></span>
                     Settings
