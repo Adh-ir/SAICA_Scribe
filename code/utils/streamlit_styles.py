@@ -419,10 +419,17 @@ html, body, [class*="css"] {
     padding-left: 2rem !important;
 }
 
-/* Report Title Styling - Matches Activity Description Label */
+/* Report Column Main Container - Scrollable */
+div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-of-type(2) > div[data-testid="stVerticalBlock"],
+div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:last-child > div[data-testid="stVerticalBlock"] {
+    max-height: 65vh !important;
+    overflow-y: auto !important;
+    padding-right: 10px !important;
+}
+
+/* Report Title Styling - Applies to h1 inside the scrollable column */
 div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-of-type(2) h1,
-div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:last-child h1,
-[data-testid="stVerticalBlock"] > [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:nth-of-type(2) h1 {
+div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:last-child h1 {
     color: #1e3a8a !important;
     font-family: 'Inter', sans-serif !important;
     font-weight: 800 !important;
@@ -470,30 +477,26 @@ div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:last-child h1
     outline: none !important;
 }
 
-/* Report Scroll Container */
-.report-scroll-container {
-    max_height: 600px;
-    overflow-y: auto;
-    padding-right: 10px; /* Space for scrollbar */
-    margin-right: -10px; /* Counteract padding */
-}
-
 /* Custom Scrollbar for Report */
-.report-scroll-container::-webkit-scrollbar {
+div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-of-type(2) > div[data-testid="stVerticalBlock"]::-webkit-scrollbar,
+div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:last-child > div[data-testid="stVerticalBlock"]::-webkit-scrollbar {
     width: 8px;
 }
 
-.report-scroll-container::-webkit-scrollbar-track {
+div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-of-type(2) > div[data-testid="stVerticalBlock"]::-webkit-scrollbar-track,
+div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:last-child > div[data-testid="stVerticalBlock"]::-webkit-scrollbar-track {
     background: rgba(224, 242, 254, 0.3);
     border-radius: 4px;
 }
 
-.report-scroll-container::-webkit-scrollbar-thumb {
+div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-of-type(2) > div[data-testid="stVerticalBlock"]::-webkit-scrollbar-thumb,
+div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:last-child > div[data-testid="stVerticalBlock"]::-webkit-scrollbar-thumb {
     background: rgba(147, 197, 253, 0.8);
     border-radius: 4px;
 }
 
-.report-scroll-container::-webkit-scrollbar-thumb:hover {
+div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-of-type(2) > div[data-testid="stVerticalBlock"]::-webkit-scrollbar-thumb:hover,
+div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:last-child > div[data-testid="stVerticalBlock"]::-webkit-scrollbar-thumb:hover {
     background: rgba(56, 189, 248, 1);
 }
 
