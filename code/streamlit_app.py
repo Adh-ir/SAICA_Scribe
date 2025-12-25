@@ -393,13 +393,13 @@ def show_main_page():
             loading_placeholder = st.empty()
             loading_placeholder.markdown("""
                 <style>
-                    @keyframes rotate {
-                        0% { transform: rotate(0deg); }
-                        100% { transform: rotate(360deg); }
+                    @keyframes sphere-rotate {
+                        0% { transform: rotateX(0deg) rotateY(0deg); }
+                        100% { transform: rotateX(360deg) rotateY(360deg); }
                     }
-                    @keyframes pulse {
+                    @keyframes breathe {
                         0%, 100% { transform: scale(1); }
-                        50% { transform: scale(1.15); }
+                        50% { transform: scale(1.1); }
                     }
                     @keyframes dots {
                         0%, 20% { content: '.'; }
@@ -413,31 +413,62 @@ def show_main_page():
                         justify-content: center;
                         min-height: 400px;
                     }
-                    .dot-spinner {
+                    .sphere-wrapper {
+                        perspective: 800px;
+                        animation: breathe 3s ease-in-out infinite;
+                    }
+                    .particle-sphere {
                         position: relative;
                         width: 60px;
                         height: 60px;
-                        animation: rotate 2s linear infinite, pulse 2s ease-in-out infinite;
+                        transform-style: preserve-3d;
+                        animation: sphere-rotate 4s linear infinite;
                     }
-                    .dot-spinner .dot {
+                    .particle {
                         position: absolute;
-                        width: 8px;
-                        height: 8px;
+                        width: 2px;
+                        height: 2px;
                         background: #0ea5e9;
                         border-radius: 50%;
                         top: 50%;
                         left: 50%;
                     }
-                    .dot-spinner .dot:nth-child(1) { transform: translate(-50%, -50%) rotate(0deg) translateY(-24px); opacity: 1; }
-                    .dot-spinner .dot:nth-child(2) { transform: translate(-50%, -50%) rotate(45deg) translateY(-24px); opacity: 0.875; }
-                    .dot-spinner .dot:nth-child(3) { transform: translate(-50%, -50%) rotate(90deg) translateY(-24px); opacity: 0.75; }
-                    .dot-spinner .dot:nth-child(4) { transform: translate(-50%, -50%) rotate(135deg) translateY(-24px); opacity: 0.625; }
-                    .dot-spinner .dot:nth-child(5) { transform: translate(-50%, -50%) rotate(180deg) translateY(-24px); opacity: 0.5; }
-                    .dot-spinner .dot:nth-child(6) { transform: translate(-50%, -50%) rotate(225deg) translateY(-24px); opacity: 0.375; }
-                    .dot-spinner .dot:nth-child(7) { transform: translate(-50%, -50%) rotate(270deg) translateY(-24px); opacity: 0.25; }
-                    .dot-spinner .dot:nth-child(8) { transform: translate(-50%, -50%) rotate(315deg) translateY(-24px); opacity: 0.125; }
+                    /* Ring 1 - Equator */
+                    .particle.r1-1 { transform: translate(-50%, -50%) rotateY(0deg) translateZ(28px); }
+                    .particle.r1-2 { transform: translate(-50%, -50%) rotateY(30deg) translateZ(28px); }
+                    .particle.r1-3 { transform: translate(-50%, -50%) rotateY(60deg) translateZ(28px); }
+                    .particle.r1-4 { transform: translate(-50%, -50%) rotateY(90deg) translateZ(28px); }
+                    .particle.r1-5 { transform: translate(-50%, -50%) rotateY(120deg) translateZ(28px); }
+                    .particle.r1-6 { transform: translate(-50%, -50%) rotateY(150deg) translateZ(28px); }
+                    .particle.r1-7 { transform: translate(-50%, -50%) rotateY(180deg) translateZ(28px); }
+                    .particle.r1-8 { transform: translate(-50%, -50%) rotateY(210deg) translateZ(28px); }
+                    .particle.r1-9 { transform: translate(-50%, -50%) rotateY(240deg) translateZ(28px); }
+                    .particle.r1-10 { transform: translate(-50%, -50%) rotateY(270deg) translateZ(28px); }
+                    .particle.r1-11 { transform: translate(-50%, -50%) rotateY(300deg) translateZ(28px); }
+                    .particle.r1-12 { transform: translate(-50%, -50%) rotateY(330deg) translateZ(28px); }
+                    /* Ring 2 - Upper */
+                    .particle.r2-1 { transform: translate(-50%, -50%) rotateX(45deg) rotateY(0deg) translateZ(28px); opacity: 0.8; }
+                    .particle.r2-2 { transform: translate(-50%, -50%) rotateX(45deg) rotateY(45deg) translateZ(28px); opacity: 0.8; }
+                    .particle.r2-3 { transform: translate(-50%, -50%) rotateX(45deg) rotateY(90deg) translateZ(28px); opacity: 0.8; }
+                    .particle.r2-4 { transform: translate(-50%, -50%) rotateX(45deg) rotateY(135deg) translateZ(28px); opacity: 0.8; }
+                    .particle.r2-5 { transform: translate(-50%, -50%) rotateX(45deg) rotateY(180deg) translateZ(28px); opacity: 0.8; }
+                    .particle.r2-6 { transform: translate(-50%, -50%) rotateX(45deg) rotateY(225deg) translateZ(28px); opacity: 0.8; }
+                    .particle.r2-7 { transform: translate(-50%, -50%) rotateX(45deg) rotateY(270deg) translateZ(28px); opacity: 0.8; }
+                    .particle.r2-8 { transform: translate(-50%, -50%) rotateX(45deg) rotateY(315deg) translateZ(28px); opacity: 0.8; }
+                    /* Ring 3 - Lower */
+                    .particle.r3-1 { transform: translate(-50%, -50%) rotateX(-45deg) rotateY(22deg) translateZ(28px); opacity: 0.8; }
+                    .particle.r3-2 { transform: translate(-50%, -50%) rotateX(-45deg) rotateY(67deg) translateZ(28px); opacity: 0.8; }
+                    .particle.r3-3 { transform: translate(-50%, -50%) rotateX(-45deg) rotateY(112deg) translateZ(28px); opacity: 0.8; }
+                    .particle.r3-4 { transform: translate(-50%, -50%) rotateX(-45deg) rotateY(157deg) translateZ(28px); opacity: 0.8; }
+                    .particle.r3-5 { transform: translate(-50%, -50%) rotateX(-45deg) rotateY(202deg) translateZ(28px); opacity: 0.8; }
+                    .particle.r3-6 { transform: translate(-50%, -50%) rotateX(-45deg) rotateY(247deg) translateZ(28px); opacity: 0.8; }
+                    .particle.r3-7 { transform: translate(-50%, -50%) rotateX(-45deg) rotateY(292deg) translateZ(28px); opacity: 0.8; }
+                    .particle.r3-8 { transform: translate(-50%, -50%) rotateX(-45deg) rotateY(337deg) translateZ(28px); opacity: 0.8; }
+                    /* Poles */
+                    .particle.pole-top { transform: translate(-50%, -50%) rotateX(90deg) translateZ(28px); }
+                    .particle.pole-bottom { transform: translate(-50%, -50%) rotateX(-90deg) translateZ(28px); }
                     .loading-text {
-                        margin-top: 24px;
+                        margin-top: 28px;
                         font-weight: 600;
                         font-size: 1rem;
                         color: #0369a1;
@@ -455,15 +486,20 @@ def show_main_page():
                     }
                 </style>
                 <div class="loading-container">
-                    <div class="dot-spinner">
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                        <div class="dot"></div>
+                    <div class="sphere-wrapper">
+                        <div class="particle-sphere">
+                            <div class="particle r1-1"></div><div class="particle r1-2"></div><div class="particle r1-3"></div>
+                            <div class="particle r1-4"></div><div class="particle r1-5"></div><div class="particle r1-6"></div>
+                            <div class="particle r1-7"></div><div class="particle r1-8"></div><div class="particle r1-9"></div>
+                            <div class="particle r1-10"></div><div class="particle r1-11"></div><div class="particle r1-12"></div>
+                            <div class="particle r2-1"></div><div class="particle r2-2"></div><div class="particle r2-3"></div>
+                            <div class="particle r2-4"></div><div class="particle r2-5"></div><div class="particle r2-6"></div>
+                            <div class="particle r2-7"></div><div class="particle r2-8"></div>
+                            <div class="particle r3-1"></div><div class="particle r3-2"></div><div class="particle r3-3"></div>
+                            <div class="particle r3-4"></div><div class="particle r3-5"></div><div class="particle r3-6"></div>
+                            <div class="particle r3-7"></div><div class="particle r3-8"></div>
+                            <div class="particle pole-top"></div><div class="particle pole-bottom"></div>
+                        </div>
                     </div>
                     <p class="loading-text">Analyzing with AI<span class="loading-dots"></span></p>
                     <p class="loading-subtext">Mapping competencies from your activity</p>
