@@ -273,20 +273,44 @@ def render_settings_page():
     """, unsafe_allow_html=True)
 
     with st.form("settings_form"):
-        # Gemini
-        st.markdown("**Google Gemini**", unsafe_allow_html=True)
+        # Gemini Input Section
+        st.markdown("""
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; margin-top: 10px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 0.75rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.05em;">✨ Google Gemini</span>
+                    <span style="font-size: 0.65rem; font-weight: 700; color: #0ea5e9; background: rgba(14, 165, 233, 0.1); padding: 3px 8px; border-radius: 99px; border: 1px solid rgba(14, 165, 233, 0.25);">RECOMMENDED</span>
+                </div>
+                <a href="https://aistudio.google.com/app/apikey" target="_blank" style="font-size: 0.75rem; color: #0ea5e9; text-decoration: none; font-weight: 600; transition: color 0.2s;">Get Free Key ↗</a>
+            </div>
+        """, unsafe_allow_html=True)
         g_key_val = st.session_state.get("GOOGLE_API_KEY", "")
-        g_key = st.text_input("Gemini Key", value=g_key_val, type="password", placeholder="AIza...", label_visibility="collapsed")
-
-        # Groq
-        st.markdown("**Groq**", unsafe_allow_html=True)
+        g_key = st.text_input("Gemini Key", value=g_key_val, type="password", placeholder="Paste Google API Key (AIza...)", label_visibility="collapsed")
+        
+        # Groq Input Section
+        st.markdown("""
+            <div style="margin-top: 20px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 0.75rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.05em;">⚡ Groq</span>
+                    <span style="font-size: 0.65rem; font-weight: 700; color: #f97316; background: rgba(249, 115, 22, 0.1); padding: 3px 8px; border-radius: 99px; border: 1px solid rgba(249, 115, 22, 0.25);">FASTEST</span>
+                </div>
+                <a href="https://console.groq.com/keys" target="_blank" style="font-size: 0.75rem; color: #0ea5e9; text-decoration: none; font-weight: 600; transition: color 0.2s;">Get Free Key ↗</a>
+            </div>
+        """, unsafe_allow_html=True)
         q_key_val = st.session_state.get("GROQ_API_KEY", "")
-        q_key = st.text_input("Groq Key", value=q_key_val, type="password", placeholder="gsk_...", label_visibility="collapsed")
-
-        # GitHub
-        st.markdown("**GitHub Models**", unsafe_allow_html=True)
+        q_key = st.text_input("Groq Key", value=q_key_val, type="password", placeholder="Paste Groq API Key (gsk_...)", label_visibility="collapsed")
+        
+        # GitHub Input Section
+        st.markdown("""
+            <div style="margin-top: 20px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 0.75rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.05em;">🐙 GitHub Models</span>
+                    <span style="font-size: 0.65rem; font-weight: 700; color: #64748b; background: rgba(100, 116, 139, 0.1); padding: 3px 8px; border-radius: 99px; border: 1px solid rgba(100, 116, 139, 0.25);">OPENAI GPT-4o</span>
+                </div>
+                <a href="https://github.com/settings/tokens" target="_blank" style="font-size: 0.75rem; color: #0ea5e9; text-decoration: none; font-weight: 600; transition: color 0.2s;">Get Token ↗</a>
+            </div>
+        """, unsafe_allow_html=True)
         gh_key_val = st.session_state.get("GITHUB_TOKEN", "")
-        gh_key = st.text_input("GitHub Token", value=gh_key_val, type="password", placeholder="ghp_...", label_visibility="collapsed")
+        gh_key = st.text_input("GitHub Token", value=gh_key_val, type="password", placeholder="Personal Access Token (ghp_...)", label_visibility="collapsed")
         
         st.markdown("<div style='height: 20px'></div>", unsafe_allow_html=True)
         
@@ -353,7 +377,7 @@ def show_main_page():
                 <div style="font-size: 1rem; color: #64748b; font-weight: 500; margin-top: -10px; letter-spacing: 0.025em; padding-left: 0.25rem;">AI-Powered Competency Mapper</div>
             </div>
             <div>
-                <a href="/?page=settings" target="_self" style="
+                <a href="/?page=settings" target="_blank" style="
                     background: rgba(255, 255, 255, 0.8); 
                     backdrop-filter: blur(10px);
                     border: 1px solid #7dd3fc; 
