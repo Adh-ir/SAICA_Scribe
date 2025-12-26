@@ -475,6 +475,11 @@ div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:last-child sp
     transition: all 0.2s ease-in-out;
 }
 
+.stTextArea textarea::placeholder, .stTextInput input::placeholder {
+    color: #94a3b8 !important;
+    opacity: 1; /* Firefox fix */
+}
+
 /* Specific Fix for Text Area Height */
 .stTextArea textarea {
     resize: none !important;
