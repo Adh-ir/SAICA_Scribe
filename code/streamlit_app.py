@@ -3,7 +3,7 @@ import os
 import sys
 import time
 
-# Deploy Trigger: V4.3 - Use parent.localStorage from iframe to access main page storage
+# Deploy Trigger: V5.0 - Use streamlit-local-storage package for proper localStorage
 import streamlit.components.v1 as components
 from PIL import Image
 
@@ -46,56 +46,32 @@ if "markdown_report" not in st.session_state:
 if "keys_loaded_from_storage" not in st.session_state:
     st.session_state.keys_loaded_from_storage = False
 
-# --- LOCALSTORAGE KEY PERSISTENCE (IFRAME PARENT ACCESS) ---
-# st.markdown() strips <script> tags for security.
-# components.html() runs in an iframe but can access parent.localStorage.
-# Solution: Use components.html with parent.localStorage for storage operations.
-# 1. On save: Inject <script> via components.html using parent.localStorage
-# 2. On load: Inject JS bouncer that checks localStorage and redirects with URL params
-# 3. Python reads from URL params (synchronous)
+# --- LOCALSTORAGE KEY PERSISTENCE (streamlit-local-storage package) ---
+# The streamlit-local-storage package handles the iframe sandbox issues properly.
+# It uses postMessage to communicate between iframe and parent window.
+from streamlit_local_storage import LocalStorage
 
 # Storage configuration  
 STORAGE_PREFIX = "ca_scribe_"
+localS = LocalStorage()
 
 def save_keys_to_localstorage(google_key="", groq_key="", github_token=""):
-    """Save API keys to browser localStorage using components.html with parent.localStorage."""
-    # Build JavaScript to save keys - use parent.localStorage to access main page
-    js_parts = []
+    """Save API keys to browser localStorage."""
     if google_key:
-        escaped_key = google_key.replace("\\", "\\\\").replace("'", "\\'").replace('"', '\\"')
-        js_parts.append(f'parent.localStorage.setItem("{STORAGE_PREFIX}google_key", "{escaped_key}");')
+        localS.setItem(f"{STORAGE_PREFIX}google_key", google_key)
     if groq_key:
-        escaped_key = groq_key.replace("\\", "\\\\").replace("'", "\\'").replace('"', '\\"')
-        js_parts.append(f'parent.localStorage.setItem("{STORAGE_PREFIX}groq_key", "{escaped_key}");')
+        localS.setItem(f"{STORAGE_PREFIX}groq_key", groq_key)
     if github_token:
-        escaped_key = github_token.replace("\\", "\\\\").replace("'", "\\'").replace('"', '\\"')
-        js_parts.append(f'parent.localStorage.setItem("{STORAGE_PREFIX}github_token", "{escaped_key}");')
-    
-    if js_parts:
-        js_code = "\n                        ".join(js_parts)
-        # Use components.html with parent.localStorage to access main page storage
-        components.html(f"""
-            <script>
-                (function() {{
-                    try {{
-                        {js_code}
-                        console.log('CA Scribe: Keys saved to parent.localStorage');
-                    }} catch(e) {{
-                        console.error('CA Scribe localStorage save error:', e);
-                    }}
-                }})();
-            </script>
-        """, height=0)
+        localS.setItem(f"{STORAGE_PREFIX}github_token", github_token)
 
-def load_keys_from_url_params():
-    """Load API keys from URL params (set by JS bouncer from localStorage)."""
+def load_keys_from_localstorage():
+    """Load API keys from browser localStorage into session state."""
     try:
-        params = st.query_params
         loaded = False
         
-        gkey = params.get("_gkey")
-        qkey = params.get("_qkey")
-        ghkey = params.get("_ghkey")
+        gkey = localS.getItem(f"{STORAGE_PREFIX}google_key")
+        qkey = localS.getItem(f"{STORAGE_PREFIX}groq_key")
+        ghkey = localS.getItem(f"{STORAGE_PREFIX}github_token")
         
         if gkey and not st.session_state.get("GOOGLE_API_KEY"):
             st.session_state["GOOGLE_API_KEY"] = gkey
@@ -107,64 +83,17 @@ def load_keys_from_url_params():
             st.session_state["GITHUB_TOKEN"] = ghkey
             loaded = True
             
-        # Clean up URL params after loading
-        if loaded:
-            page = params.get("page")
-            st.query_params.clear()
-            if page:
-                st.query_params["page"] = page
         return loaded
-    except:
+    except Exception as e:
+        print(f"LocalStorage load error: {e}")
         return False
 
-# JavaScript bouncer - checks localStorage immediately and redirects with URL params
-# This runs in the main browser context (not iframe) via st.markdown script injection
-JS_LOCALSTORAGE_BOUNCER = """
-<script>
-(function() {
-    // Only run once per page load
-    if (window._ca_scribe_bouncer_ran) return;
-    window._ca_scribe_bouncer_ran = true;
-    
-    // Check if we already have keys in URL (don't loop)
-    const url = new URL(window.location.href);
-    if (url.searchParams.has('_gkey') || url.searchParams.has('_qkey') || url.searchParams.has('_ghkey')) {
-        return; // Already have keys, don't redirect
-    }
-    
-    // Check localStorage for stored keys
-    const prefix = 'ca_scribe_';
-    const gkey = localStorage.getItem(prefix + 'google_key');
-    const qkey = localStorage.getItem(prefix + 'groq_key');
-    const ghkey = localStorage.getItem(prefix + 'github_token');
-    
-    // If we have stored keys, redirect with them in URL
-    if (gkey || qkey || ghkey) {
-        if (gkey) url.searchParams.set('_gkey', gkey);
-        if (qkey) url.searchParams.set('_qkey', qkey);
-        if (ghkey) url.searchParams.set('_ghkey', ghkey);
-        
-        // Use replace to avoid back button issues
-        window.location.replace(url.toString());
-    }
-})();
-</script>
-"""
-
-# Load keys from URL params first (set by JS bouncer)
+# Load keys from localStorage on startup
 if not st.session_state.keys_loaded_from_storage:
-    if load_keys_from_url_params():
+    if load_keys_from_localstorage():
         st.session_state.keys_loaded_from_storage = True
         st.rerun()
     st.session_state.keys_loaded_from_storage = True
-
-# Inject the JS bouncer to check localStorage (runs on every page load)
-# This will redirect to include keys in URL if they exist in localStorage
-if not st.session_state.get("GOOGLE_API_KEY") and not st.session_state.get("GROQ_API_KEY") and not st.session_state.get("GITHUB_TOKEN"):
-    # Only inject bouncer if we don't have keys yet
-    has_key_params = st.query_params.get("_gkey") or st.query_params.get("_qkey") or st.query_params.get("_ghkey")
-    if not has_key_params:
-        st.markdown(JS_LOCALSTORAGE_BOUNCER, unsafe_allow_html=True)
 
 # Force global styles immediately
 st.markdown(GLOBAL_HACKS_CSS, unsafe_allow_html=True)
