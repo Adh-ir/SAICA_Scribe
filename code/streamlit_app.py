@@ -3,7 +3,7 @@ import os
 import sys
 import time
 
-# Deploy Trigger: V3.8 - Cookie-based key persistence with extra-streamlit-components
+# Deploy Trigger: V3.9 - streamlit-ws-localstorage for synchronous key persistence
 import streamlit.components.v1 as components
 from PIL import Image
 
@@ -43,34 +43,29 @@ if "framework_data" not in st.session_state:
 if "markdown_report" not in st.session_state:
     st.session_state.markdown_report = ""
 
-if "keys_loaded_from_cookies" not in st.session_state:
-    st.session_state.keys_loaded_from_cookies = False
+if "keys_loaded_from_storage" not in st.session_state:
+    st.session_state.keys_loaded_from_storage = False
 
-# --- COOKIE-BASED KEY PERSISTENCE ---
-# Using extra-streamlit-components CookieManager for reliable browser storage
-import extra_streamlit_components as stx
-from datetime import datetime, timedelta
+# --- LOCALSTORAGE-BASED KEY PERSISTENCE ---
+# Using streamlit-ws-localstorage for synchronous localStorage access via websockets
+from streamlit_ws_localstorage import injectWebsocketCode, getOrCreateUID
 
-# Initialize cookie manager (cached to avoid re-initialization)
-@st.cache_resource
-def get_cookie_manager():
-    return stx.CookieManager()
+# Inject websocket code for localStorage access (must be called early)
+# This creates a hidden component that enables synchronous localStorage read/write
+conn = injectWebsocketCode(hostPort='', uid=getOrCreateUID())
 
-cookie_manager = get_cookie_manager()
+# Storage configuration  
+STORAGE_PREFIX = "ca_scribe_"
 
-# Cookie configuration
-COOKIE_EXPIRY_DAYS = 7
-COOKIE_PREFIX = "ca_scribe_"
-
-def load_keys_from_cookies():
-    """Load API keys from browser cookies."""
+def load_keys_from_localstorage():
+    """Load API keys from browser localStorage synchronously."""
     try:
         loaded = False
         
-        # Get cookies
-        google_key = cookie_manager.get(f"{COOKIE_PREFIX}google_key")
-        groq_key = cookie_manager.get(f"{COOKIE_PREFIX}groq_key")
-        github_token = cookie_manager.get(f"{COOKIE_PREFIX}github_token")
+        # Get values from localStorage
+        google_key = conn.getLocalStorageVal(f"{STORAGE_PREFIX}google_key")
+        groq_key = conn.getLocalStorageVal(f"{STORAGE_PREFIX}groq_key")
+        github_token = conn.getLocalStorageVal(f"{STORAGE_PREFIX}github_token")
         
         if google_key and not st.session_state.get("GOOGLE_API_KEY"):
             st.session_state["GOOGLE_API_KEY"] = google_key
@@ -84,29 +79,27 @@ def load_keys_from_cookies():
             
         return loaded
     except Exception as e:
-        print(f"Cookie load error: {e}")
+        print(f"localStorage load error: {e}")
         return False
 
-def save_keys_to_cookies(google_key="", groq_key="", github_token=""):
-    """Save API keys to browser cookies with expiration."""
+def save_keys_to_localstorage(google_key="", groq_key="", github_token=""):
+    """Save API keys to browser localStorage."""
     try:
-        expiry = datetime.now() + timedelta(days=COOKIE_EXPIRY_DAYS)
-        
         if google_key:
-            cookie_manager.set(f"{COOKIE_PREFIX}google_key", google_key, expires_at=expiry)
+            conn.setLocalStorageVal(f"{STORAGE_PREFIX}google_key", google_key)
         if groq_key:
-            cookie_manager.set(f"{COOKIE_PREFIX}groq_key", groq_key, expires_at=expiry)
+            conn.setLocalStorageVal(f"{STORAGE_PREFIX}groq_key", groq_key)
         if github_token:
-            cookie_manager.set(f"{COOKIE_PREFIX}github_token", github_token, expires_at=expiry)
+            conn.setLocalStorageVal(f"{STORAGE_PREFIX}github_token", github_token)
     except Exception as e:
-        print(f"Cookie save error: {e}")
+        print(f"localStorage save error: {e}")
 
-# Try to load keys from cookies on first run
-if not st.session_state.keys_loaded_from_cookies:
-    if load_keys_from_cookies():
-        st.session_state.keys_loaded_from_cookies = True
+# Try to load keys from localStorage on first run
+if not st.session_state.keys_loaded_from_storage:
+    if load_keys_from_localstorage():
+        st.session_state.keys_loaded_from_storage = True
         st.rerun()
-    st.session_state.keys_loaded_from_cookies = True  # Mark as attempted
+    st.session_state.keys_loaded_from_storage = True  # Mark as attempted
 
 # Force global styles immediately
 st.markdown(GLOBAL_HACKS_CSS, unsafe_allow_html=True)
@@ -292,8 +285,8 @@ def show_setup_page():
                     if g_key: st.session_state["GOOGLE_API_KEY"] = g_key
                     if q_key: st.session_state["GROQ_API_KEY"] = q_key
                     if gh_key: st.session_state["GITHUB_TOKEN"] = gh_key
-                    # Save keys to browser cookies (7-day expiration)
-                    save_keys_to_cookies(g_key or "", q_key or "", gh_key or "")
+                    # Save keys to browser localStorage
+                    save_keys_to_localstorage(g_key or "", q_key or "", gh_key or "")
                     st.rerun()
 
             # Helper Link
@@ -411,8 +404,8 @@ def render_settings_page():
                 if g_key: st.session_state["GOOGLE_API_KEY"] = g_key
                 if q_key: st.session_state["GROQ_API_KEY"] = q_key
                 if gh_key: st.session_state["GITHUB_TOKEN"] = gh_key
-                # Save keys to browser cookies (7-day expiration)
-                save_keys_to_cookies(g_key or "", q_key or "", gh_key or "")
+                # Save keys to browser localStorage
+                save_keys_to_localstorage(g_key or "", q_key or "", gh_key or "")
                 
                 st.session_state.view_mode = "main"
                 try: st.query_params.clear() 
