@@ -3,7 +3,7 @@ import os
 import sys
 import time
 
-# Deploy Trigger: V3.9 - streamlit-ws-localstorage for synchronous key persistence
+# Deploy Trigger: V4.0 - Hybrid localStorage with JS bouncer and URL params bridge
 import streamlit.components.v1 as components
 from PIL import Image
 
@@ -46,41 +46,20 @@ if "markdown_report" not in st.session_state:
 if "keys_loaded_from_storage" not in st.session_state:
     st.session_state.keys_loaded_from_storage = False
 
-# --- LOCALSTORAGE-BASED KEY PERSISTENCE ---
-# Using streamlit-ws-localstorage for synchronous localStorage access via websockets
-from streamlit_ws_localstorage import injectWebsocketCode, getOrCreateUID
+# --- LOCALSTORAGE KEY PERSISTENCE (HYBRID APPROACH) ---
+# The websocket-based localStorage read is async and has a race condition.
+# Solution: Use URL params as a synchronous bridge from browser to Python.
+# 1. On save: Use streamlit-ws-localstorage to store keys
+# 2. On load: Inject JS that checks localStorage immediately and redirects with URL params
+# 3. Python reads from URL params (synchronous) and cleans up
 
-# Inject websocket code for localStorage access (must be called early)
-# This creates a hidden component that enables synchronous localStorage read/write
-conn = injectWebsocketCode(hostPort='', uid=getOrCreateUID())
+from streamlit_ws_localstorage import injectWebsocketCode, getOrCreateUID
 
 # Storage configuration  
 STORAGE_PREFIX = "ca_scribe_"
 
-def load_keys_from_localstorage():
-    """Load API keys from browser localStorage synchronously."""
-    try:
-        loaded = False
-        
-        # Get values from localStorage
-        google_key = conn.getLocalStorageVal(f"{STORAGE_PREFIX}google_key")
-        groq_key = conn.getLocalStorageVal(f"{STORAGE_PREFIX}groq_key")
-        github_token = conn.getLocalStorageVal(f"{STORAGE_PREFIX}github_token")
-        
-        if google_key and not st.session_state.get("GOOGLE_API_KEY"):
-            st.session_state["GOOGLE_API_KEY"] = google_key
-            loaded = True
-        if groq_key and not st.session_state.get("GROQ_API_KEY"):
-            st.session_state["GROQ_API_KEY"] = groq_key
-            loaded = True
-        if github_token and not st.session_state.get("GITHUB_TOKEN"):
-            st.session_state["GITHUB_TOKEN"] = github_token
-            loaded = True
-            
-        return loaded
-    except Exception as e:
-        print(f"localStorage load error: {e}")
-        return False
+# Inject websocket code for localStorage WRITE operations
+conn = injectWebsocketCode(hostPort='', uid=getOrCreateUID())
 
 def save_keys_to_localstorage(google_key="", groq_key="", github_token=""):
     """Save API keys to browser localStorage."""
@@ -94,12 +73,84 @@ def save_keys_to_localstorage(google_key="", groq_key="", github_token=""):
     except Exception as e:
         print(f"localStorage save error: {e}")
 
-# Try to load keys from localStorage on first run
+def load_keys_from_url_params():
+    """Load API keys from URL params (set by JS bouncer from localStorage)."""
+    try:
+        params = st.query_params
+        loaded = False
+        
+        gkey = params.get("_gkey")
+        qkey = params.get("_qkey")
+        ghkey = params.get("_ghkey")
+        
+        if gkey and not st.session_state.get("GOOGLE_API_KEY"):
+            st.session_state["GOOGLE_API_KEY"] = gkey
+            loaded = True
+        if qkey and not st.session_state.get("GROQ_API_KEY"):
+            st.session_state["GROQ_API_KEY"] = qkey
+            loaded = True
+        if ghkey and not st.session_state.get("GITHUB_TOKEN"):
+            st.session_state["GITHUB_TOKEN"] = ghkey
+            loaded = True
+            
+        # Clean up URL params after loading
+        if loaded:
+            page = params.get("page")
+            st.query_params.clear()
+            if page:
+                st.query_params["page"] = page
+        return loaded
+    except:
+        return False
+
+# JavaScript bouncer - checks localStorage immediately and redirects with URL params
+# This runs in the main browser context (not iframe) via st.markdown script injection
+JS_LOCALSTORAGE_BOUNCER = """
+<script>
+(function() {
+    // Only run once per page load
+    if (window._ca_scribe_bouncer_ran) return;
+    window._ca_scribe_bouncer_ran = true;
+    
+    // Check if we already have keys in URL (don't loop)
+    const url = new URL(window.location.href);
+    if (url.searchParams.has('_gkey') || url.searchParams.has('_qkey') || url.searchParams.has('_ghkey')) {
+        return; // Already have keys, don't redirect
+    }
+    
+    // Check localStorage for stored keys
+    const prefix = 'ca_scribe_';
+    const gkey = localStorage.getItem(prefix + 'google_key');
+    const qkey = localStorage.getItem(prefix + 'groq_key');
+    const ghkey = localStorage.getItem(prefix + 'github_token');
+    
+    // If we have stored keys, redirect with them in URL
+    if (gkey || qkey || ghkey) {
+        if (gkey) url.searchParams.set('_gkey', gkey);
+        if (qkey) url.searchParams.set('_qkey', qkey);
+        if (ghkey) url.searchParams.set('_ghkey', ghkey);
+        
+        // Use replace to avoid back button issues
+        window.location.replace(url.toString());
+    }
+})();
+</script>
+"""
+
+# Load keys from URL params first (set by JS bouncer)
 if not st.session_state.keys_loaded_from_storage:
-    if load_keys_from_localstorage():
+    if load_keys_from_url_params():
         st.session_state.keys_loaded_from_storage = True
         st.rerun()
-    st.session_state.keys_loaded_from_storage = True  # Mark as attempted
+    st.session_state.keys_loaded_from_storage = True
+
+# Inject the JS bouncer to check localStorage (runs on every page load)
+# This will redirect to include keys in URL if they exist in localStorage
+if not st.session_state.get("GOOGLE_API_KEY") and not st.session_state.get("GROQ_API_KEY") and not st.session_state.get("GITHUB_TOKEN"):
+    # Only inject bouncer if we don't have keys yet
+    has_key_params = st.query_params.get("_gkey") or st.query_params.get("_qkey") or st.query_params.get("_ghkey")
+    if not has_key_params:
+        st.markdown(JS_LOCALSTORAGE_BOUNCER, unsafe_allow_html=True)
 
 # Force global styles immediately
 st.markdown(GLOBAL_HACKS_CSS, unsafe_allow_html=True)
