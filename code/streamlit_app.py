@@ -3,7 +3,7 @@ import os
 import sys
 import time
 
-# Deploy Trigger: V3.6 - Browser localStorage for API key persistence (7-day)
+# Deploy Trigger: V3.7 - Fix localStorage with components.html()
 import streamlit.components.v1 as components
 from PIL import Image
 
@@ -47,90 +47,98 @@ if "keys_loaded_from_storage" not in st.session_state:
     st.session_state.keys_loaded_from_storage = False
 
 # --- BROWSER STORAGE HELPERS ---
-# JavaScript to load API keys from browser localStorage (per-user, not shared)
-LOAD_KEYS_JS = """
-<script>
-(function() {
-    // Check if we already sent keys to avoid infinite loop
-    if (window.keysAlreadySent) return;
-    
-    const KEY_EXPIRY_DAYS = 7;
-    
-    function getStoredKey(name) {
-        try {
-            const item = localStorage.getItem('ca_scribe_' + name);
-            if (!item) return null;
-            
-            const data = JSON.parse(item);
-            const now = Date.now();
-            
-            // Check expiration
-            if (data.expiry && now > data.expiry) {
-                localStorage.removeItem('ca_scribe_' + name);
-                return null;
-            }
-            return data.value || null;
-        } catch (e) {
-            return null;
-        }
-    }
-    
-    // Load keys
-    const googleKey = getStoredKey('GOOGLE_API_KEY');
-    const groqKey = getStoredKey('GROQ_API_KEY');
-    const githubToken = getStoredKey('GITHUB_TOKEN');
-    
-    // If any key exists, send to Streamlit via query params (one-time load)
-    if (googleKey || groqKey || githubToken) {
-        window.keysAlreadySent = true;
-        
-        // Use postMessage to communicate with Streamlit
-        const params = new URLSearchParams(window.location.search);
-        let needsReload = false;
-        
-        if (googleKey && !params.has('_gkey')) {
-            params.set('_gkey', googleKey);
-            needsReload = true;
-        }
-        if (groqKey && !params.has('_qkey')) {
-            params.set('_qkey', groqKey);
-            needsReload = true;
-        }
-        if (githubToken && !params.has('_ghkey')) {
-            params.set('_ghkey', githubToken);
-            needsReload = true;
-        }
-        
-        if (needsReload) {
-            window.location.search = params.toString();
-        }
-    }
-})();
-</script>
-"""
+# Use components.html() for JavaScript execution (st.markdown sanitizes scripts)
 
-# JavaScript to save API keys to browser localStorage
-def get_save_keys_js(google_key="", groq_key="", github_token=""):
+def get_localStorage_loader_html():
+    """HTML component that loads API keys from browser localStorage and passes them via URL."""
+    return """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <script>
+        (function() {
+            const KEY_EXPIRY_DAYS = 7;
+            
+            function getStoredKey(name) {
+                try {
+                    const item = localStorage.getItem('ca_scribe_' + name);
+                    if (!item) return null;
+                    
+                    const data = JSON.parse(item);
+                    const now = Date.now();
+                    
+                    // Check expiration
+                    if (data.expiry && now > data.expiry) {
+                        localStorage.removeItem('ca_scribe_' + name);
+                        return null;
+                    }
+                    return data.value || null;
+                } catch (e) {
+                    return null;
+                }
+            }
+            
+            // Load keys from localStorage
+            const googleKey = getStoredKey('GOOGLE_API_KEY');
+            const groqKey = getStoredKey('GROQ_API_KEY');
+            const githubToken = getStoredKey('GITHUB_TOKEN');
+            
+            // Only proceed if we have stored keys AND we're on the base page (no keys in URL)
+            const currentUrl = window.parent.location.href;
+            const hasKeyParams = currentUrl.includes('_gkey=') || currentUrl.includes('_qkey=') || currentUrl.includes('_ghkey=');
+            
+            if ((googleKey || groqKey || githubToken) && !hasKeyParams) {
+                // Build new URL with keys
+                const url = new URL(window.parent.location.href);
+                
+                if (googleKey) url.searchParams.set('_gkey', googleKey);
+                if (groqKey) url.searchParams.set('_qkey', groqKey);
+                if (githubToken) url.searchParams.set('_ghkey', githubToken);
+                
+                // Navigate parent window to new URL
+                window.parent.location.href = url.toString();
+            }
+        })();
+        </script>
+    </head>
+    <body></body>
+    </html>
+    """
+
+def get_localStorage_saver_html(google_key="", groq_key="", github_token=""):
+    """HTML component that saves API keys to browser localStorage."""
+    # Escape any quotes in keys
+    google_key = google_key.replace("'", "\\'").replace('"', '\\"') if google_key else ""
+    groq_key = groq_key.replace("'", "\\'").replace('"', '\\"') if groq_key else ""
+    github_token = github_token.replace("'", "\\'").replace('"', '\\"') if github_token else ""
+    
     return f"""
-    <script>
-    (function() {{
-        const KEY_EXPIRY_DAYS = 7;
-        const expiry = Date.now() + (KEY_EXPIRY_DAYS * 24 * 60 * 60 * 1000);
-        
-        function storeKey(name, value) {{
-            if (value) {{
-                localStorage.setItem('ca_scribe_' + name, JSON.stringify({{
-                    value: value,
-                    expiry: expiry
-                }}));
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <script>
+        (function() {{
+            const KEY_EXPIRY_DAYS = 7;
+            const expiry = Date.now() + (KEY_EXPIRY_DAYS * 24 * 60 * 60 * 1000);
+            
+            function storeKey(name, value) {{
+                if (value && value.trim()) {{
+                    localStorage.setItem('ca_scribe_' + name, JSON.stringify({{
+                        value: value,
+                        expiry: expiry
+                    }}));
+                    console.log('Saved key:', name);
+                }}
             }}
-        }}
-        
-        storeKey('GOOGLE_API_KEY', '{google_key}');
-        storeKey('GROQ_API_KEY', '{groq_key}');
-        storeKey('GITHUB_TOKEN', '{github_token}');
-    }})();
-    </script>
+            
+            storeKey('GOOGLE_API_KEY', '{google_key}');
+            storeKey('GROQ_API_KEY', '{groq_key}');
+            storeKey('GITHUB_TOKEN', '{github_token}');
+        }})();
+        </script>
+    </head>
+    <body style="margin:0;padding:0;height:0;overflow:hidden;"></body>
+    </html>
     """
 
 # Load keys from URL params (set by localStorage JS)
@@ -140,14 +148,18 @@ def load_keys_from_url_params():
         params = st.query_params
         loaded = False
         
-        if params.get("_gkey") and not st.session_state.get("GOOGLE_API_KEY"):
-            st.session_state["GOOGLE_API_KEY"] = params.get("_gkey")
+        gkey = params.get("_gkey")
+        qkey = params.get("_qkey")
+        ghkey = params.get("_ghkey")
+        
+        if gkey and not st.session_state.get("GOOGLE_API_KEY"):
+            st.session_state["GOOGLE_API_KEY"] = gkey
             loaded = True
-        if params.get("_qkey") and not st.session_state.get("GROQ_API_KEY"):
-            st.session_state["GROQ_API_KEY"] = params.get("_qkey")
+        if qkey and not st.session_state.get("GROQ_API_KEY"):
+            st.session_state["GROQ_API_KEY"] = qkey
             loaded = True
-        if params.get("_ghkey") and not st.session_state.get("GITHUB_TOKEN"):
-            st.session_state["GITHUB_TOKEN"] = params.get("_ghkey")
+        if ghkey and not st.session_state.get("GITHUB_TOKEN"):
+            st.session_state["GITHUB_TOKEN"] = ghkey
             loaded = True
             
         # Clean up URL params after loading
@@ -172,8 +184,15 @@ if not st.session_state.keys_loaded_from_storage:
 st.markdown(GLOBAL_HACKS_CSS, unsafe_allow_html=True)
 st.markdown(FOCUS_FIX_JS, unsafe_allow_html=True)
 
-# Inject localStorage loader (runs on client to check for stored keys)
-st.markdown(LOAD_KEYS_JS, unsafe_allow_html=True)
+# Inject localStorage loader component (hidden, executes JS to load keys)
+# Only inject if no keys in session AND no key params in URL (to avoid loops)
+if not st.session_state.get("GOOGLE_API_KEY") and not st.session_state.get("GROQ_API_KEY") and not st.session_state.get("GITHUB_TOKEN"):
+    try:
+        has_key_params = st.query_params.get("_gkey") or st.query_params.get("_qkey") or st.query_params.get("_ghkey")
+        if not has_key_params:
+            components.html(get_localStorage_loader_html(), height=0)
+    except:
+        pass
 
 # --- LOADING ANIMATION (Local & Cloud Compatible) ---
 if "loading_complete" not in st.session_state:
@@ -356,7 +375,7 @@ def show_setup_page():
                     if q_key: st.session_state["GROQ_API_KEY"] = q_key
                     if gh_key: st.session_state["GITHUB_TOKEN"] = gh_key
                     # Save keys to browser localStorage (7-day expiration)
-                    st.markdown(get_save_keys_js(g_key or "", q_key or "", gh_key or ""), unsafe_allow_html=True)
+                    components.html(get_localStorage_saver_html(g_key or "", q_key or "", gh_key or ""), height=0)
                     st.rerun()
 
             # Helper Link
@@ -475,7 +494,7 @@ def render_settings_page():
                 if q_key: st.session_state["GROQ_API_KEY"] = q_key
                 if gh_key: st.session_state["GITHUB_TOKEN"] = gh_key
                 # Save keys to browser localStorage (7-day expiration)
-                st.markdown(get_save_keys_js(g_key or "", q_key or "", gh_key or ""), unsafe_allow_html=True)
+                components.html(get_localStorage_saver_html(g_key or "", q_key or "", gh_key or ""), height=0)
                 
                 st.session_state.view_mode = "main"
                 try: st.query_params.clear() 
