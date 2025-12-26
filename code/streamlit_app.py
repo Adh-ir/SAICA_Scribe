@@ -3,7 +3,7 @@ import os
 import sys
 import time
 
-# Deploy Trigger: V3.3 - Force Trigger
+# Deploy Trigger: V3.4 - SECURITY FIX: Remove secrets auto-load
 import streamlit.components.v1 as components
 from PIL import Image
 
@@ -94,21 +94,18 @@ if not st.session_state.loading_complete:
 
 # --- 2. AUTHENTICATION ---
 def get_api_keys():
-    """Checks for API keys in Streamlit secrets or OS environ."""
-    # Priority: Session > Secrets > OS > Input
-    # Safely get from secrets (may not exist on first run)
-    def safe_secrets_get(key):
-        try:
-            return st.secrets.get(key)
-        except:
-            return None
+    """Gets API keys from session state ONLY (user must enter their own keys).
     
+    SECURITY: We intentionally DO NOT read from st.secrets or os.environ on Streamlit Cloud
+    to prevent the app owner's API keys from being used by all visitors.
+    Each user must provide their own API keys.
+    """
     keys = {
-        "GOOGLE_API_KEY": st.session_state.get("GOOGLE_API_KEY") or safe_secrets_get("GOOGLE_API_KEY") or os.getenv("GOOGLE_API_KEY"),
-        "GROQ_API_KEY": st.session_state.get("GROQ_API_KEY") or safe_secrets_get("GROQ_API_KEY") or os.getenv("GROQ_API_KEY"),
-        "GITHUB_TOKEN": st.session_state.get("GITHUB_TOKEN") or safe_secrets_get("GITHUB_TOKEN") or os.getenv("GITHUB_TOKEN"),
+        "GOOGLE_API_KEY": st.session_state.get("GOOGLE_API_KEY"),
+        "GROQ_API_KEY": st.session_state.get("GROQ_API_KEY"),
+        "GITHUB_TOKEN": st.session_state.get("GITHUB_TOKEN"),
     }
-    # Filter out empty strings
+    # Filter out None and empty strings
     return {k: v for k, v in keys.items() if v}
 
 keys = get_api_keys()
@@ -166,6 +163,11 @@ def show_setup_page():
                 </div>
                 <div style="font-family: 'Inter', sans-serif; font-weight: 500; color: #1e3a8a; font-size: 0.95rem; margin-top: 2rem; line-height: 1.6; max-width: 400px; margin-left: auto; margin-right: auto; text-shadow: none;">
                     Please retrieve and install one or all of the API keys below to get access to each model
+                </div>
+                <div style="background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 8px; padding: 10px 16px; margin-top: 1.5rem; max-width: 400px; margin-left: auto; margin-right: auto;">
+                    <p style="font-family: 'Inter', sans-serif; font-size: 0.75rem; color: #92400e; margin: 0; line-height: 1.4;">
+                        ⚠️ <strong>Note:</strong> Please do not input confidential or sensitive information into this application.
+                    </p>
                 </div>
             </div>
         """, unsafe_allow_html=True)
@@ -855,6 +857,12 @@ def show_main_page():
         if st.session_state.markdown_report:
             with content_area.container():
                 st.markdown(st.session_state.markdown_report)
+                # AI Disclaimer
+                st.markdown("""
+                    <p style="text-align: center; font-size: 0.75rem; color: #94a3b8; margin-top: 1.5rem; font-weight: 400;">
+                        AI models can make mistakes. Please review information generated.
+                    </p>
+                """, unsafe_allow_html=True)
         elif not st.session_state.get("run_analysis", False):
             with content_area.container():
                 st.markdown("""
@@ -869,6 +877,12 @@ def show_main_page():
                         <p style="margin-top: 20px; font-weight: 500;">Detailed mapping will appear here</p>
                     </div>
                 """, unsafe_allow_html=True)
+            # AI Disclaimer
+            st.markdown("""
+                <p style="text-align: center; font-size: 0.75rem; color: #94a3b8; margin-top: 1rem; font-weight: 400;">
+                    AI models can make mistakes. Please review information generated.
+                </p>
+            """, unsafe_allow_html=True)
 
     # Footer
     footer_html = """
