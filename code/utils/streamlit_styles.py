@@ -454,7 +454,15 @@ div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:last-child h3
     font-weight: 600 !important;
 }
 
-
+/* Report Body Text - Dark Blue (Fix for white text issue) */
+div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-of-type(2) p,
+div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-of-type(2) li,
+div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-of-type(2) span,
+div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:last-child p,
+div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:last-child li,
+div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:last-child span {
+    color: #1e293b !important;
+}
 
 /* --- UI ELEMENTS --- */
 
