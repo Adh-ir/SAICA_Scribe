@@ -472,8 +472,12 @@ def show_main_page():
                     <span class="logo-main" style="font-size: 2.75rem;">CA</span>
                     <span class="logo-scribe" style="font-size: 2.75rem; position: relative;">
                         Scribe 
-                        <span style="position: absolute; top: -5px; right: -28px;">
-                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgdHJhbnNmb3JtPSJyb3RhdGUoMjggMTIgMTIpIj4KPHBhdGggZD0iTTEyIDBMMTQuNTkgOS40MUwyNCAxMkwxNC41OSAxNC41OUwxMiAyNEw5LjQxIDE0LjU5TDAgMTJMOS40MSA5LjQxTDEyIDBaIiBmaWxsPSIjMGVhNWU5Ii8+CjwvZz4KPC9zdmc+" style="width: 22px; height: 22px;" alt="star">
+                        <span style="position: absolute; top: -25px; right: -28px;">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g transform="rotate(10 12 12)">
+                                    <path d="M24 12.024c-6.437.388-11.59 5.539-11.977 11.976h-.047C11.588 17.563 6.436 12.412 0 12.024v-.047C6.437 11.588 11.588 6.437 11.976 0h.047c.388 6.437 5.54 11.588 11.977 11.977z" fill="#0ea5e9"/>
+                                </g>
+                            </svg>
                         </span>
                     </span>
                 </div>
