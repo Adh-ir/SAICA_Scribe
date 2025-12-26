@@ -884,37 +884,42 @@ def show_main_page():
                 </html>
                 """
 
-            # 1. ENTRY PHASE: Show            # 1. Display ENTRY Animation IMMEDIATELY
-            with content_area.container():
-                # Hide iframe border with custom styling
-                st.markdown('<style>iframe { border: none !important; }</style>', unsafe_allow_html=True)
-                components.html(get_loading_html("ENTRY"), height=370, scrolling=False)
+            # STATE MACHINE: run_analysis can be True, "EXIT", or False
+            analysis_state = st.session_state.get("run_analysis", False)
             
-            # Yield to UI for render
-            time.sleep(0.5) 
-            
-            try:
-                # Do Work
-                current_activity = st.session_state.get("activity_input", "")
-                current_provider = st.session_state.get("selected_provider", "gemini")
-                results = map_activity_to_competency(current_activity, st.session_state.framework_data, provider=current_provider)
-                st.session_state.markdown_report = generate_markdown_content(results)
-                st.session_state.run_analysis = False
+            if analysis_state == True:
+                # ENTRY PHASE: Show loading animation and do work
+                with content_area.container():
+                    st.markdown('<style>iframe { border: none !important; }</style>', unsafe_allow_html=True)
+                    components.html(get_loading_html("ENTRY"), height=370, scrolling=False)
                 
-                # 2. EXIT PHASE: Explode - clear first, then show
-                content_area.empty()
+                try:
+                    # Do the actual work
+                    current_activity = st.session_state.get("activity_input", "")
+                    current_provider = st.session_state.get("selected_provider", "gemini")
+                    results = map_activity_to_competency(current_activity, st.session_state.framework_data, provider=current_provider)
+                    st.session_state.markdown_report = generate_markdown_content(results)
+                    
+                    # Transition to EXIT phase
+                    st.session_state.run_analysis = "EXIT"
+                    time.sleep(0.3)  # Brief pause before transitioning
+                    st.rerun()
+                    
+                except Exception as e:
+                    content_area.empty()
+                    st.session_state.run_analysis = False
+                    st.error(f"Analysis failed: {e}")
+            
+            elif analysis_state == "EXIT":
+                # EXIT PHASE: Show explode animation
                 with content_area.container():
                     st.markdown('<style>iframe { border: none !important; }</style>', unsafe_allow_html=True)
                     components.html(get_loading_html("EXIT"), height=370, scrolling=False)
                 
-                time.sleep(1.5) # Wait for 1.2s fade-out animation + buffer
-                
-                content_area.empty()  # Remove
+                # Wait for animation to complete, then show report
+                time.sleep(1.5)
+                st.session_state.run_analysis = False
                 st.rerun()
-                
-            except Exception as e:
-                content_area.empty()
-                st.error(f"Analysis failed: {e}")
         
         # Display results or placeholder
         if st.session_state.markdown_report:
