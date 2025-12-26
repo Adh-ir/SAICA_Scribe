@@ -60,6 +60,27 @@ streamlit run streamlit_app.py
 
 The app will open at `http://localhost:8501`.
 
+## 🐳 Docker Deployment
+
+Run CA Scribe in a Docker container for production or isolated development:
+
+```bash
+# Quick start with Docker Compose
+docker compose up -d
+
+# Or build and run manually
+docker build -t ca-scribe .
+docker run -p 8501:8501 ca-scribe
+```
+
+The containerized app runs at `http://localhost:8501`.
+
+### Container Features
+- **Multi-stage build** for smaller image size (~400MB)
+- **Health checks** for orchestration compatibility
+- **Volume mount** for persisting output files
+- **Production-ready** Streamlit configuration
+
 ## 📁 Project Structure
 
 ```
@@ -74,6 +95,9 @@ CA_Scribe/
 │   ├── utils/                # Styles and templates
 │   └── templates/            # HTML templates (guide)
 ├── .streamlit/               # Streamlit configuration
+├── Dockerfile                # Container build configuration
+├── docker-compose.yml        # Docker Compose orchestration
+├── .dockerignore             # Files excluded from container
 └── README.md
 ```
 

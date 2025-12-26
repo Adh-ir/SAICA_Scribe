@@ -30,7 +30,7 @@ LOADING_HTML = """
     .brand-row { display: flex; align-items: center; line-height: 1; }
     .brand-ca { font-family: 'Inter', sans-serif; font-weight: 800; color: #003B5C; }
     .brand-scribe { font-family: 'Playfair Display', serif; font-weight: 600; font-style: italic; color: #005F88; margin-left: 0.15em; }
-    .brand-star { color: #0ea5e9; margin-left: 0.15em; margin-bottom: 0.4em; }
+    .brand-star { color: #0ea5e9; margin-left: 0.2em; margin-bottom: 0.8em; transform: rotate(10deg); }
     .brand-subtitle { font-family: 'Inter', sans-serif; font-weight: 600; color: #334155; margin-top: 15px; letter-spacing: 0.02em; }
     .cross-fade #introCanvas { opacity: 0; }
     .cross-fade #precise-text { opacity: 1; }
@@ -70,7 +70,9 @@ LOADING_HTML = """
           <span class="brand-ca" id="dom-ca">CA</span>
           <span class="brand-scribe" id="dom-scribe">Scribe</span>
           <svg class="brand-star" id="dom-star" width="0" height="0" viewBox="0 0 24 24" fill="currentColor">
-             <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
+             <g transform="rotate(10 12 12)">
+                <path d="M24 12.024c-6.437.388-11.59 5.539-11.977 11.976h-.047C11.588 17.563 6.436 12.412 0 12.024v-.047C6.437 11.588 11.588 6.437 11.976 0h.047c.388 6.437 5.54 11.588 11.977 11.977z" />
+             </g>
           </svg>
        </div>
        <div class="brand-subtitle" id="dom-sub">AI-Powered Competency Mapper</div>
@@ -172,12 +174,15 @@ LOADING_HTML = """
        
        const scaleX = sRect.width / 24;
        const scaleY = sRect.height / 24;
-       sCTX.translate(sRect.left + CONFIG.offsetX, sRect.top + CONFIG.offsetY);
-       sCTX.scale(scaleX, scaleY);
-       sCTX.beginPath();
-       sCTX.moveTo(12, 0); sCTX.lineTo(14.59, 9.41); sCTX.lineTo(24, 12); sCTX.lineTo(14.59, 14.59);
-       sCTX.lineTo(12, 24); sCTX.lineTo(9.41, 14.59); sCTX.lineTo(0, 12); sCTX.lineTo(9.41, 9.41); sCTX.lineTo(12, 0);
-       sCTX.fill();
+        sCTX.translate(sRect.left + CONFIG.offsetX, sRect.top + CONFIG.offsetY);
+        sCTX.scale(scaleX, scaleY);
+        // Curved Gemini star path with 20-degree rotation
+        sCTX.translate(12, 12);
+        sCTX.rotate(10 * Math.PI / 180);
+        sCTX.translate(-12, -12);
+        // Draw curved star using bezier curves
+        const p = new Path2D('M24 12.024c-6.437.388-11.59 5.539-11.977 11.976h-.047C11.588 17.563 6.436 12.412 0 12.024v-.047C6.437 11.588 11.588 6.437 11.976 0h.047c.388 6.437 5.54 11.588 11.977 11.977z');
+        sCTX.fill(p);
        
        const sData = sCTX.getImageData(0,0,width*dpr, height*dpr).data;
        const sStep = CONFIG.densityStep * dpr;

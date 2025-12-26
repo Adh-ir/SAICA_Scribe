@@ -150,13 +150,28 @@ def show_setup_page():
             .logo-star-setup::after {
                 content: '';
                 position: absolute;
-                top: -5px;
-                right: -30px;
+                top: 5px;
+                right: -20px;
                 width: 28px;
                 height: 28px;
-                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg transform='rotate(28 12 12)'%3E%3Cpath d='M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z' fill='%230ea5e9'/%3E%3C/g%3E%3C/svg%3E");
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg transform='rotate(10 12 12)'%3E%3Cpath d='M24 12.024c-6.437.388-11.59 5.539-11.977 11.976h-.047C11.588 17.563 6.436 12.412 0 12.024v-.047C6.437 11.588 11.588 6.437 11.976 0h.047c.388 6.437 5.54 11.588 11.977 11.977z' fill='%230ea5e9'/%3E%3C/g%3E%3C/svg%3E");
                 background-size: contain;
                 background-repeat: no-repeat;
+            }
+            /* Initialize button hover - dark blue background, white text */
+            [data-testid="stForm"] button[kind="primary"]:hover {
+                background: #003B5C !important;
+                color: white !important;
+            }
+            /* Hide 'Press Enter to submit' message */
+            [data-testid="stForm"] .stTextInput [data-testid="InputInstructions"] {
+                display: none !important;
+            }
+            /* Sky blue focus for input boxes with glow */
+            [data-testid="stForm"] .stTextInput input:focus {
+                border-color: #38bdf8 !important;
+                box-shadow: 0 0 15px rgba(56, 189, 248, 0.5) !important;
+                outline: none !important;
             }
             </style>
             <div style="text-align: center; margin-bottom: 2.5rem; margin-top: 2vh;">
@@ -221,7 +236,7 @@ def show_setup_page():
             st.markdown("""
                 <div style="text-align: center; margin: 0.5rem 0 0.5rem 0;">
                     <span style="font-size: 0.7rem; color: #94a3b8; font-weight: 500;">
-                        Keys are stored in your browser for 7 days
+                        💾 Please save your keys for future revisits
                     </span>
                 </div>
             """, unsafe_allow_html=True)
@@ -235,6 +250,8 @@ def show_setup_page():
                     if g_key: st.session_state["GOOGLE_API_KEY"] = g_key
                     if q_key: st.session_state["GROQ_API_KEY"] = q_key
                     if gh_key: st.session_state["GITHUB_TOKEN"] = gh_key
+                    # Set flag to show transition animation on main page
+                    st.session_state["show_transition"] = True
                     st.rerun()
 
             # Helper Link
@@ -370,6 +387,48 @@ def render_settings_page():
 
 # --- 4. UI: MAIN PAGE ---
 def show_main_page():
+
+    # --- TRANSITION ANIMATION (if coming from setup) ---
+    if st.session_state.get("show_transition", False):
+        # Show brief transition overlay
+        st.markdown("""
+            <style>
+            .transition-overlay {
+                position: fixed;
+                top: 0; left: 0;
+                width: 100vw; height: 100vh;
+                background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+                animation: fadeOutOverlay 1.2s ease-out 0.3s forwards;
+            }
+            .transition-spinner {
+                width: 40px; height: 40px;
+                border: 3px solid rgba(14, 165, 233, 0.2);
+                border-top-color: #0ea5e9;
+                border-radius: 50%;
+                animation: spin 0.8s linear infinite;
+            }
+            .transition-text {
+                margin-top: 16px;
+                font-family: 'Inter', sans-serif;
+                font-weight: 600;
+                color: #0369a1;
+                font-size: 0.9rem;
+            }
+            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+            @keyframes fadeOutOverlay { 0% { opacity: 1; } 100% { opacity: 0; visibility: hidden; } }
+            </style>
+            <div class="transition-overlay">
+                <div class="transition-spinner"></div>
+                <div class="transition-text">Initializing...</div>
+            </div>
+        """, unsafe_allow_html=True)
+        # Clear the flag
+        st.session_state["show_transition"] = False
 
     # Inject Styles & Background
     st.markdown(FONT_LINKS, unsafe_allow_html=True)

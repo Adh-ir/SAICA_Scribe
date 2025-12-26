@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+code/.venv/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+
+# Streamlit secrets (should be injected via environment or volume)
+.streamlit/secrets.toml
+code/.streamlit/secrets.toml
+
+# Environment files with secrets
+.env
+code/.env
+
+# macOS
+.DS_Store
+
+# Output directories (regenerated at runtime)
+code/output/
+
+# Artifacts/docs not needed in container
+README.md
+*.md
+
+# Test files
+tests/
+*_test.py
+test_*.py
