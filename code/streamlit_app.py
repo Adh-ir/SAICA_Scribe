@@ -591,8 +591,9 @@ def show_main_page():
             if is_empty or is_template_only or has_no_evidence:
                 st.warning("Please describe your activity first. Fill in the template with your actual work details.")
             else:
-                # Set flag to trigger analysis in right panel (no rerun needed)
+                # Set flag to trigger analysis in right panel
                 st.session_state.run_analysis = True
+                st.rerun()
 
     # --- RIGHT PANEL (Report) ---
     with main_col2:
@@ -900,6 +901,7 @@ def show_main_page():
                 st.session_state.run_analysis = False
                 time.sleep(0.5)  # Brief pause to let animation complete
                 st.rerun()
+                st.stop()  # Ensure no further rendering
                 
             except Exception as e:
                 content_area.empty()
